@@ -25,7 +25,7 @@ public class Comment {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime post_date;
+    private LocalDateTime date_of_creation;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -51,6 +51,14 @@ public class Comment {
 
     public void setReplies(Set<Comment> replies) {
         this.replies = replies;
+    }
+
+    public LocalDateTime getDate_of_creation() {
+        return date_of_creation;
+    }
+
+    public void setDate_of_creation(LocalDateTime date_of_creation) {
+        this.date_of_creation = date_of_creation;
     }
 
     public Comment getParentComment() {
@@ -89,14 +97,6 @@ public class Comment {
 
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent;
-    }
-
-    public LocalDateTime getPost_date() {
-        return post_date;
-    }
-
-    public void setPost_date(LocalDateTime post_date) {
-        this.post_date = post_date;
     }
 
     public User getCreatedBy() {

@@ -3,10 +3,12 @@ package com.company.web.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +32,10 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    @CreationTimestamp
+    @Column(name = "date_of_creation")
+    private LocalDateTime date_posted;
 
     @Formula(value = "(select count(likes.post_id) from likes where post_id = likes.post_id)")
     private Long likes;
