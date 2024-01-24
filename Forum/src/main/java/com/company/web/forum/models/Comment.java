@@ -1,0 +1,121 @@
+package com.company.web.forum.models;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
+
+
+@Entity
+@Table(name = "comments")
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    private int id;
+
+
+    @Column(name = "content")
+    private String commentContent;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime post_date;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "parent_comment")
+    private Comment parentComment;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment",cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> replies;
+
+    public Set<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Set<Comment> replies) {
+        this.replies = replies;
+    }
+
+    public Comment getParentComment() {
+        return parentComment;
+    }
+
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCommentContent() {
+        return commentContent;
+    }
+
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
+    }
+
+    public LocalDateTime getPost_date() {
+        return post_date;
+    }
+
+    public void setPost_date(LocalDateTime post_date) {
+        this.post_date = post_date;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+
+    public Comment() {
+    }
+}
