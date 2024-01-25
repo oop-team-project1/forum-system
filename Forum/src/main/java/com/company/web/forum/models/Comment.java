@@ -18,8 +18,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private int id;
-
-
     @Column(name = "content")
     private String commentContent;
 
