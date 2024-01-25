@@ -29,13 +29,13 @@ public class UserController
     {
         return userService.getById(id);
     }
-    @GetMapping("/username/{username}")
-    public User getByUsername(@PathVariable String username)
+    @GetMapping("/username")
+    public User getByUsername(@RequestParam String username)
     {
         return userService.getByUsername(username);
     }
-    @GetMapping("/email/{email}")
-    public User getByEmail(@PathVariable String email)
+    @GetMapping("/email")
+    public User getByEmail(@RequestParam String email)
     {
         return userService.getByEmail(email);
     }
