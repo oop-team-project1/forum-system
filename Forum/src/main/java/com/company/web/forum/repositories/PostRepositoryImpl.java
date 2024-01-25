@@ -1,4 +1,7 @@
 package com.company.web.forum.repositories;
 
-public class PostRepositoryImpl {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class PostRepositoryImpl implements PostRepository {
 }
