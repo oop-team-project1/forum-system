@@ -2,7 +2,6 @@ package com.company.web.forum.repositories;
 
 import com.company.web.forum.helpers.FilterOptions;
 import com.company.web.forum.models.Comment;
-import com.company.web.forum.models.User;
 
 import java.util.List;
 

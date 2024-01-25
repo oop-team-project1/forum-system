@@ -1,4 +1,7 @@
 package com.company.web.forum.services;
 
-public class PostServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class PostServiceImpl implements PostService{
 }
