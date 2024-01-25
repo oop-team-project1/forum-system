@@ -1,4 +1,4 @@
 package com.company.web.forum.helpers;
 
-public class FilterOptions {
+public class FilterOptionsUsers {
 }

@@ -1,6 +1,5 @@
 package com.company.web.forum.services;
 
-import com.company.web.forum.helpers.FilterOptions;
 import com.company.web.forum.models.User;
 
 import java.util.List;

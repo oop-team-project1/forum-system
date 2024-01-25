@@ -1,9 +1,8 @@
 package com.company.web.forum.services;
 
-import com.company.web.forum.helpers.FilterOptions;
+import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.repositories.CommentRepository;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public List<Comment> getAll(FilterOptions filterOptions) {
+    public List<Comment> getAll(FilterOptionsPosts filterOptionsPosts) {
         return null;
     }
 

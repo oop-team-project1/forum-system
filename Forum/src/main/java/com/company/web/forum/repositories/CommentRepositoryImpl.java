@@ -1,11 +1,10 @@
 package com.company.web.forum.repositories;
 
 import com.company.web.forum.exceptions.EntityNotFoundException;
-import com.company.web.forum.helpers.FilterOptions;
+import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Comment;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +20,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getAll(FilterOptions filterOptions) {
+    public List<Comment> getAll(FilterOptionsPosts filterOptionsPosts) {
         return null;
     }
 
