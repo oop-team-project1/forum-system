@@ -37,6 +37,8 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -120,6 +122,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 
     @Override

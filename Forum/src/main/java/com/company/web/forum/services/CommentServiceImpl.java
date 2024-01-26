@@ -35,14 +35,15 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void create(Comment comment, User user) {
-        comment.setCreatedBy(user);
+    public void create(Comment comment) {
+        //TODO: check if user is logged, blocked - add User in params
+       // comment.setCreatedBy(user);
         commentRepository.create(comment);
     }
 
     @Override
     public void update(Comment comment) {
-        //TODO: check if user is logged, blocked, owner of the comment
+        //TODO: check if user is logged, blocked, owner of the comment - add user as parameter
         commentRepository.update(comment);
     }
 

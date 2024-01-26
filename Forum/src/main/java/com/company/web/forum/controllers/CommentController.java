@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("tastytale/api/v1/comments")
+@RequestMapping("tastytale/api/v1/posts/{postId}/comments")
 public class CommentController {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private final CommentService commentService;
@@ -47,6 +47,13 @@ public class CommentController {
         } catch (EntityNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @PostMapping
+    public Comment create(@Valid @RequestBody CommentDto commentDto){
+            Comment comment = commentMapper.fromDto(commentDto);
+            commentService.create(comment);
+            return comment;
     }
 
     @PutMapping("/{id}")
