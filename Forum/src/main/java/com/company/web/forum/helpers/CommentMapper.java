@@ -2,6 +2,7 @@ package com.company.web.forum.helpers;
 
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.CommentDto;
+import com.company.web.forum.models.User;
 import com.company.web.forum.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class CommentMapper {
         comment.setCreatedBy(repositoryComment.getCreatedBy());
         comment.setPost(repositoryComment.getPost());
         comment.setReplies(repositoryComment.getReplies());
+       comment.setDate_of_creation(repositoryComment.getDate_of_creation());
         return comment;
     }
 

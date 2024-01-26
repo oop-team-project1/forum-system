@@ -6,46 +6,55 @@ import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.CommentDto;
-import com.company.web.forum.models.User;
+import com.company.web.forum.models.Post;
 import com.company.web.forum.services.CommentService;
+import com.company.web.forum.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("tastytale/api/v1/comments")
 public class CommentController {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    private final CommentService service;
+    private final CommentService commentService;
+    private final PostService postService;
     private final AuthenticationHelper authenticationHelper;
     private final CommentMapper commentMapper;
 
     @Autowired
-    public CommentController(CommentService service, AuthenticationHelper authenticationHelper, CommentMapper commentMapper) {
-        this.service = service;
+    public CommentController(CommentService service,
+                             AuthenticationHelper authenticationHelper,
+                             CommentMapper commentMapper,
+                             PostService postService) {
+        this.commentService = service;
         this.authenticationHelper = authenticationHelper;
         this.commentMapper = commentMapper;
+        this.postService = postService;
     }
     @GetMapping()
+    public List<Comment> getAll(){
+        return commentService.getAll();
+    }
+    @GetMapping("/posts")
     public Comment getById(@RequestParam int id){
         try {
-            return service.getById(id);
+            return commentService.getById(id);
         } catch (EntityNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
-    @PutMapping
-    public Comment update (@RequestParam int post_id, @Valid @RequestBody CommentDto commentDto) {
+    @PutMapping("/{id}")
+    public Comment update (@PathVariable int id, @Valid @RequestBody CommentDto commentDto) {
         try {
-            //TODO: add mapper, authorization
-           // String encodedString = headers.getFirst(AUTHORIZATION_HEADER_NAME);
-            //User user = authenticationHelper.tryGetUser(encodedString);
-            Comment comment = commentMapper.fromDto(post_id, commentDto);
-            service.update(comment);
+            //TODO: add authorization
+            Comment comment = commentMapper.fromDto(id, commentDto);
+            commentService.update(comment);
             return comment;
         } catch (EntityNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
