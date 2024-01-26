@@ -7,7 +7,7 @@ import com.company.web.forum.models.User;
 import java.util.List;
 
 public interface CommentService {
-    List<Comment> getAll(FilterOptionsPosts filterOptionsPosts);
+    List<Comment> getAll();
     Comment getById(int id);
     void create (Comment comment, User user);
     void update(Comment comment);

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentRepository {
 
-    List<Comment> getAll(FilterOptionsPosts filterOptionsPosts);
+    List<Comment> getAll();
     Comment getById(int id);
     void create (Comment comment);
     void update(Comment comment);

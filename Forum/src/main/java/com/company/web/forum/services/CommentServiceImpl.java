@@ -5,6 +5,7 @@ import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.User;
 import com.company.web.forum.repositories.CommentRepository;
+import com.company.web.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +15,18 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService{
     public static final String MODIFY_COMMENT_ERROR_MESSAGE = "Only comment creator can modify this comment!";
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
-    public List<Comment> getAll(FilterOptionsPosts filterOptionsPosts) {
-        return null;
+    public List<Comment> getAll() {
+        List<Comment> comments = commentRepository.getAll();
+        return comments;
     }
 
     @Override
@@ -38,8 +42,7 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public void update(Comment comment) {
-        //check permissions
-        //TODO: check if user is blocked
+        //TODO: check if user is logged, blocked, owner of the comment
         commentRepository.update(comment);
     }
 
