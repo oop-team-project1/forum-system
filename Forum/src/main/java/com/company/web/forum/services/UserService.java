@@ -11,4 +11,12 @@ public interface UserService
     User getById(int id);
     User getByUsername(String username);
     User getByEmail(String email);
+
+    void addPost(int userId, int postId);
+
+    void removePost(int userId, int postId);
+
+    void blockUser(int userId);
+
+    void unblockUser(int userId);
 }
