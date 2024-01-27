@@ -1,6 +1,7 @@
 package com.company.web.forum.repositories;
 
 import com.company.web.forum.exceptions.EntityNotFoundException;
+import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,7 +23,7 @@ public class UserRepositoryImpl implements UserRepository
     }
 
     @Override
-    public List<User> getAll()
+    public List<User> getAll(FilterOptionsUsers filterOptionsUsers)
     {
         try (Session session = sessionFactory.openSession())
         {
