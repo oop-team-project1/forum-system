@@ -1,5 +1,6 @@
 package com.company.web.forum.services;
 
+import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.User;
 import com.company.web.forum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,9 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public List<User> getAll()
+    public List<User> getAll(FilterOptionsUsers filterOptionsUsers)
     {
-        return repository.getAll();
+        return repository.getAll(filterOptionsUsers);
     }
 
     @Override
