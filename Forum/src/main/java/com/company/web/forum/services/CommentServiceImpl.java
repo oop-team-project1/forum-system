@@ -1,7 +1,7 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.helpers.FilterOptionsPosts;
+import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
@@ -27,9 +27,8 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public List<Comment> getAll() {
-        List<Comment> comments = commentRepository.getAll();
-        return comments;
+    public List<Comment> getAll(FilterOptionsComments filterOptions) {
+        return commentRepository.getAll(filterOptions);
     }
 
     @Override
