@@ -5,6 +5,7 @@ import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
+import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.CommentDto;
 import com.company.web.forum.models.Post;
@@ -18,10 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("tastytale/api/v1/posts/{postId}/comments")
+//TODO: fix route for all methods
+//@RequestMapping("tastytale/api/v1/posts/{postId}/comments")
+@RequestMapping("tastytale/api/v1/comments")
 public class CommentController {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private final CommentService commentService;
@@ -40,9 +45,18 @@ public class CommentController {
         this.postService = postService;
     }
     @GetMapping()
-    public List<Comment> getAll(){
-        return commentService.getAll();
+    public List<Comment> getAll(
+            //@PathVariable int postId,
+            @RequestParam (required= false) String content,
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) Integer postId,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam (required = false) LocalDate endDate
+    ){
+        FilterOptionsComments filterOptions = new FilterOptionsComments(content, userId, postId, startDate, endDate);
+        return commentService.getAll(filterOptions);
     }
+    //TODO: fix route
     @GetMapping("/posts")
     public Comment getById(@RequestParam int id){
         try {
