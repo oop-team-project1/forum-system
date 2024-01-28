@@ -2,6 +2,7 @@ package com.company.web.forum.repositories;
 
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsUsers;
+import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +10,10 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository
@@ -23,11 +27,43 @@ public class UserRepositoryImpl implements UserRepository
     }
 
     @Override
-    public List<User> getAll(FilterOptionsUsers filterOptionsUsers)
+    public List<User> getAll(FilterOptionsUsers filterOptions)
     {
         try (Session session = sessionFactory.openSession())
         {
-            Query<User> query = session.createQuery("from User", User.class);
+            List<String> filters = new ArrayList<>();
+            Map<String, Object> params = new HashMap<>();
+
+            filterOptions.getFirstName().ifPresent(value -> {
+                filters.add("first_name like :userFirstName");
+                params.put("userFirstName", String.format("%%%s%%", value));
+            });
+
+            filterOptions.getLastName().ifPresent(value -> {
+                filters.add("last_name like :userLastName");
+                params.put("userLastName", String.format("%%%s%%", value));
+            });
+
+            filterOptions.getUsername().ifPresent(value -> {
+                filters.add("username like :username");
+                params.put("username", value);
+            });
+
+            filterOptions.getEmail().ifPresent(value -> {
+                filters.add("email like :email");
+                params.put("email", value);
+            });
+
+            StringBuilder queryString = new StringBuilder("from User");
+            if (!filters.isEmpty())
+            {
+                queryString.append(" where ")
+                        .append(String.join(" and ", filters));
+            }
+            queryString.append(generateOrderBy(filterOptions));
+
+            Query<User> query = session.createQuery(queryString.toString(), User.class);
+            query.setProperties(params);
             return query.list();
         }
     }
@@ -102,5 +138,39 @@ public class UserRepositoryImpl implements UserRepository
             session.merge(user);
             session.getTransaction().commit();
         }
+    }
+
+    private String generateOrderBy(FilterOptionsUsers filterOptions) {
+        if (filterOptions.getSortBy().isEmpty())
+        {
+            return "";
+        }
+
+        String orderBy = "";
+        switch (filterOptions.getSortBy().get())
+        {
+            case "firstName":
+                orderBy = "first_name";
+                break;
+            case "lastName":
+                orderBy = "last_name";
+                break;
+            case "username":
+                orderBy = "username";
+                break;
+            case "email":
+                orderBy = "email";
+                break;
+        }
+
+        orderBy = String.format(" order by %s", orderBy);
+
+        if (filterOptions.getSortOrder().isPresent() &&
+                filterOptions.getSortOrder().get().equalsIgnoreCase("desc"))
+        {
+            orderBy = String.format("%s desc", orderBy);
+        }
+
+        return orderBy;
     }
 }
