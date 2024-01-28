@@ -33,17 +33,26 @@ public class CommentRepositoryImpl implements CommentRepository {
                 filters.add("content like :commentContent");
                 params.put("commentContent", String.format("%%%s%%", value));
             });
-//
-//            filterOptions.getUserId().ifPresent(value -> {
-//                filters.add("user.id = :userId");
-//                params.put("userId", value);
-//            });
+
+            filterOptions.getUserId().ifPresent(value -> {
+                filters.add("createdBy.id = :userId");
+                params.put("userId", value);
+            });
 
             filterOptions.getPostId().ifPresent(value -> {
                 filters.add("post.id = :postId");
                 params.put("postId", value);
             });
 
+//            filterOptions.getStartDate().ifPresent(value -> {
+//                filters.add("date >= :startDate");
+//                params.put("startDate", value);
+//            });
+//
+//            filterOptions.getEndDate().ifPresent(value -> {
+//                filters.add("date >= :endDate");
+//                params.put("endDate", value);
+//            });
             StringBuilder queryString = new StringBuilder("from Comment");
 
             if (!filters.isEmpty()) {

@@ -1,8 +1,5 @@
 package com.company.web.forum.helpers;
 
-import com.company.web.forum.models.Post;
-import com.company.web.forum.models.User;
-
 import java.time.LocalDate;
 import java.util.Optional;
 
