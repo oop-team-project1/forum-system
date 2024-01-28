@@ -39,31 +39,64 @@ public class CommentRepositoryImpl implements CommentRepository {
                 params.put("userId", value);
             });
 
+            filterOptions.getUsername().ifPresent(value -> {
+                filters.add("createdBy.username = :username");
+                params.put("username", value);
+            });
+
             filterOptions.getPostId().ifPresent(value -> {
                 filters.add("post.id = :postId");
                 params.put("postId", value);
             });
 
-//            filterOptions.getStartDate().ifPresent(value -> {
-//                filters.add("date >= :startDate");
-//                params.put("startDate", value);
-//            });
-//
-//            filterOptions.getEndDate().ifPresent(value -> {
-//                filters.add("date >= :endDate");
-//                params.put("endDate", value);
-//            });
+            filterOptions.getPostTitle().ifPresent(value -> {
+                filters.add("post.title = :postTitle");
+                params.put("postTitle", value);
+            });
+
+            filterOptions.getStartDate().ifPresent(value -> {
+                filters.add("date_of_creation >= :startDate");
+                params.put("startDate", value);
+            });
+
+            filterOptions.getEndDate().ifPresent(value -> {
+                filters.add("date_of_creation <= :endDate");
+                params.put("endDate", value);
+            });
             StringBuilder queryString = new StringBuilder("from Comment");
 
             if (!filters.isEmpty()) {
-                queryString.append(" where ")
-                        .append(String.join(" and ", filters));
+                queryString.append(" where ").append(String.join(" and ", filters));
             }
+
+            queryString.append(generateOrderBy(filterOptions));
 
             Query<Comment> query = session.createQuery(queryString.toString(), Comment.class);
             query.setProperties(params);
             return query.list();
         }
+    }
+
+    private String generateOrderBy(FilterOptionsComments filterOptions) {
+        if (filterOptions.getSortBy().isEmpty()) {
+            return "";
+        }
+
+        String orderBy = "";
+        switch (filterOptions.getSortBy().get()) {
+            case "date":
+                orderBy = "date_of_creation";
+                break;
+        }
+
+        orderBy = String.format(" order by %s", orderBy);
+
+        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+            orderBy = String.format("%s desc", orderBy);
+
+        }
+
+        return orderBy;
     }
 
     @Override

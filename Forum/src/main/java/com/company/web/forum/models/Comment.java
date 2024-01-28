@@ -1,13 +1,14 @@
 package com.company.web.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,7 +25,8 @@ public class Comment {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDate date_of_creation;
+    @JsonFormat(pattern = "dd.MM.yyyy")
+    private Date date_of_creation;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -41,7 +43,7 @@ public class Comment {
     private Comment parentComment;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> replies;
 
     public Set<Comment> getReplies() {
@@ -52,11 +54,11 @@ public class Comment {
         this.replies = replies;
     }
 
-    public LocalDate getDate_of_creation() {
+    public Date getDate_of_creation() {
         return date_of_creation;
     }
 
-    public void setDate_of_creation(LocalDate date_of_creation) {
+    public void setDate_of_creation(Date date_of_creation) {
         this.date_of_creation = date_of_creation;
     }
 
@@ -67,7 +69,6 @@ public class Comment {
     public void setParentComment(Comment parentComment) {
         this.parentComment = parentComment;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -113,7 +114,6 @@ public class Comment {
     public void setPost(Post post) {
         this.post = post;
     }
-
 
     public Comment() {
     }
