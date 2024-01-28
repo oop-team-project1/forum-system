@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class Comment {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDate date_of_creation;
+    private Date date_of_creation;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -52,11 +52,11 @@ public class Comment {
         this.replies = replies;
     }
 
-    public LocalDate getDate_of_creation() {
+    public Date getDate_of_creation() {
         return date_of_creation;
     }
 
-    public void setDate_of_creation(LocalDate date_of_creation) {
+    public void setDate_of_creation(Date date_of_creation) {
         this.date_of_creation = date_of_creation;
     }
 

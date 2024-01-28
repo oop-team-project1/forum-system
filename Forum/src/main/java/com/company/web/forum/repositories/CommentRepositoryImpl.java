@@ -44,15 +44,15 @@ public class CommentRepositoryImpl implements CommentRepository {
                 params.put("postId", value);
             });
 
-//            filterOptions.getStartDate().ifPresent(value -> {
-//                filters.add("date >= :startDate");
-//                params.put("startDate", value);
-//            });
-//
-//            filterOptions.getEndDate().ifPresent(value -> {
-//                filters.add("date >= :endDate");
-//                params.put("endDate", value);
-//            });
+            filterOptions.getStartDate().ifPresent(value -> {
+                filters.add("date_of_creation >= :startDate");
+                params.put("startDate", value);
+            });
+
+            filterOptions.getEndDate().ifPresent(value -> {
+                filters.add("date_of_creation <= :endDate");
+                params.put("endDate", value);
+            });
             StringBuilder queryString = new StringBuilder("from Comment");
 
             if (!filters.isEmpty()) {
