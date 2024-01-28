@@ -60,10 +60,34 @@ public class CommentRepositoryImpl implements CommentRepository {
                         .append(String.join(" and ", filters));
             }
 
+            queryString.append(generateOrderBy(filterOptions));
+
             Query<Comment> query = session.createQuery(queryString.toString(), Comment.class);
             query.setProperties(params);
             return query.list();
         }
+    }
+
+    private String generateOrderBy(FilterOptionsComments filterOptions) {
+        if(filterOptions.getSortBy().isEmpty()){
+            return "";
+        }
+
+        String orderBy = "";
+        switch(filterOptions.getSortBy().get()){
+            case "date":
+                orderBy = "date_of_creation";
+                break;
+        }
+
+        orderBy = String.format(" order by %s", orderBy);
+
+        if(filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")){
+            orderBy = String.format("%s desc", orderBy);
+
+        }
+
+        return orderBy;
     }
 
     @Override

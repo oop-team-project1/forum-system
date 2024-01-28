@@ -1,10 +1,12 @@
 package com.company.web.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.util.Date;
@@ -24,6 +26,7 @@ public class Comment {
 
     @Column(updatable = false)
     @CreationTimestamp
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private Date date_of_creation;
 
     @ManyToOne

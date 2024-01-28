@@ -10,18 +10,24 @@ public class FilterOptionsComments {
     private Optional<Integer> postId;
     private Optional <Date> startDate;
     private Optional <Date> endDate;
+    private Optional<String> sortBy;
+    private Optional<String> sortOrder;
 
 
     public FilterOptionsComments(String content,
                                  Integer userID,
                                  Integer postId,
                                  Date startDate,
-                                 Date endDate) {
+                                 Date endDate,
+                                 String sortBy,
+                                 String sortOrder) {
         this.content = Optional.ofNullable(content);
         this.userId = Optional.ofNullable(userID);
         this.postId = Optional.ofNullable(postId);
         this.startDate = Optional.ofNullable(startDate);
         this.endDate = Optional.ofNullable(endDate);
+        this.sortBy = Optional.ofNullable(sortBy);
+        this.sortOrder = Optional.ofNullable(sortOrder);
     }
 
 
@@ -43,5 +49,13 @@ public class FilterOptionsComments {
 
     public Optional<Date> getEndDate() {
         return endDate;
+    }
+
+    public Optional<String> getSortBy() {
+        return sortBy;
+    }
+
+    public Optional<String> getSortOrder() {
+        return sortOrder;
     }
 }

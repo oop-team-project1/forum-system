@@ -48,14 +48,15 @@ public class CommentController {
     }
     @GetMapping()
     public List<Comment> getAll(
-            //@PathVariable int postId,
             @RequestParam (required= false) String content,
             @RequestParam(required = false) Integer userId,
             @RequestParam(required = false) Integer postId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy")Date startDate,
-            @RequestParam (required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder
     ){
-        FilterOptionsComments filterOptions = new FilterOptionsComments(content, userId, postId, startDate, endDate);
+        FilterOptionsComments filterOptions = new FilterOptionsComments(content, userId, postId, startDate, endDate,sortBy, sortOrder);
         return commentService.getAll(filterOptions);
     }
     //TODO: fix route
