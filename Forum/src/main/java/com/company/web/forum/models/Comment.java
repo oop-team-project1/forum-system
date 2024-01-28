@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.util.Date;
@@ -44,7 +43,7 @@ public class Comment {
     private Comment parentComment;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> replies;
 
     public Set<Comment> getReplies() {
@@ -70,7 +69,6 @@ public class Comment {
     public void setParentComment(Comment parentComment) {
         this.parentComment = parentComment;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -116,7 +114,6 @@ public class Comment {
     public void setPost(Post post) {
         this.post = post;
     }
-
 
     public Comment() {
     }
