@@ -40,7 +40,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             });
 
             filterOptions.getUsername().ifPresent(value -> {
-                filters.add("createdBy.username = :username");
+                filters.add("createdBy.username like :username");
                 params.put("username", value);
             });
 
@@ -50,7 +50,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             });
 
             filterOptions.getPostTitle().ifPresent(value -> {
-                filters.add("post.title = :postTitle");
+                filters.add("post.title like :postTitle");
                 params.put("postTitle", value);
             });
 
