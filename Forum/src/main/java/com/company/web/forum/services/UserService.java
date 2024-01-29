@@ -16,9 +16,9 @@ public interface UserService
 
     void removePost(int userId, int postId);
 
-    void blockUser(int userId);
+    void blockUser(String username, User user);
 
-    void unblockUser(int userId);
+    void unblockUser(String username, User user);
 
     void create(User userToCreate);
 

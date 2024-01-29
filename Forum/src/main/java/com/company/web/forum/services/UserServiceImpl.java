@@ -1,5 +1,6 @@
 package com.company.web.forum.services;
 
+import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.BlockedUnblockedUserException;
 import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
@@ -14,21 +15,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService
-{
+public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PostRepository postRepository;
+    public static final String PERMISSION_ERROR = "Only admin or post creator can modify a post";
+    public static final String USER_IS_BLOCKED = "Unable to ban, user is blocked";
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, PostRepository postRepository)
-    {
+    public UserServiceImpl(UserRepository repository, PostRepository postRepository) {
         this.repository = repository;
         this.postRepository = postRepository;
     }
 
     @Override
-    public List<User> getAll(FilterOptionsUsers filterOptionsUsers)
-    {
+    public List<User> getAll(FilterOptionsUsers filterOptionsUsers) {
         return repository.getAll(filterOptionsUsers);
     }
 
@@ -38,56 +38,43 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public User getByUsername(String username)
-    {
+    public User getByUsername(String username) {
         return repository.getByUsername(username);
     }
 
     @Override
-    public User getByEmail(String email)
-    {
+    public User getByEmail(String email) {
         return repository.getByEmail(email);
     }
 
     @Override
-    public void create(User userToCreate)
-    {
+    public void create(User userToCreate) {
         boolean duplicateExists = true;
-        try
-        {
+        try {
             repository.getByUsername(userToCreate.getUsername());
-        }
-        catch (EntityNotFoundException e)
-        {
+        } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
 
-        if (duplicateExists)
-        {
+        if (duplicateExists) {
             throw new EntityDuplicateException("User", "username", userToCreate.getUsername());
         }
         repository.create(userToCreate);
     }
 
     @Override
-    public void update(User userToUpdate)
-    {
+    public void update(User userToUpdate) {
         boolean duplicateExists = true;
-        try
-        {
+        try {
             User existingUser = repository.getByUsername(userToUpdate.getUsername());
-            if (existingUser.getId() == userToUpdate.getId())
-            {
+            if (existingUser.getId() == userToUpdate.getId()) {
                 duplicateExists = false;
             }
-        }
-        catch (EntityNotFoundException e)
-        {
+        } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
 
-        if (duplicateExists)
-        {
+        if (duplicateExists) {
             throw new EntityDuplicateException("User", "username", userToUpdate.getUsername());
         }
 
@@ -95,11 +82,10 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public void addPost(int userId, int postId)
-    {
+    public void addPost(int userId, int postId) {
         User user = repository.getById(userId);
-        if (user.getPostsByUser().stream().anyMatch(p -> p.getId() == postId))
-        {
+        checkModifyPermissions(user);
+        if (user.getPostsByUser().stream().anyMatch(p -> p.getId() == postId)) {
             return;
         }
         Post post = postRepository.get(postId);
@@ -108,11 +94,10 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public void removePost(int userId, int postId)
-    {
+    public void removePost(int userId, int postId) {
         User user = repository.getById(userId);
-        if (user.getPostsByUser().stream().noneMatch(p -> p.getId() == postId))
-        {
+        checkModifyPermissions(user);
+        if (user.getPostsByUser().stream().noneMatch(p -> p.getId() == postId)) {
             throw new EntityNotFoundException("Post", postId);
         }
         user.getPostsByUser().removeIf(p -> p.getId() == postId);
@@ -120,26 +105,33 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public void blockUser(int userId)
-    {
-        User userToBlock = repository.getById(userId);
-        if (userToBlock.isBlocked())
-        {
-            throw new BlockedUnblockedUserException(userId, "blocked");
-        }
+    public void blockUser(String username, User user) {
+        checkModifyPermissions(user);
+        User userToBlock = repository.getByUsername(username);
+        checkIfBlocked(userToBlock);
         userToBlock.setBlocked(true);
         repository.update(userToBlock);
     }
 
     @Override
-    public void unblockUser(int userId)
-    {
-        User userToUnblock = repository.getById(userId);
-        if (!userToUnblock.isBlocked())
-        {
-            throw new BlockedUnblockedUserException(userId, "unblocked");
-        }
+    public void unblockUser(String username, User user) {
+        checkModifyPermissions(user);
+        User userToUnblock = repository.getByUsername(username);
+        checkIfBlocked(userToUnblock);
         userToUnblock.setBlocked(false);
         repository.update(userToUnblock);
+    }
+
+
+    private void checkModifyPermissions(User user) {
+        if (!(user.isAdmin())) {
+            throw new AuthorizationException(PERMISSION_ERROR);
+        }
+    }
+
+    private void checkIfBlocked(User user) {
+        if (user.isBlocked()) {
+            throw new AuthorizationException(USER_IS_BLOCKED);
+        }
     }
 }
