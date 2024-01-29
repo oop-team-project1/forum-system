@@ -2,13 +2,14 @@ package com.company.web.forum.controllers;
 
 import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.BlockedUnblockedUserException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
+import com.company.web.forum.helpers.CommentMapper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.PostMapper;
-import com.company.web.forum.models.Post;
-import com.company.web.forum.models.PostDto;
-import com.company.web.forum.models.User;
+import com.company.web.forum.models.*;
+import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,17 @@ public class PostController {
     private final PostService postService;
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
+    private final CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper,
+                          CommentMapper commentMapper, CommentService commentService) {
         this.authenticationHelper = authenticationHelper;
         this.postService = postService;
         this.postMapper = postMapper;
+        this.commentMapper = commentMapper;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -124,5 +130,43 @@ public class PostController {
         return records;
 
 
+    }
+
+    @PostMapping("/{id}/comments")
+    public Comment create(@PathVariable int id,
+                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @Valid @RequestBody CommentDto commentDto) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            Post post = postService.get(id);
+            Comment comment = commentMapper.fromDto(commentDto);
+            commentService.create(comment, user, post);
+            return comment;
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/comments/{commentId}")
+    public Comment update(@PathVariable int id, @PathVariable int commentId,
+                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @Valid @RequestBody CommentDto commentDto) {
+        try {
+            //TODO: add authorization
+            User user = authenticationHelper.tryGetUser(encodedString);
+            Comment comment = commentMapper.fromDto(commentId, commentDto);
+            commentService.update(comment, user);
+            return comment;
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
     }
 }
