@@ -121,7 +121,7 @@ public class PostController {
     }
 
 
-    @PostMapping("/delete-requests")
+    @DeleteMapping("/selection")
     public List<Integer> deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
         try {
@@ -129,7 +129,6 @@ public class PostController {
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-
         //postService.deleteMultiple(records,user);
         //TODO make it in one query
         for (int record : records) {
@@ -142,8 +141,6 @@ public class PostController {
             }
         }
         return records;
-
-
     }
 
     @PostMapping("/{id}/comments")
