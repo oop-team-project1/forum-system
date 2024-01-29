@@ -1,14 +1,12 @@
 package com.company.web.forum.controllers;
 
-import com.company.web.forum.exceptions.AuthenticationException;
-import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.exceptions.BlockedUnblockedUserException;
-import com.company.web.forum.exceptions.EntityNotFoundException;
+import com.company.web.forum.exceptions.*;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.helpers.UserMapper;
-import com.company.web.forum.models.User;
+import com.company.web.forum.models.*;
 import com.company.web.forum.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,10 +46,13 @@ public class UserController
     }
 
     @GetMapping("/{id}")
-    public User get(@PathVariable int id)
+    public User get(@PathVariable int id,
+                    @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString)
     {
         try
         {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            checkAccessPermissions(id, user);
             return userService.getById(id);
         }
         catch (EntityNotFoundException e)
@@ -93,6 +94,47 @@ public class UserController
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+        catch (AuthorizationException e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public User create(@Valid @RequestBody UserDto userDto)
+    {
+        try
+        {
+            User userToCreate = userMapper.fromDto(userDto);
+            userService.create(userToCreate);
+            return userToCreate;
+        }
+        catch (EntityDuplicateException e)
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                       @PathVariable int id,
+                       @Valid @RequestBody UserDto userDto) {
+        try
+        {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            User userToUpdate = userMapper.fromDto(id, userDto);
+            checkAccessPermissions(id, user);
+            userService.update(userToUpdate);
+            return userToUpdate;
+        }
+        catch (EntityNotFoundException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+        catch (EntityDuplicateException e)
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
         catch (AuthorizationException e)
         {
@@ -162,7 +204,7 @@ public class UserController
         }
         catch (BlockedUnblockedUserException e)
         {
-            throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 
@@ -187,7 +229,7 @@ public class UserController
         }
         catch (BlockedUnblockedUserException e)
         {
-            throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 
@@ -195,7 +237,7 @@ public class UserController
     {
         if (!executingUser.isBlocked() && executingUser.getId() != targetUserId)
         {
-            throw new AuthenticationException(ERROR_MESSAGE);
+            throw new AuthorizationException(ERROR_MESSAGE);
         }
     }
 
@@ -203,7 +245,7 @@ public class UserController
     {
         if (!executingUser.isAdmin() && !executingUser.isBlocked() && executingUser.getId() != targetUserId)
         {
-            throw new AuthenticationException(ERROR_MESSAGE);
+            throw new AuthorizationException(ERROR_MESSAGE);
         }
     }
 }

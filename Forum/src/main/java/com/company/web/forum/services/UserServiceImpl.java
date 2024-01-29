@@ -1,6 +1,7 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.BlockedUnblockedUserException;
+import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.Post;
@@ -46,6 +47,51 @@ public class UserServiceImpl implements UserService
     public User getByEmail(String email)
     {
         return repository.getByEmail(email);
+    }
+
+    @Override
+    public void create(User userToCreate)
+    {
+        boolean duplicateExists = true;
+        try
+        {
+            repository.getByUsername(userToCreate.getUsername());
+        }
+        catch (EntityNotFoundException e)
+        {
+            duplicateExists = false;
+        }
+
+        if (duplicateExists)
+        {
+            throw new EntityDuplicateException("User", "username", userToCreate.getUsername());
+        }
+        repository.create(userToCreate);
+    }
+
+    @Override
+    public void update(User userToUpdate)
+    {
+        boolean duplicateExists = true;
+        try
+        {
+            User existingUser = repository.getByUsername(userToUpdate.getUsername());
+            if (existingUser.getId() == userToUpdate.getId())
+            {
+                duplicateExists = false;
+            }
+        }
+        catch (EntityNotFoundException e)
+        {
+            duplicateExists = false;
+        }
+
+        if (duplicateExists)
+        {
+            throw new EntityDuplicateException("User", "username", userToUpdate.getUsername());
+        }
+
+        repository.update(userToUpdate);
     }
 
     @Override

@@ -19,4 +19,8 @@ public interface UserService
     void blockUser(int userId);
 
     void unblockUser(int userId);
+
+    void create(User userToCreate);
+
+    void update(User userToUpdate);
 }
