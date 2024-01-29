@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("tastytale/api/v1/users")
 public class UserController
 {
-    public static final String ERROR_MESSAGE = "You are not authorized to browse user information.";
     public static final String ERROR_MESSAGE_BLOCKED = "You are blocked!";
     public static final String ERROR_MESSAGE_ADMIN = "You are not authorized to browse admin information.";
     private final UserService userService;
@@ -71,6 +70,10 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+        catch (AuthorizationException | AuthenticationException e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     @GetMapping("/username")
@@ -87,7 +90,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -107,7 +110,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -148,7 +151,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -169,7 +172,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -190,7 +193,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -210,7 +213,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -234,7 +237,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
