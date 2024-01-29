@@ -82,9 +82,11 @@ create table likes
     user_id int        null,
     likes   tinyint(1) null,
     constraint likes_posts_post_id_fk
-        foreign key (post_id) references posts (post_id),
+        foreign key (post_id) references posts (post_id)
+            on delete cascade,
     constraint likes_users_user_id_fk
         foreign key (user_id) references users (user_id)
+            on delete cascade
 );
 
 create table posts_tags
