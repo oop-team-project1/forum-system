@@ -249,7 +249,7 @@ public class UserController
     {
         if (!executingUser.isAdmin() && !executingUser.isBlocked() && executingUser.getId() != targetUserId)
         {
-            throw new AuthorizationException(ERROR_MESSAGE);
+            throw new AuthorizationException(ERROR_MESSAGE_ADMIN);
         }
     }
 }
