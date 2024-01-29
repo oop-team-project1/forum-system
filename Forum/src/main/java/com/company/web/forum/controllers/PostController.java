@@ -2,7 +2,6 @@ package com.company.web.forum.controllers;
 
 import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.exceptions.BlockedUnblockedUserException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
@@ -89,6 +88,21 @@ public class PostController {
         }
     }
 
+    @PutMapping("/{id}")
+    public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                       @Valid @RequestBody PostDto postDto,
+                       @PathVariable int id) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            Post post = postMapper.fromDto(id, postDto);
+            postService.update(post, user);
+            return post;
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id,
