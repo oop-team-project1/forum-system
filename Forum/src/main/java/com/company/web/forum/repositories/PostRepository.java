@@ -10,7 +10,8 @@ import java.util.List;
 public interface PostRepository {
     List<Post> getAll(FilterOptionsPosts filterOptions);
     Post get(int id);
-    Post create(Post post, User user);
+    void create(Post post);
     Post update(int id,User user);
     void delete(int id);
+    void deleteMultiple(List<Integer> ids, User user);
 }
