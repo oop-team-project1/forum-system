@@ -32,6 +32,7 @@ public class UserController
         this.userMapper = userMapper;
         this.authenticationHelper = authenticationHelper;
     }
+
     @GetMapping
     public List<User> get(@RequestParam(required = false) String username,
                           @RequestParam(required = false) String firstName,
@@ -60,6 +61,7 @@ public class UserController
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
     @GetMapping("/{id}/username")
     public User getByUsername(@PathVariable int id,
                               @RequestParam String username,
@@ -80,6 +82,7 @@ public class UserController
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
     @GetMapping("/{id}/email")
     public User getByEmail(@PathVariable int id,
                            @RequestParam String email,
@@ -141,6 +144,7 @@ public class UserController
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
     @PutMapping("/{id}/posts/{postId}")
     public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                         @PathVariable int id,
