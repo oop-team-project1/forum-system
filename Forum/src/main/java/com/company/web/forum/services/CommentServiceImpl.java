@@ -1,7 +1,6 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.exceptions.BlockedUnblockedUserException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
@@ -14,9 +13,9 @@ import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-    public static final String MODIFY_COMMENT_ERROR_MESSAGE = "Only comment creator can modify this comment!";
     public static final String PERMISSION_FOR_MODIFYING_COMMENTS_ERROR_MESSAGE
             = "You are not the owner of the comment! You don't have permission to modify it!";
+    public static final String BLOCKED_USER_MESSAGE = "Unable to create comment, user is blocked";
     private final CommentRepository commentRepository;
 
     @Autowired
@@ -36,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void create(Comment comment, User user, Post post) {
-        //TODO: check if user is logged, check if post exists
+        //TODO: check if user is logged
         checkIfUserIsBlocked(user);
         comment.setCreatedBy(user);
         comment.setPost(post);
@@ -53,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void checkIfUserIsBlocked(User user) {
         if (user.isBlocked()) {
-            throw new BlockedUnblockedUserException(user.getId(), "blocked");
+            throw new AuthorizationException(BLOCKED_USER_MESSAGE);
         }
     }
 

@@ -89,9 +89,10 @@ public class CommentRepositoryImpl implements CommentRepository {
                 break;
         }
 
-        orderBy = String.format(" order by %s", orderBy);
+        orderBy = String.format(" order by %s desc, id desc", orderBy);
 
-        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+        if (filterOptions.getSortOrder().isPresent()
+                && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
             orderBy = String.format("%s desc", orderBy);
 
         }
