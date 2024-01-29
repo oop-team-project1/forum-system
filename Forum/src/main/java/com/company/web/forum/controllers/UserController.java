@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("tastytale/api/v1/users")
 public class UserController
 {
-    public static final String ERROR_MESSAGE = "You are not authorized to browse user information.";
+    public static final String ERROR_MESSAGE_BLOCKED = "You are blocked!";
     public static final String ERROR_MESSAGE_ADMIN = "You are not authorized to browse admin information.";
     private final UserService userService;
     private final UserMapper userMapper;
@@ -34,7 +34,8 @@ public class UserController
     }
 
     @GetMapping
-    public List<User> get(@RequestParam(required = false) String username,
+    public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @RequestParam(required = false) String username,
                           @RequestParam(required = false) String firstName,
                           @RequestParam(required = false) String lastName,
                           @RequestParam(required = false) String email,
@@ -43,6 +44,15 @@ public class UserController
     {
         FilterOptionsUsers filterOptionsUsers = new FilterOptionsUsers(username, firstName, lastName,
                                                                             email, sortBy, sortOrder);
+        try
+        {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            checkAccessPermissions(user);
+        }
+        catch (AuthorizationException | AuthenticationException e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
         return userService.getAll(filterOptionsUsers);
     }
 
@@ -53,52 +63,54 @@ public class UserController
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessPermissions(id, user);
+            checkAccessPermissions(user);
             return userService.getById(id);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+        catch (AuthorizationException | AuthenticationException e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
-    @GetMapping("/{id}/username")
-    public User getByUsername(@PathVariable int id,
-                              @RequestParam String username,
+    @GetMapping("/username")
+    public User getByUsername(@RequestParam String username,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString)
     {
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessAdminPermissions(id, user);
+            checkAccessAdminPermissions(user);
             return userService.getByUsername(username);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
-    @GetMapping("/{id}/email")
-    public User getByEmail(@PathVariable int id,
-                           @RequestParam String email,
+    @GetMapping("/email")
+    public User getByEmail(@RequestParam String email,
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString)
     {
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessAdminPermissions(id, user);
+            checkAccessAdminPermissions(user);
             return userService.getByEmail(email);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -127,7 +139,7 @@ public class UserController
         {
             User user = authenticationHelper.tryGetUser(encodedString);
             User userToUpdate = userMapper.fromDto(id, userDto);
-            checkAccessPermissions(id, user);
+            checkAccessPermissions(user);
             userService.update(userToUpdate);
             return userToUpdate;
         }
@@ -139,7 +151,7 @@ public class UserController
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -153,14 +165,14 @@ public class UserController
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessPermissions(id, user);
+            checkAccessPermissions(user);
             userService.addPost(id, postId);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -174,35 +186,34 @@ public class UserController
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessPermissions(id, user);
+            checkAccessPermissions(user);
             userService.removePost(id, postId);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
-    @PutMapping("/{id}/blockUser/{userId}")
+    @PutMapping("/blockUser/{userId}")
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @PathVariable int id,
                           @PathVariable int userId)
     {
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessAdminPermissions(id, user);
+            checkAccessAdminPermissions(user);
             userService.blockUser(userId);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -212,22 +223,21 @@ public class UserController
         }
     }
 
-    @PutMapping("/{id}/unblockUser/{userId}")
+    @PutMapping("/unblockUser/{userId}")
     public void unblockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @PathVariable int id,
                           @PathVariable int userId)
     {
         try
         {
             User user = authenticationHelper.tryGetUser(encodedString);
-            checkAccessAdminPermissions(id, user);
+            checkAccessAdminPermissions(user);
             userService.unblockUser(userId);
         }
         catch (EntityNotFoundException e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-        catch (AuthorizationException e)
+        catch (AuthorizationException | AuthenticationException e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -237,17 +247,21 @@ public class UserController
         }
     }
 
-    private static void checkAccessPermissions(int targetUserId, User executingUser)
+    private static void checkAccessPermissions(User executingUser)
     {
-        if (!executingUser.isBlocked() && executingUser.getId() != targetUserId)
+        if (executingUser.isBlocked())
         {
-            throw new AuthorizationException(ERROR_MESSAGE);
+            throw new AuthorizationException(ERROR_MESSAGE_BLOCKED);
         }
     }
 
-    private static void checkAccessAdminPermissions(int targetUserId, User executingUser)
+    private static void checkAccessAdminPermissions(User executingUser)
     {
-        if (!executingUser.isAdmin() && !executingUser.isBlocked() && executingUser.getId() != targetUserId)
+        if (executingUser.isBlocked())
+        {
+            throw new AuthorizationException(ERROR_MESSAGE_BLOCKED);
+        }
+        else if (!executingUser.isAdmin())
         {
             throw new AuthorizationException(ERROR_MESSAGE_ADMIN);
         }
