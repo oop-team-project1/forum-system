@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PostServiceImpl implements PostService{
+public class PostServiceImpl implements PostService {
 
     public static final String PERMISSION_ERROR = "Only admin or post creator can modify a post";
+    public static final String USER_IS_BLOCKED = "Unable to create post, user is blocked";
     private final PostRepository repository;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository){
+    public PostServiceImpl(PostRepository repository) {
         this.repository = repository;
     }
 
@@ -32,8 +33,12 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post create(Post post, User user) {
-        return null;
+    public void create(Post post, User user) {
+        if (user.isBlocked()) {
+            throw new AuthorizationException(USER_IS_BLOCKED);
+        }
+        post.setCreatedBy(user);
+        repository.create(post);
     }
 
     @Override
@@ -43,8 +48,13 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void delete(int id, User user) {
-        checkModifyPermissions(id,user);
+        checkModifyPermissions(id, user);
         repository.delete(id);
+    }
+
+    @Override
+    public void deleteMultiple(List<Integer> ids, User user) {
+        repository.deleteMultiple(ids,user);
     }
 
     private void checkModifyPermissions(int id, User user) {

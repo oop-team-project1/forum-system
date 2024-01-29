@@ -10,7 +10,9 @@ import java.util.List;
 public interface PostService {
     List<Post> getAll(FilterOptionsPosts filterOptions);
     Post get(int id);
-    Post create(Post post, User user);
+    void create(Post post, User user);
     Post update(int id, User user);
     void delete(int id, User user);
+    void deleteMultiple(List<Integer> ids, User user);
+
 }

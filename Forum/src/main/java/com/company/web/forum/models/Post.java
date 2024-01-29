@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.jpa.repository.Query;
+
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -44,6 +44,10 @@ public class Post {
     @SQLRestriction("parent_comment IS NULL")
     private Set<Comment> comments = new HashSet<>();
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "posts_tags", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
 
     public Long getLikes() {
         return likes;
@@ -104,6 +108,22 @@ public class Post {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public LocalDateTime getDate_posted() {
+        return date_posted;
+    }
+
+    public void setDate_posted(LocalDateTime date_posted) {
+        this.date_posted = date_posted;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public Post() {
