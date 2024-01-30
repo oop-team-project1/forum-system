@@ -1,6 +1,7 @@
 package com.company.web.forum;
 
 import com.company.web.forum.helpers.FilterOptionsPosts;
+import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 
@@ -50,5 +51,15 @@ public class Helpers {
                 "desc"
 
         );
+    }
+
+    public static FilterOptionsUsers createMockFilterOptionsUsers(){
+        return new FilterOptionsUsers(
+                "username",
+                "firstName",
+                "lastName",
+                "email@abv.bg",
+                "username",
+                "desc");
     }
 }

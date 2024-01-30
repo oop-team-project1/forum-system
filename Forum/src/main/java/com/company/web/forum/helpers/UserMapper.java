@@ -32,7 +32,11 @@ public class UserMapper
         user.setLastName(userDto.getLastName());
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
+        if (userDto.isValidEmail()) {
+            user.setEmail(userDto.getEmail());
+        }else {
+            //TODO what to do if the email is not valid
+        }
         user.setPhoneNumber(userDto.getPhoneNumber());
         return user;
     }
