@@ -24,13 +24,21 @@ public class CommentMapper {
         comment.setCreatedBy(repositoryComment.getCreatedBy());
         comment.setPost(repositoryComment.getPost());
         comment.setReplies(repositoryComment.getReplies());
-       comment.setDate_of_creation(repositoryComment.getDate_of_creation());
+        comment.setParentComment(repositoryComment.getParentComment());
+        comment.setDate_of_creation(repositoryComment.getDate_of_creation());
         return comment;
     }
 
     public Comment fromDto(CommentDto commentDto){
         Comment comment = new Comment();
         comment.setCommentContent(commentDto.getCommentContent());
+       // comment.setParentComment(comment);
         return comment;
     }
+
+//    public Comment fromDto (Comment parentComment, CommentDto commentDto){
+//        Comment reply = fromDto(commentDto);
+//        reply.setParentComment(parentComment);
+//        return reply;
+//    }
 }

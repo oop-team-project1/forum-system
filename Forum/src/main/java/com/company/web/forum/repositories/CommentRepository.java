@@ -12,6 +12,7 @@ public interface CommentRepository {
     Comment getById(int id);
 
     void create(Comment comment);
+    void createReply(Comment reply);
 
     void update(Comment comment);
 }

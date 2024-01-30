@@ -66,7 +66,9 @@ public class CommentRepositoryImpl implements CommentRepository {
             StringBuilder queryString = new StringBuilder("from Comment");
 
             if (!filters.isEmpty()) {
-                queryString.append(" where ").append(String.join(" and ", filters));
+                queryString
+                        .append(" where ")
+                        .append(String.join(" and ", filters));
             }
 
             queryString.append(generateOrderBy(filterOptions));
@@ -83,10 +85,8 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
 
         String orderBy = "";
-        switch (filterOptions.getSortBy().get()) {
-            case "date":
+        if (filterOptions.getSortBy().get().equalsIgnoreCase("date")) {
                 orderBy = "date_of_creation";
-                break;
         }
 
         orderBy = String.format(" order by %s desc, id desc", orderBy);
@@ -116,6 +116,15 @@ public class CommentRepositoryImpl implements CommentRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(comment);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void createReply(Comment reply) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(reply);
             session.getTransaction().commit();
         }
     }
