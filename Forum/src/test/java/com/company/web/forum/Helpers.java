@@ -20,7 +20,7 @@ public class Helpers {
 
     }
 
-    private static User createMockUser() {
+    public static User createMockUser() {
         User mockUser = new User();
         mockUser.setId(1);
         mockUser.setFirstName("Mock");
