@@ -20,7 +20,7 @@ public class Helpers {
 
     }
 
-    private static User createMockUser() {
+    public static User createMockUser() {
         User mockUser = new User();
         mockUser.setId(1);
         mockUser.setFirstName("Mock");
@@ -29,6 +29,12 @@ public class Helpers {
         mockUser.setPassword("Mock");
         mockUser.setEmail("Mock@mock.com");
         return mockUser;
+    }
+
+    public static User createMockAdmin() {
+        User mockAdmin = createMockUser();
+        mockAdmin.setAdmin(true);
+        return mockAdmin;
     }
 
     public static FilterOptionsPosts createMockFilterOptionsPosts() {
