@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PostRepository postRepository;
     public static final String PERMISSION_ERROR = "Only admin or post creator can modify a post";
-    public static final String USER_IS_BLOCKED = "Unable to ban, user is blocked";
+    public static final String USER_IS_BLOCKED = "User is blocked";
 
     @Autowired
     public UserServiceImpl(UserRepository repository, PostRepository postRepository) {
@@ -28,22 +28,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(FilterOptionsUsers filterOptionsUsers) {
+    public List<User> getAll(FilterOptionsUsers filterOptionsUsers, User user) {
+        checkIfBlocked(user);
         return repository.getAll(filterOptionsUsers);
     }
 
     @Override
-    public User getById(int id) {
+    public User getById(int id, User user) {
+        checkIfBlocked(user);
         return repository.getById(id);
     }
 
     @Override
     public User getByUsername(String username) {
+        //TODO Solve the problem in AuthHelper
         return repository.getByUsername(username);
     }
 
     @Override
-    public User getByEmail(String email) {
+    public User getByEmail(String email, User user) {
+        checkIfBlocked(user);
         return repository.getByEmail(email);
     }
 
@@ -63,7 +67,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User userToUpdate) {
+    public void update(User userToUpdate, User user) {
+        checkIfBlocked(user);
         boolean duplicateExists = true;
         try {
             User existingUser = repository.getByUsername(userToUpdate.getUsername());
@@ -82,9 +87,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addPost(int userId, int postId) {
+    public void addPost(int userId, int postId, User loggedUser) {
+        checkIfBlocked(loggedUser);
         User user = repository.getById(userId);
-        checkModifyPermissions(user);
         if (user.getPostsByUser().stream().anyMatch(p -> p.getId() == postId)) {
             return;
         }
@@ -94,9 +99,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removePost(int userId, int postId) {
+    public void removePost(int userId, int postId, User loggedUser) {
+        checkIfBlocked(loggedUser);
         User user = repository.getById(userId);
-        checkModifyPermissions(user);
         if (user.getPostsByUser().stream().noneMatch(p -> p.getId() == postId)) {
             throw new EntityNotFoundException("Post", postId);
         }
@@ -108,7 +113,11 @@ public class UserServiceImpl implements UserService {
     public void blockUser(String username, User user) {
         checkModifyPermissions(user);
         User userToBlock = repository.getByUsername(username);
-        checkIfBlocked(userToBlock);
+        try {
+            checkIfBlocked(userToBlock);
+        }catch (AuthorizationException ignored) {
+            throw new BlockedUnblockedUserException(userToBlock.getId(), "blocked");
+        }
         userToBlock.setBlocked(true);
         repository.update(userToBlock);
     }
@@ -117,7 +126,9 @@ public class UserServiceImpl implements UserService {
     public void unblockUser(String username, User user) {
         checkModifyPermissions(user);
         User userToUnblock = repository.getByUsername(username);
-        checkIfBlocked(userToUnblock);
+        try {
+            checkIfBlocked(userToUnblock);
+        }catch (AuthorizationException ignored) {}
         userToUnblock.setBlocked(false);
         repository.update(userToUnblock);
     }

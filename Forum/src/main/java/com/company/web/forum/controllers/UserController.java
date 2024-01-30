@@ -19,8 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("tastytale/api/v1/users")
 public class UserController {
-    public static final String ERROR_MESSAGE = "You are not authorized to browse user information.";
-    public static final String ERROR_MESSAGE_ADMIN = "You are not authorized to browse admin information.";
     private final UserService userService;
     private final UserMapper userMapper;
     private final AuthenticationHelper authenticationHelper;
@@ -44,13 +42,12 @@ public class UserController {
                 email, sortBy, sortOrder);
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            //TODO checkAccessPermissions(user);
+            return userService.getAll(filterOptionsUsers, user);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (AuthorizationException e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,e.getMessage());
         }
-        return userService.getAll(filterOptionsUsers);
     }
 
     @GetMapping("/{id}")
@@ -58,8 +55,7 @@ public class UserController {
                     @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            //TODO checkAccessPermissions(user);
-            return userService.getById(id);
+            return userService.getById(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -70,7 +66,6 @@ public class UserController {
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            //TODO checkAccessAdminPermissions(user);
             return userService.getByUsername(username);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -86,9 +81,7 @@ public class UserController {
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            //TODO check permissions
-            //checkAccessAdminPermissions(user);
-            return userService.getByEmail(email);
+            return userService.getByEmail(email, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthenticationException e) {
@@ -115,9 +108,7 @@ public class UserController {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             User userToUpdate = userMapper.fromDto(id, userDto);
-            //TODO implement chech permissions in service
-            //checkAccessPermissions(user);
-            userService.update(userToUpdate);
+            userService.update(userToUpdate, user);
             return userToUpdate;
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -133,8 +124,8 @@ public class UserController {
                         @PathVariable int id,
                         @PathVariable int postId) {
         try {
-            authenticationHelper.tryGetUser(encodedString);
-            userService.addPost(id, postId);
+            User user = authenticationHelper.tryGetUser(encodedString);
+            userService.addPost(id, postId, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthenticationException e) {
@@ -150,7 +141,7 @@ public class UserController {
                            @PathVariable int postId) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            userService.removePost(id, postId);
+            userService.removePost(id, postId, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
