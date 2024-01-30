@@ -34,16 +34,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void create(Post post, User user) {
-        if (user.isBlocked()) {
-            throw new AuthorizationException(USER_IS_BLOCKED);
-        }
+        checkIfBlocked(user);
         post.setCreatedBy(user);
         repository.create(post);
     }
 
     @Override
-    public Post update(int id, User user) {
-        return null;
+    public void update(Post post, User user) {
+        checkIfBlocked(user);
+        checkModifyPermissions(post.getId(),user);
+        repository.update(post);
     }
 
     @Override
@@ -61,6 +61,12 @@ public class PostServiceImpl implements PostService {
         Post post = repository.get(id);
         if (!(user.isAdmin() || post.getCreatedBy().equals(user))) {
             throw new AuthorizationException(PERMISSION_ERROR);
+        }
+    }
+
+    private void checkIfBlocked(User user){
+        if(user.isBlocked()){
+            throw new AuthorizationException(USER_IS_BLOCKED);
         }
     }
 }
