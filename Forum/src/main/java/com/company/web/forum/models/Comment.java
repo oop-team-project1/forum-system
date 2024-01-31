@@ -1,9 +1,6 @@
 package com.company.web.forum.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -15,6 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "comments")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +25,7 @@ public class Comment {
     @CreationTimestamp
     @JsonFormat(pattern = "dd.MM.yyyy")
     private Date date_of_creation;
+
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -41,6 +40,8 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "parent_comment")
     private Comment parentComment;
+
+
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)

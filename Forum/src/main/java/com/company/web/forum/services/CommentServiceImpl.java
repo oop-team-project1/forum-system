@@ -39,7 +39,17 @@ public class CommentServiceImpl implements CommentService {
         checkIfUserIsBlocked(user);
         comment.setCreatedBy(user);
         comment.setPost(post);
+        comment.setParentComment(comment);
         commentRepository.create(comment);
+    }
+
+    @Override
+    public void createReply(Comment reply, User user, Post post, Comment parentComment) {
+        checkIfUserIsBlocked(user);
+        reply.setCreatedBy(user);
+        reply.setPost(post);
+        reply.setParentComment(parentComment);
+        commentRepository.createReply(reply);
     }
 
     @Override

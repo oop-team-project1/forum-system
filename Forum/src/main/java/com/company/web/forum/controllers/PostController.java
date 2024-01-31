@@ -162,6 +162,25 @@ public class PostController {
         }
     }
 
+    @PostMapping("/{id}/comments/{commentId}/replies")
+    public Comment createReply(@PathVariable int id,
+                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                               @PathVariable int commentId,
+                               @Valid @RequestBody CommentDto commentDto){
+        try{
+            User user = authenticationHelper.tryGetUser(encodedString);
+            Post post = postService.get(id);
+            Comment parentComment = commentService.getById(commentId);
+            Comment reply = commentMapper.fromDto(commentDto);
+            commentService.createReply(reply,user,post,parentComment);
+            return reply;
+        }catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}/comments/{commentId}")
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
