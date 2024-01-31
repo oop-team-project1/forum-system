@@ -46,12 +46,12 @@ public class UserRepositoryImpl implements UserRepository
 
             filterOptions.getUsername().ifPresent(value -> {
                 filters.add("username like :username");
-                params.put("username", value);
+                params.put("userFirstName", String.format("%%%s%%", value));
             });
 
             filterOptions.getEmail().ifPresent(value -> {
                 filters.add("email like :email");
-                params.put("email", value);
+                params.put("userFirstName", String.format("%%%s%%", value));
             });
 
             StringBuilder queryString = new StringBuilder("from User");

@@ -7,16 +7,20 @@ import java.util.List;
 
 public interface UserService
 {
-    List<User> getAll(FilterOptionsUsers filterOptionsUsers);
-    User getById(int id);
+    List<User> getAll(FilterOptionsUsers filterOptionsUsers, User user);
+    User getById(int id, User user);
     User getByUsername(String username);
-    User getByEmail(String email);
+    User getByEmail(String email, User user);
 
-    void addPost(int userId, int postId);
+    void addPost(int userId, int postId, User user);
 
-    void removePost(int userId, int postId);
+    void removePost(int userId, int postId, User user);
 
-    void blockUser(int userId);
+    void blockUser(String username, User user);
 
-    void unblockUser(int userId);
+    void unblockUser(String username, User user);
+
+    void create(User userToCreate);
+
+    void update(User userToUpdate, User user);
 }
