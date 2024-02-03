@@ -3,6 +3,7 @@ package com.company.web.forum;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.FilterOptionsUsers;
+import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 
@@ -33,6 +34,17 @@ public class Helpers {
         mockUser.setPassword("Mock");
         mockUser.setEmail("Mock@mock.com");
         return mockUser;
+    }
+
+    public static Comment createMockComment() {
+        Comment mockComment = new Comment();
+        mockComment.setId(1);
+        mockComment.setCommentContent("some content for comment");
+        mockComment.setDate_of_creation(LocalDate.of(2024,1,27));
+        mockComment.setCreatedBy(createMockUser());
+        mockComment.setPost(createMockPost());
+        mockComment.setParentComment(mockComment);
+        return mockComment;
     }
 
     public static FilterOptionsPosts createMockFilterOptionsPosts() {

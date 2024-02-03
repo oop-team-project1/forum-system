@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.company.web.forum.Helpers.createMockComment;
 import static com.company.web.forum.Helpers.createMockFilterOptionsComments;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +35,20 @@ public class CommentServiceTest {
         Assertions.assertEquals(commentService.getAll(mockFilterOptions), comments);
 
     }
+
+    @Test
+    public void get_Should_ReturnComment_When_MatchByIdExist () {
+        Comment mockComment = createMockComment();
+
+        Mockito.when(mockRepository.getById(Mockito.anyInt()))
+                .thenReturn(mockComment);
+
+        Comment result = commentService.getById(mockComment.getId());
+
+        Assertions.assertEquals(mockComment, result);
+    }
+
+
 
 
 }
