@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,26 +30,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(FilterOptionsUsers filterOptionsUsers, User user) {
-        checkIfBlocked(user);
+    public List<User> getAll(FilterOptionsUsers filterOptionsUsers) {
         return repository.getAll(filterOptionsUsers);
     }
 
     @Override
-    public User getById(int id, User user) {
-        checkIfBlocked(user);
+    public User getById(int id) {
         return repository.getById(id);
     }
 
     @Override
     public User getByUsername(String username) {
-        //TODO Solve the problem in AuthHelper
         return repository.getByUsername(username);
     }
 
     @Override
-    public User getByEmail(String email, User user) {
-        checkIfBlocked(user);
+    public User getByEmail(String email) {
         return repository.getByEmail(email);
     }
 
@@ -59,7 +57,10 @@ public class UserServiceImpl implements UserService {
         } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
-
+        if (!isValidEmail(userToCreate.getEmail()))
+        {
+            throw new IllegalArgumentException("The email is not valid!");
+        }
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "username", userToCreate.getUsername());
         }
@@ -106,6 +107,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("Post", postId);
         }
         user.getPostsByUser().removeIf(p -> p.getId() == postId);
+        postRepository.delete(postId);
         repository.update(user);
     }
 
@@ -144,5 +146,12 @@ public class UserServiceImpl implements UserService {
         if (user.isBlocked()) {
             throw new AuthorizationException(USER_IS_BLOCKED);
         }
+    }
+
+    public boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
