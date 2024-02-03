@@ -31,8 +31,7 @@ public class PostController {
     private final CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper,
-                          CommentMapper commentMapper, CommentService commentService) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService) {
         this.authenticationHelper = authenticationHelper;
         this.postService = postService;
         this.postMapper = postMapper;
@@ -41,17 +40,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @RequestParam(required = false) String author,
-                          @RequestParam(required = false) String title,
-                          @RequestParam(required = false) String content,
-                          @RequestParam(required = false) String keyword,
-                          @RequestParam(required = false) LocalDateTime dateFrom,
-                          @RequestParam(required = false) LocalDateTime dateUntil,
-                          @RequestParam(required = false) List<String> tags,
-                          @RequestParam(required = false) List<String> tags_exclude,
-                          @RequestParam(required = false) String orderBy,
-                          @RequestParam(required = false) String order) {
+    public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @RequestParam(required = false) String author, @RequestParam(required = false) String title, @RequestParam(required = false) String content, @RequestParam(required = false) String keyword, @RequestParam(required = false) LocalDateTime dateFrom, @RequestParam(required = false) LocalDateTime dateUntil, @RequestParam(required = false) List<String> tags, @RequestParam(required = false) List<String> tags_exclude, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String order) {
         FilterOptionsPosts filterOptions = new FilterOptionsPosts(author, title, content, keyword, dateFrom, dateUntil, tags, tags_exclude, orderBy, order);
         try {
             authenticationHelper.tryGetUser(encodedString);
@@ -89,9 +78,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                       @Valid @RequestBody PostDto postDto,
-                       @PathVariable int id) {
+    public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto, @PathVariable int id) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postMapper.fromDto(id, postDto);
@@ -105,8 +92,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id,
-                       @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+    public void delete(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             postService.delete(id, user);
@@ -144,14 +130,12 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments")
-    public Comment create(@PathVariable int id,
-                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @Valid @RequestBody CommentDto commentDto) {
+    public Comment create(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody CommentDto commentDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment comment = commentMapper.fromDto(commentDto);
-            commentService.create(comment, user, post);
+            commentService.create(comment, user, post, comment);
             return comment;
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -163,18 +147,15 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments/{commentId}/replies")
-    public Comment createReply(@PathVariable int id,
-                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                               @PathVariable int commentId,
-                               @Valid @RequestBody CommentDto commentDto){
-        try{
+    public Comment create(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @PathVariable int commentId, @Valid @RequestBody CommentDto commentDto) {
+        try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment parentComment = commentService.getById(commentId);
             Comment reply = commentMapper.fromDto(commentDto);
-            commentService.createReply(reply,user,post,parentComment);
+            commentService.create(reply, user, post, parentComment);
             return reply;
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -182,9 +163,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}/comments/{commentId}")
-    public Comment update(@PathVariable int id, @PathVariable int commentId,
-                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @Valid @RequestBody CommentDto commentDto) {
+    public Comment update(@PathVariable int id, @PathVariable int commentId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody CommentDto commentDto) {
         try {
             //TODO: add authorization
             User user = authenticationHelper.tryGetUser(encodedString);

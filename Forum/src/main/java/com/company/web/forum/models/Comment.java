@@ -27,7 +27,6 @@ public class Comment {
     @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate date_of_creation;
 
-
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
@@ -42,8 +41,7 @@ public class Comment {
     @JoinColumn(name = "parent_comment")
     private Comment parentComment;
 
-
-
+    @JsonIgnore
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> replies;

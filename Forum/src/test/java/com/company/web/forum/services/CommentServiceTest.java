@@ -2,6 +2,8 @@ package com.company.web.forum.services;
 
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
+import com.company.web.forum.models.Post;
+import com.company.web.forum.models.User;
 import com.company.web.forum.repositories.CommentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.web.forum.Helpers.createMockComment;
-import static com.company.web.forum.Helpers.createMockFilterOptionsComments;
+import static com.company.web.forum.Helpers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -48,7 +49,17 @@ public class CommentServiceTest {
         Assertions.assertEquals(mockComment, result);
     }
 
+    @Test
+    public void create_Should_CallRepository() {
+        Comment mockComment = createMockComment();
+        User user = createMockUser();
+        Post post = createMockPost();
 
+        commentService.create(mockComment, user, post);
+
+        Mockito.verify(mockRepository, Mockito.times(1))
+                .create(mockComment);
+    }
 
 
 }
