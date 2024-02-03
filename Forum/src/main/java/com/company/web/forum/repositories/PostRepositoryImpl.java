@@ -4,10 +4,12 @@ import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -127,12 +129,33 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    @Modifying
+    @Transactional
     public void deleteMultiple(List<Integer> ids, User user) {
-        String hql = "DELETE FROM Post WHERE id IN (:ids) AND NOT EXISTS (" +
-                "SELECT 1 FROM Post WHERE id IN (:ids) AND createdBy != :user )";
-        Session session = sessionFactory.getCurrentSession();
-        Query<Post> query = session.createQuery(hql,Post.class);
-        query.setParameterList("ids", ids);
+        try(Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            String hql = "DELETE FROM Post WHERE id IN (:ids) AND NOT EXISTS (" +
+                    "SELECT 1 FROM Post WHERE id IN (:ids) AND createdBy != :user )";
+            Query<Post> query = session.createQuery(hql);
+            query.setParameterList("ids", ids);
+            query.setParameter("user",user);
+            query.executeUpdate();
+            session.getTransaction().commit();
+        }
+
+    }
+
+    @Override
+    public List<Integer> filterNonUserPostIds(List<Integer> ids, User user) {
+        try (Session session = sessionFactory.openSession()) {
+            String hql = "SELECT id FROM Post WHERE id IN (:ids) AND createdBy != :user";
+
+            Query<Integer> query = session.createQuery(hql, Integer.class);
+            query.setParameterList("ids",ids);
+            query.setParameter("user",user);
+
+            return query.list();
+        }
 
     }
 

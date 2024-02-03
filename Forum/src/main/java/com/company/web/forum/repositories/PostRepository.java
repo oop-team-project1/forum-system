@@ -14,4 +14,5 @@ public interface PostRepository {
     void update(Post post);
     void delete(int id);
     void deleteMultiple(List<Integer> ids, User user);
+    List<Integer> filterNonUserPostIds(List<Integer>ids, User user);
 }
