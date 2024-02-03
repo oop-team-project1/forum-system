@@ -1,5 +1,6 @@
 package com.company.web.forum.services;
 
+import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
@@ -28,8 +29,8 @@ public class CommentServiceTest {
 
     @Test
     public void getAll_Should_CallRepository() {
-       FilterOptionsComments mockFilterOptions = createMockFilterOptionsComments();
-       List<Comment> comments = new ArrayList<>();
+        FilterOptionsComments mockFilterOptions = createMockFilterOptionsComments();
+        List<Comment> comments = new ArrayList<>();
 
         Mockito.when(mockRepository.getAll(mockFilterOptions)).thenReturn(comments);
 
@@ -38,7 +39,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void get_Should_ReturnComment_When_MatchByIdExist () {
+    public void get_Should_ReturnComment_When_MatchByIdExist() {
         Comment mockComment = createMockComment();
 
         Mockito.when(mockRepository.getById(Mockito.anyInt()))
@@ -55,11 +56,25 @@ public class CommentServiceTest {
         User user = createMockUser();
         Post post = createMockPost();
 
-        commentService.create(mockComment, user, post);
+        commentService.create(mockComment, user, post, mockComment);
 
         Mockito.verify(mockRepository, Mockito.times(1))
                 .create(mockComment);
     }
+
+    @Test
+    public void create_Should_Throw_When_UserIsBlocked() {
+
+        Comment mockComment = createMockComment();
+        User user = createMockUser();
+        user.setBlocked(true);
+        Post post = createMockPost();
+
+        Assertions.assertThrows(AuthorizationException.class,
+                () -> commentService.create(mockComment, user, post, mockComment));
+    }
+
+
 
 
 }
