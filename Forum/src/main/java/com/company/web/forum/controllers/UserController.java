@@ -6,6 +6,7 @@ import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.helpers.UserMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,9 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(
+            tags = {"Users"}
+    )
     public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String username,
                           @RequestParam(required = false) String firstName,
@@ -51,6 +55,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            tags = {"Users"}
+    )
     public User get(@PathVariable int id,
                     @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -62,6 +69,9 @@ public class UserController {
     }
 
     @GetMapping("/username")
+    @Operation(
+            tags = {"Users"}
+    )
     public User getByUsername(@RequestParam String username,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -77,6 +87,9 @@ public class UserController {
     }
 
     @GetMapping("/email")
+    @Operation(
+            tags = {"Users"}
+    )
     public User getByEmail(@RequestParam String email,
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -91,6 +104,9 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(
+            tags = {"Users"}
+    )
     public User create(@Valid @RequestBody UserDto userDto) {
         try {
             User userToCreate = userMapper.fromDto(userDto);
@@ -104,6 +120,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+            tags = {"Users"}
+    )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @PathVariable int id,
                        @Valid @RequestBody UserDto userDto) {
@@ -122,6 +141,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}/posts/{postId}")
+    @Operation(
+            tags = {"Users Posts"}
+    )
     public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                         @PathVariable int id,
                         @PathVariable int postId) {
@@ -138,6 +160,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/posts/{postId}")
+    @Operation(
+            tags = {"Users Posts"}
+    )
     public void removePost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                            @PathVariable int id,
                            @PathVariable int postId) {
@@ -154,6 +179,9 @@ public class UserController {
     }
 
     @PutMapping("/blocks/{username}")
+    @Operation(
+            tags = { "Admin Rights"}
+    )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable String username) {
         try {
@@ -169,6 +197,9 @@ public class UserController {
     }
 
     @DeleteMapping("/blocks/{username}")
+    @Operation(
+            tags = { "Admin Rights"}
+    )
     public void unblockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                             @PathVariable String username) {
         try {

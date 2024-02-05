@@ -10,6 +10,8 @@ import com.company.web.forum.helpers.PostMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +43,9 @@ public class PostController {
     }
 
     @GetMapping
+    @Operation(
+            tags = {"Posts"}
+    )
     public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String author,
                           @RequestParam(required = false) String title,
@@ -63,6 +68,9 @@ public class PostController {
 
 
     @GetMapping("/{id}")
+    @Operation(
+            tags = {"Posts"}
+    )
     public Post get(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             authenticationHelper.tryGetUser(encodedString);
@@ -75,6 +83,9 @@ public class PostController {
     }
 
     @PostMapping
+    @Operation(
+            tags = {"Posts"}
+    )
     public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
@@ -90,6 +101,9 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+            tags = {"Posts"}
+    )
     public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @Valid @RequestBody PostDto postDto,
                        @PathVariable int id) {
@@ -106,6 +120,9 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(
+            tags = {"Posts"}
+    )
     public void delete(@PathVariable int id,
                        @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -123,6 +140,9 @@ public class PostController {
 
 
     @DeleteMapping("/selection")
+    @Operation(
+            tags = {"Posts"}
+    )
     public void deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
         try {
@@ -138,6 +158,9 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments")
+    @Operation(
+            tags = {"Comments"}
+    )
     public Comment create(@PathVariable int id,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @Valid @RequestBody CommentDto commentDto) {
@@ -157,6 +180,9 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments/{commentId}/replies")
+    @Operation(
+            tags = {"Comments", "Comment Replies"}
+    )
     public Comment createReply(@PathVariable int id,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                                @PathVariable int commentId,
@@ -176,6 +202,9 @@ public class PostController {
     }
 
     @PutMapping("/{id}/comments/{commentId}")
+    @Operation(
+            tags = {"Comments"}
+    )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @Valid @RequestBody CommentDto commentDto) {
