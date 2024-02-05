@@ -74,7 +74,34 @@ public class CommentServiceTest {
                 () -> commentService.create(mockComment, user, post, mockComment));
     }
 
+    @Test
+    public void update_Should_CallRepository_When_UserIsNotBlockedAndIsAuthor () {
+        Comment mockComment = createMockComment();
+        User user = createMockUser();
 
+        commentService.update(mockComment, user);
 
+        Mockito.verify(mockRepository, Mockito.times(1))
+                .update(mockComment);
+    }
+
+    @Test
+    public void update_Should_ThrowException_When_UserIsBlocked () {
+        Comment mockComment = createMockComment();
+        User user = createMockUser();
+        user.setBlocked(true);
+
+        Assertions.assertThrows(AuthorizationException.class,
+                () -> commentService.update(mockComment, user));
+    }
+
+    @Test
+    public void update_Should_ThrowException_When_UserIsNotAuthor () {
+        Comment mockComment = createMockComment();
+        User user = createMockUser();
+        user.setId(2);
+        Assertions.assertThrows(AuthorizationException.class,
+                () -> commentService.update(mockComment, user));
+    }
 
 }
