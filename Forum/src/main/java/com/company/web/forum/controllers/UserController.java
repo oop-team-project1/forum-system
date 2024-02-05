@@ -41,8 +41,8 @@ public class UserController {
         FilterOptionsUsers filterOptionsUsers = new FilterOptionsUsers(username, firstName, lastName,
                 email, sortBy, sortOrder);
         try {
-            User user = authenticationHelper.tryGetUser(encodedString);
-            return userService.getAll(filterOptionsUsers, user);
+            authenticationHelper.tryGetUser(encodedString);
+            return userService.getAll(filterOptionsUsers);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (AuthorizationException e){
@@ -54,8 +54,8 @@ public class UserController {
     public User get(@PathVariable int id,
                     @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
-            User user = authenticationHelper.tryGetUser(encodedString);
-            return userService.getById(id, user);
+            authenticationHelper.tryGetUser(encodedString);
+            return userService.getById(id);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -65,7 +65,7 @@ public class UserController {
     public User getByUsername(@RequestParam String username,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
-            User user = authenticationHelper.tryGetUser(encodedString);
+            authenticationHelper.tryGetUser(encodedString);
             return userService.getByUsername(username);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -80,8 +80,8 @@ public class UserController {
     public User getByEmail(@RequestParam String email,
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
-            User user = authenticationHelper.tryGetUser(encodedString);
-            return userService.getByEmail(email, user);
+            authenticationHelper.tryGetUser(encodedString);
+            return userService.getByEmail(email);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthenticationException e) {
@@ -98,6 +98,8 @@ public class UserController {
             return userToCreate;
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
         }
     }
 

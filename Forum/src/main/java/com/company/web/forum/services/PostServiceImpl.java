@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void update(Post post, User user) {
         checkIfBlocked(user);
-        checkModifyPermissions(post.getId(),user);
+        checkModifyPermissions(post.getId(), user);
         repository.update(post);
     }
 
@@ -54,8 +54,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteMultiple(List<Integer> ids, User user) {
-        repository.deleteMultiple(ids,user);
+        checkModifyPermissions(ids, user);
+        repository.deleteMultiple(ids, user);
     }
+
+    private void checkModifyPermissions(List<Integer> ids, User user) {
+        List<Integer> nonUserPostIds = repository.filterNonUserPostIds(ids, user);
+        if (!(nonUserPostIds.isEmpty())) {
+            throw new AuthorizationException(String.format("Trying to modify resources, not belonging to user:%s",nonUserPostIds));
+        }
+    }
+
 
     private void checkModifyPermissions(int id, User user) {
         Post post = repository.get(id);
@@ -64,8 +73,8 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private void checkIfBlocked(User user){
-        if(user.isBlocked()){
+    private void checkIfBlocked(User user) {
+        if (user.isBlocked()) {
             throw new AuthorizationException(USER_IS_BLOCKED);
         }
     }

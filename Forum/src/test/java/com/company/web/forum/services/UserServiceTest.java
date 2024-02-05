@@ -41,22 +41,12 @@ public class UserServiceTest {
         Assertions.assertEquals(userRepository.getAll(mockFilterOptions), users);
     }
     @Test
-    public void getAll_Should_Throw_When_UserIsBlocked()
-    {
-        FilterOptionsUsers mockFilterOptions = createMockFilterOptionsUsers();
-        User mockUser = createMockUser();
-        mockUser.setBlocked(true);
-
-        Assertions.assertThrows(AuthorizationException.class,
-                () -> userService.getAll(mockFilterOptions, mockUser));
-    }
-    @Test
     public void getById_Should_ReturnUser_When_MatchExists()
     {
         Mockito.when(userRepository.getById(1))
                 .thenReturn(createMockUser());
 
-        User result = userService.getById(1, createMockUser());
+        User result = userService.getById(1);
 
         Assertions.assertEquals(1, result.getId());
         Assertions.assertEquals("Mock", result.getUsername());
@@ -64,15 +54,6 @@ public class UserServiceTest {
         Assertions.assertEquals("Mock", result.getFirstName());
         Assertions.assertEquals("Mock", result.getLastName());
         Assertions.assertEquals("Mock@mock.com", result.getEmail());
-    }
-    @Test
-    public void getById_Should_Throw_When_UserIsBlocked()
-    {
-        User mockUser = createMockUser();
-        mockUser.setBlocked(true);
-
-        Assertions.assertThrows(AuthorizationException.class,
-                () -> userService.getById(mockUser.getId(), mockUser));
     }
 
     @Test
@@ -97,7 +78,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.getByEmail(createMockUser().getEmail()))
                 .thenReturn(createMockUser());
 
-        User result = userService.getByEmail(createMockUser().getEmail(), createMockUser());
+        User result = userService.getByEmail(createMockUser().getEmail());
 
         Assertions.assertEquals(1, result.getId());
         Assertions.assertEquals("Mock", result.getUsername());
@@ -105,16 +86,6 @@ public class UserServiceTest {
         Assertions.assertEquals("Mock", result.getFirstName());
         Assertions.assertEquals("Mock", result.getLastName());
         Assertions.assertEquals("Mock@mock.com", result.getEmail());
-    }
-
-    @Test
-    public void getByEmail_Should_Throw_When_UserIsBlocked()
-    {
-        User mockUser = createMockUser();
-        mockUser.setBlocked(true);
-
-        Assertions.assertThrows(AuthorizationException.class,
-                () -> userService.getByEmail(mockUser.getEmail(), mockUser));
     }
 
     @Test

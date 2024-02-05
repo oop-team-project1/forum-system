@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface UserService
 {
-    List<User> getAll(FilterOptionsUsers filterOptionsUsers, User user);
-    User getById(int id, User user);
+    List<User> getAll(FilterOptionsUsers filterOptionsUsers);
+    User getById(int id);
     User getByUsername(String username);
-    User getByEmail(String email, User user);
+    User getByEmail(String email);
 
     void addPost(int userId, int postId, User user);
 

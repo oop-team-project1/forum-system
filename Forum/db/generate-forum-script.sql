@@ -64,7 +64,7 @@ create table comments
     comment_id       int auto_increment
         primary key,
     content          varchar(8192) not null,
-    date_of_creation timestamp     null,
+    date_of_creation date     null,
     parent_comment   int           null,
     created_by       int           null,
     post_id          int           null,

@@ -63,6 +63,7 @@ public class PostController {
         }
     }
 
+    @PostMapping
     public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
@@ -108,25 +109,18 @@ public class PostController {
 
 
     @DeleteMapping("/selection")
-    public List<Integer> deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+    public void deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
         try {
             user = authenticationHelper.tryGetUser(encodedString);
+            postService.deleteMultiple(records,user);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        } catch (AuthorizationException e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
-        //postService.deleteMultiple(records,user);
-        //TODO make it in one query
-        for (int record : records) {
-            try {
-                postService.delete(record, user);
-                //TODO Think if something else can be thrown
-                // other than Authentication and EntityNotFound
-            } catch (RuntimeException e) {
-                records.remove(record);
-            }
-        }
-        return records;
+
+
     }
 
     @PostMapping("/{id}/comments")
