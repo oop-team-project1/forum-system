@@ -29,7 +29,9 @@ public class CommentController {
 
     @GetMapping()
     @Operation(
-            tags = {"Comments"}
+            tags = {"Comment API"},
+            summary = "Get comments with filters",
+            description = "Retrieves a list of comments based on specified filter options."
     )
     public List<Comment> getAll(@RequestParam(required = false) String content,
                                 @RequestParam(required = false) Integer userId,
@@ -47,7 +49,9 @@ public class CommentController {
 
     @GetMapping("{id}")
     @Operation(
-            tags = {"Comments"}
+            tags = {"Comment API"},
+            summary = "Get a comment by ID",
+            description = "Retrieves a comment based on the provided ID."
     )
     public Comment getById(@PathVariable int id) {
         try {

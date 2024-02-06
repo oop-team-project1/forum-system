@@ -11,7 +11,6 @@ import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +43,9 @@ public class PostController {
 
     @GetMapping
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Get posts with filters",
+            description = "Retrieves a list of posts based on specified filter options."
     )
     public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String author,
@@ -69,7 +70,9 @@ public class PostController {
 
     @GetMapping("/{id}")
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Get a post by ID",
+            description = "Retrieves a post based on the provided ID."
     )
     public Post get(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -84,7 +87,9 @@ public class PostController {
 
     @PostMapping
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Create a new post",
+            description = "Creates a new post."
     )
     public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto) {
         try {
@@ -102,7 +107,9 @@ public class PostController {
 
     @PutMapping("/{id}")
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Update a post",
+            description = "Updates an existing post based on the provided ID."
     )
     public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @Valid @RequestBody PostDto postDto,
@@ -121,7 +128,9 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Delete a post",
+            description = "Deletes a post based on the provided ID."
     )
     public void delete(@PathVariable int id,
                        @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -141,7 +150,9 @@ public class PostController {
 
     @DeleteMapping("/selection")
     @Operation(
-            tags = {"Posts"}
+            tags = {"Post API"},
+            summary = "Delete multiple posts",
+            description = "Deletes multiple posts based on the provided list of record IDs."
     )
     public void deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
@@ -159,7 +170,9 @@ public class PostController {
 
     @PostMapping("/{id}/comments")
     @Operation(
-            tags = {"Comments"}
+            tags = {"Comment API"},
+            summary = "Create a new comment",
+            description = "Creates a new comment for a specific post."
     )
     public Comment create(@PathVariable int id,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -181,7 +194,9 @@ public class PostController {
 
     @PostMapping("/{id}/comments/{commentId}/replies")
     @Operation(
-            tags = {"Comments", "Comment Replies"}
+            tags = {"Comment API", "Comment Replies API"},
+            summary = "Create a reply to a comment",
+            description = "Creates a reply to a specific comment."
     )
     public Comment createReply(@PathVariable int id,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -203,7 +218,9 @@ public class PostController {
 
     @PutMapping("/{id}/comments/{commentId}")
     @Operation(
-            tags = {"Comments"}
+            tags = {"Comment API"},
+            summary = "Update a comment",
+            description = "Updates an existing comment."
     )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,

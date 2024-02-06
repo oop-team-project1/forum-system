@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -33,7 +32,9 @@ public class UserController {
 
     @GetMapping
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Get users with filters",
+            description = "Retrieves a list of users based on specified filter options."
     )
     public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String username,
@@ -56,7 +57,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Get user by ID",
+            description = "Retrieves a user based on the provided ID."
     )
     public User get(@PathVariable int id,
                     @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -70,7 +73,9 @@ public class UserController {
 
     @GetMapping("/username")
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Get user by username",
+            description = "Retrieves a user based on the provided username."
     )
     public User getByUsername(@RequestParam String username,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -88,7 +93,9 @@ public class UserController {
 
     @GetMapping("/email")
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Get user by email",
+            description = "Retrieves a user based on the provided email."
     )
     public User getByEmail(@RequestParam String email,
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -105,7 +112,9 @@ public class UserController {
 
     @PostMapping
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Create a new user",
+            description = "Creates a new user."
     )
     public User create(@Valid @RequestBody UserDto userDto) {
         try {
@@ -121,7 +130,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Operation(
-            tags = {"Users"}
+            tags = {"User API"},
+            summary = "Update user information",
+            description = "Updates user information based on the provided ID."
     )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @PathVariable int id,
@@ -142,7 +153,9 @@ public class UserController {
 
     @PutMapping("/{id}/posts/{postId}")
     @Operation(
-            tags = {"Users Posts"}
+            tags = {"User API"},
+            summary = "Add a post to a user's account",
+            description = "Adds a specific post to the user's account."
     )
     public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                         @PathVariable int id,
@@ -161,7 +174,9 @@ public class UserController {
 
     @DeleteMapping("/{id}/posts/{postId}")
     @Operation(
-            tags = {"Users Posts"}
+            tags = {"User API"},
+            summary = "Remove a post from a user's account",
+            description = "Removes a specific post from the user's account."
     )
     public void removePost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                            @PathVariable int id,
@@ -180,7 +195,9 @@ public class UserController {
 
     @PutMapping("/blocks/{username}")
     @Operation(
-            tags = { "Admin Rights"}
+            tags = { "User (Admin) API"},
+            summary = "Block a user",
+            description = "Blocks a user based on the provided username."
     )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable String username) {
@@ -198,7 +215,10 @@ public class UserController {
 
     @DeleteMapping("/blocks/{username}")
     @Operation(
-            tags = { "Admin Rights"}
+            tags = { "User (Admin) API"},
+            summary = "Unblock a user",
+            description = "Unblocks a user based on the provided username."
+
     )
     public void unblockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                             @PathVariable String username) {
