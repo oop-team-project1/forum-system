@@ -11,8 +11,9 @@ public interface CommentRepository {
 
     Comment getById(int id);
 
+    List<Comment> getReplies(int id);
+
     void create(Comment comment);
-    void createReply(Comment reply);
 
     void update(Comment comment);
 }

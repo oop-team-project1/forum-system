@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -24,8 +25,7 @@ public class Comment {
     @Column(updatable = false)
     @CreationTimestamp
     @JsonFormat(pattern = "dd.MM.yyyy")
-    private Date date_of_creation;
-
+    private LocalDate date_of_creation;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -41,8 +41,7 @@ public class Comment {
     @JoinColumn(name = "parent_comment")
     private Comment parentComment;
 
-
-
+    @JsonIgnore
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> replies;
@@ -55,11 +54,11 @@ public class Comment {
         this.replies = replies;
     }
 
-    public Date getDate_of_creation() {
+    public LocalDate getDate_of_creation() {
         return date_of_creation;
     }
 
-    public void setDate_of_creation(Date date_of_creation) {
+    public void setDate_of_creation(LocalDate date_of_creation) {
         this.date_of_creation = date_of_creation;
     }
 

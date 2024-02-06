@@ -1,12 +1,16 @@
 package com.company.web.forum;
 
+import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.FilterOptionsUsers;
+import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Helpers {
@@ -32,10 +36,15 @@ public class Helpers {
         return mockUser;
     }
 
-    public static User createMockAdmin() {
-        User mockAdmin = createMockUser();
-        mockAdmin.setAdmin(true);
-        return mockAdmin;
+    public static Comment createMockComment() {
+        Comment mockComment = new Comment();
+        mockComment.setId(1);
+        mockComment.setCommentContent("some content for comment");
+        mockComment.setDate_of_creation(LocalDate.of(2024,1,27));
+        mockComment.setCreatedBy(createMockUser());
+        mockComment.setPost(createMockPost());
+        mockComment.setParentComment(mockComment);
+        return mockComment;
     }
 
     public static FilterOptionsPosts createMockFilterOptionsPosts() {
@@ -67,5 +76,20 @@ public class Helpers {
                 "email@abv.bg",
                 "username",
                 "desc");
+    }
+
+    public static FilterOptionsComments createMockFilterOptionsComments() {
+        return new FilterOptionsComments(
+                "content",
+                1,
+                "username",
+                1,
+                "postTitle",
+                LocalDate.of(2024,1,25),
+                LocalDate.of(2024,1,27),
+                "date",
+                "desc"
+
+        );
     }
 }
