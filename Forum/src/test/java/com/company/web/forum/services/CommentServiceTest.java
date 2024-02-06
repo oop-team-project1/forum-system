@@ -51,6 +51,16 @@ public class CommentServiceTest {
     }
 
     @Test
+    public void getReplies_Should_CallRepository() {
+        List<Comment> replies = new ArrayList<>();
+
+        Mockito.when(mockRepository.getReplies(Mockito.anyInt()))
+                .thenReturn(replies);
+
+        Assertions.assertEquals(commentService.getReplies(Mockito.anyInt()), replies);
+    }
+
+    @Test
     public void create_Should_CallRepository() {
         Comment mockComment = createMockComment();
         User user = createMockUser();
@@ -86,7 +96,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void update_Should_ThrowException_When_UserIsBlocked () {
+    public void update_Should_Throw_When_UserIsBlocked () {
         Comment mockComment = createMockComment();
         User user = createMockUser();
         user.setBlocked(true);
@@ -96,7 +106,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void update_Should_ThrowException_When_UserIsNotAuthor () {
+    public void update_Should_Throw_When_UserIsNotAuthor () {
         Comment mockComment = createMockComment();
         User user = createMockUser();
         user.setId(2);
