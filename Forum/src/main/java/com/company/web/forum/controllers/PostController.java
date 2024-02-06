@@ -11,6 +11,7 @@ import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -220,7 +221,12 @@ public class PostController {
     @Operation(
             tags = {"Comment API"},
             summary = "Update a comment",
-            description = "Updates an existing comment."
+            description = "Updates an existing comment.",
+            parameters = {@Parameter(name = "id", description = "ID of the post containing the comment.", example = "1"),
+            @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
+            @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
+            @Parameter(name = "commentDto", description = "Request body containing updated comment details",
+                    example = "This is some test content for comment dto." )}
     )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
