@@ -12,6 +12,9 @@ import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -107,11 +110,12 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
+    //@SecurityRequirement("basicAuth")
     @Operation(
             tags = {"Post API"},
             summary = "Update a post",
-            description = "Updates an existing post based on the provided ID."
-    )
+            description = "Updates an existing post based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")})
     public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @Valid @RequestBody PostDto postDto,
                        @PathVariable int id) {
