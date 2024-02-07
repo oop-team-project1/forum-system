@@ -23,7 +23,7 @@ public class CommentMapper {
         Comment repositoryComment = commentService.getById(id);
         comment.setCreatedBy(repositoryComment.getCreatedBy());
         comment.setPost(repositoryComment.getPost());
-        comment.setReplies(repositoryComment.getReplies());
+        //comment.setReplies(repositoryComment.getReplies());
         comment.setParentComment(repositoryComment.getParentComment());
         comment.setDate_of_creation(repositoryComment.getDate_of_creation());
         return comment;

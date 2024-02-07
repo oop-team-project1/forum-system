@@ -41,18 +41,6 @@ public class Comment {
     @JoinColumn(name = "parent_comment")
     private Comment parentComment;
 
-    @JsonIgnore
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> replies;
-
-    public Set<Comment> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(Set<Comment> replies) {
-        this.replies = replies;
-    }
 
     public LocalDate getDate_of_creation() {
         return date_of_creation;

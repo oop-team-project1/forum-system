@@ -36,6 +36,12 @@ public class Helpers {
         return mockUser;
     }
 
+    public static User createMockAdmin() {
+        User mockAdmin = createMockUser();
+        mockAdmin.setAdmin(true);
+        return mockAdmin;
+    }
+
     public static Comment createMockComment() {
         Comment mockComment = new Comment();
         mockComment.setId(1);
