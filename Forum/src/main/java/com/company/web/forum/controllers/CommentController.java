@@ -6,6 +6,7 @@ import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.services.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,12 +30,31 @@ public class CommentController {
     }
 
     @GetMapping()
-    public List<Comment> getAll(@RequestParam(required = false) String content, @RequestParam(required = false) Integer userId, @RequestParam(required = false) String username, @RequestParam(required = false) Integer postId, @RequestParam(required = false) String postTitle, @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate startDate, @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate endDate, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
-        FilterOptionsComments filterOptions = new FilterOptionsComments(content, userId, username, postId, postTitle, startDate, endDate, sortBy, sortOrder);
+    @Operation(
+            tags = {"Comment API"},
+            summary = "Get comments with filters",
+            description = "Retrieves a list of comments based on specified filter options."
+    )
+    public List<Comment> getAll(@RequestParam(required = false) String content,
+                                @RequestParam(required = false) Integer userId,
+                                @RequestParam(required = false) String username,
+                                @RequestParam(required = false) Integer postId,
+                                @RequestParam(required = false) String postTitle,
+                                @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date startDate,
+                                @RequestParam(required = false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date endDate,
+                                @RequestParam(required = false) String sortBy,
+                                @RequestParam(required = false) String sortOrder) {
+        FilterOptionsComments filterOptions = new FilterOptionsComments(content, userId, username,
+                postId, postTitle, startDate, endDate, sortBy, sortOrder);
         return commentService.getAll(filterOptions);
     }
 
     @GetMapping("{id}")
+    @Operation(
+            tags = {"Comment API"},
+            summary = "Get a comment by ID",
+            description = "Retrieves a comment based on the provided ID."
+    )
     public Comment getById(@PathVariable int id) {
         try {
             return commentService.getById(id);

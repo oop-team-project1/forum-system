@@ -10,6 +10,11 @@ import com.company.web.forum.helpers.PostMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -40,7 +45,22 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @RequestParam(required = false) String author, @RequestParam(required = false) String title, @RequestParam(required = false) String content, @RequestParam(required = false) String keyword, @RequestParam(required = false) LocalDateTime dateFrom, @RequestParam(required = false) LocalDateTime dateUntil, @RequestParam(required = false) List<String> tags, @RequestParam(required = false) List<String> tags_exclude, @RequestParam(required = false) String orderBy, @RequestParam(required = false) String order) {
+    @Operation(
+            tags = {"Post API"},
+            summary = "Get posts with filters",
+            description = "Retrieves a list of posts based on specified filter options."
+    )
+    public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @RequestParam(required = false) String author,
+                          @RequestParam(required = false) String title,
+                          @RequestParam(required = false) String content,
+                          @RequestParam(required = false) String keyword,
+                          @RequestParam(required = false) LocalDateTime dateFrom,
+                          @RequestParam(required = false) LocalDateTime dateUntil,
+                          @RequestParam(required = false) List<String> tags,
+                          @RequestParam(required = false) List<String> tags_exclude,
+                          @RequestParam(required = false) String orderBy,
+                          @RequestParam(required = false) String order) {
         FilterOptionsPosts filterOptions = new FilterOptionsPosts(author, title, content, keyword, dateFrom, dateUntil, tags, tags_exclude, orderBy, order);
         try {
             authenticationHelper.tryGetUser(encodedString);
@@ -52,6 +72,11 @@ public class PostController {
 
 
     @GetMapping("/{id}")
+    @Operation(
+            tags = {"Post API"},
+            summary = "Get a post by ID",
+            description = "Retrieves a post based on the provided ID."
+    )
     public Post get(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             authenticationHelper.tryGetUser(encodedString);
@@ -64,6 +89,11 @@ public class PostController {
     }
 
     @PostMapping
+    @Operation(
+            tags = {"Post API"},
+            summary = "Create a new post",
+            description = "Creates a new post."
+    )
     public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
@@ -79,7 +109,15 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto, @PathVariable int id) {
+    //@SecurityRequirement("basicAuth")
+    @Operation(
+            tags = {"Post API"},
+            summary = "Update a post",
+            description = "Updates an existing post based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")})
+    public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                       @Valid @RequestBody PostDto postDto,
+                       @PathVariable int id) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postMapper.fromDto(id, postDto);
@@ -93,7 +131,13 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+    @Operation(
+            tags = {"Post API"},
+            summary = "Delete a post",
+            description = "Deletes a post based on the provided ID."
+    )
+    public void delete(@PathVariable int id,
+                       @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             postService.delete(id, user);
@@ -109,6 +153,11 @@ public class PostController {
 
 
     @DeleteMapping("/selection")
+    @Operation(
+            tags = {"Post API"},
+            summary = "Delete multiple posts",
+            description = "Deletes multiple posts based on the provided list of record IDs."
+    )
     public void deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
         try {
@@ -124,7 +173,14 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments")
-    public Comment create(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody CommentDto commentDto) {
+    @Operation(
+            tags = {"Comment API"},
+            summary = "Create a new comment",
+            description = "Creates a new comment for a specific post."
+    )
+    public Comment create(@PathVariable int id,
+                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @Valid @RequestBody CommentDto commentDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
@@ -141,8 +197,16 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments/{commentId}/replies")
-    public Comment create(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @PathVariable int commentId, @Valid @RequestBody CommentDto commentDto) {
-        try {
+    @Operation(
+            tags = {"Comment API", "Comment Replies API"},
+            summary = "Create a reply to a comment",
+            description = "Creates a reply to a specific comment."
+    )
+    public Comment createReply(@PathVariable int id,
+                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                               @PathVariable int commentId,
+                               @Valid @RequestBody CommentDto commentDto){
+        try{
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment parentComment = commentService.getById(commentId);
@@ -157,7 +221,19 @@ public class PostController {
     }
 
     @PutMapping("/{id}/comments/{commentId}")
-    public Comment update(@PathVariable int id, @PathVariable int commentId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody CommentDto commentDto) {
+    @Operation(
+            tags = {"Comment API"},
+            summary = "Update a comment",
+            description = "Updates an existing comment.",
+            parameters = {@Parameter(name = "id", description = "ID of the post containing the comment.", example = "1"),
+            @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
+            @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
+            @Parameter(name = "commentDto", description = "Request body containing updated comment details",
+                    example = "This is some test content for comment dto." )}
+    )
+    public Comment update(@PathVariable int id, @PathVariable int commentId,
+                          @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @Valid @RequestBody CommentDto commentDto) {
         try {
             //TODO: add authorization
             User user = authenticationHelper.tryGetUser(encodedString);
