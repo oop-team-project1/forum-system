@@ -113,7 +113,8 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> getReplies(int id) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Comment> query = session.createQuery("from Comment where parentComment.id = :id and id != parentComment.id", Comment.class);
+            Query<Comment> query = session.createQuery("from Comment where " +
+                    "parentComment.id = :id and id != parentComment.id", Comment.class);
             query.setParameter("id", id);
 
             List<Comment> result = query.list();
