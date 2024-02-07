@@ -10,11 +10,10 @@ import com.company.web.forum.helpers.PostMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
+import com.company.web.forum.services.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,14 +33,16 @@ public class PostController {
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
     private final CommentService commentService;
+    private final TagService tagService;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService, TagService tagService) {
         this.authenticationHelper = authenticationHelper;
         this.postService = postService;
         this.postMapper = postMapper;
         this.commentMapper = commentMapper;
         this.commentService = commentService;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -151,7 +152,6 @@ public class PostController {
 
     }
 
-
     @DeleteMapping("/selection")
     @Operation(
             tags = {"Post API"},
@@ -162,10 +162,10 @@ public class PostController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(encodedString);
-            postService.deleteMultiple(records,user);
+            postService.deleteMultiple(records, user);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        } catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
 
@@ -205,8 +205,8 @@ public class PostController {
     public Comment createReply(@PathVariable int id,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                                @PathVariable int commentId,
-                               @Valid @RequestBody CommentDto commentDto){
-        try{
+                               @Valid @RequestBody CommentDto commentDto) {
+        try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment parentComment = commentService.getById(commentId);
@@ -226,10 +226,10 @@ public class PostController {
             summary = "Update a comment",
             description = "Updates an existing comment.",
             parameters = {@Parameter(name = "id", description = "ID of the post containing the comment.", example = "1"),
-            @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
-            @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
-            @Parameter(name = "commentDto", description = "Request body containing updated comment details",
-                    example = "This is some test content for comment dto." )}
+                    @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
+                    @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
+                    @Parameter(name = "commentDto", description = "Request body containing updated comment details",
+                            example = "This is some test content for comment dto.")}
     )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -246,6 +246,16 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/{id}/tags")
+    public List<Tag> getPostTags(@PathVariable int id) {
+        try {
+            return tagService.getAll(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }
