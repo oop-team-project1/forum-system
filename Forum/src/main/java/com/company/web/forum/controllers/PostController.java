@@ -36,8 +36,7 @@ public class PostController {
     private final CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper,
-                          CommentMapper commentMapper, CommentService commentService) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService) {
         this.authenticationHelper = authenticationHelper;
         this.postService = postService;
         this.postMapper = postMapper;
@@ -186,7 +185,7 @@ public class PostController {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment comment = commentMapper.fromDto(commentDto);
-            commentService.create(comment, user, post);
+            commentService.create(comment, user, post, comment);
             return comment;
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -212,9 +211,9 @@ public class PostController {
             Post post = postService.get(id);
             Comment parentComment = commentService.getById(commentId);
             Comment reply = commentMapper.fromDto(commentDto);
-            commentService.createReply(reply,user,post,parentComment);
+            commentService.create(reply, user, post, parentComment);
             return reply;
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

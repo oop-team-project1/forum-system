@@ -63,12 +63,12 @@ public class CommentRepositoryImpl implements CommentRepository {
                 filters.add("date_of_creation <= :endDate");
                 params.put("endDate", value);
             });
+
             StringBuilder queryString = new StringBuilder("from Comment");
+            queryString.append(" where id = parentComment.id ");
 
             if (!filters.isEmpty()) {
-                queryString
-                        .append(" where ")
-                        .append(String.join(" and ", filters));
+                queryString.append(String.join(" and ", filters));
             }
 
             queryString.append(generateOrderBy(filterOptions));
@@ -86,13 +86,12 @@ public class CommentRepositoryImpl implements CommentRepository {
 
         String orderBy = "";
         if (filterOptions.getSortBy().get().equalsIgnoreCase("date")) {
-                orderBy = "date_of_creation";
+            orderBy = "date_of_creation";
         }
 
         orderBy = String.format(" order by %s desc, id desc", orderBy);
 
-        if (filterOptions.getSortOrder().isPresent()
-                && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
             orderBy = String.format("%s desc", orderBy);
 
         }
@@ -112,6 +111,22 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    public List<Comment> getReplies(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where " +
+                    "parentComment.id = :id and id != parentComment.id", Comment.class);
+            query.setParameter("id", id);
+
+            List<Comment> result = query.list();
+
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Comment", id);
+            }
+            return result;
+        }
+    }
+
+    @Override
     public void create(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -120,14 +135,14 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
-    @Override
-    public void createReply(Comment reply) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.merge(reply);
-            session.getTransaction().commit();
-        }
-    }
+//    @Override
+//    public void createReply(Comment reply) {
+//        try (Session session = sessionFactory.openSession()) {
+//            session.beginTransaction();
+//            session.merge(reply);
+//            session.getTransaction().commit();
+//        }
+//    }
 
     @Override
     public void update(Comment comment) {

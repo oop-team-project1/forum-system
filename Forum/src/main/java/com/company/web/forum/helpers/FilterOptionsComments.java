@@ -1,5 +1,6 @@
 package com.company.web.forum.helpers;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -9,16 +10,16 @@ public class FilterOptionsComments {
     private Optional<String> username;
     private Optional<Integer> postId;
     private Optional<String> postTitle;
-    private Optional<Date> startDate;
-    private Optional<Date> endDate;
+    private Optional<LocalDate> startDate;
+    private Optional<LocalDate> endDate;
     private Optional<String> sortBy;
     private Optional<String> sortOrder;
 
 
     public FilterOptionsComments(String content, Integer userID,
                                  String username, Integer postId,
-                                 String postTitle, Date startDate,
-                                 Date endDate, String sortBy, String sortOrder) {
+                                 String postTitle, LocalDate startDate,
+                                 LocalDate endDate, String sortBy, String sortOrder) {
         this.content = Optional.ofNullable(content);
         this.userId = Optional.ofNullable(userID);
         this.username = Optional.ofNullable(username);
@@ -51,11 +52,11 @@ public class FilterOptionsComments {
         return postTitle;
     }
 
-    public Optional<Date> getStartDate() {
+    public Optional<LocalDate> getStartDate() {
         return startDate;
     }
 
-    public Optional<Date> getEndDate() {
+    public Optional<LocalDate> getEndDate() {
         return endDate;
     }
 
