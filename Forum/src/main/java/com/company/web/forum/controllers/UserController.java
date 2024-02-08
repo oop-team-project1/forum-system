@@ -7,6 +7,7 @@ import com.company.web.forum.helpers.UserMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Get users with filters",
             description = "Retrieves a list of users based on specified filter options.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -62,6 +64,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by ID",
             description = "Retrieves a user based on the provided ID.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User get(@PathVariable int id,
@@ -79,6 +82,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by username",
             description = "Retrieves a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User getByUsername(@RequestParam String username,
@@ -100,6 +104,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by email",
             description = "Retrieves a user based on the provided email.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User getByEmail(@RequestParam String email,
@@ -139,6 +144,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Update user information",
             description = "Updates user information based on the provided ID.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -163,6 +169,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Add a post to a user's account",
             description = "Adds a specific post to the user's account.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -185,6 +192,7 @@ public class UserController {
             tags = {"User API"},
             summary = "Remove a post from a user's account",
             description = "Removes a specific post from the user's account.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public void removePost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -207,6 +215,7 @@ public class UserController {
             tags = {"User (Admin) API"},
             summary = "Block a user",
             description = "Blocks a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -228,6 +237,7 @@ public class UserController {
             tags = {"User (Admin) API"},
             summary = "Unblock a user",
             description = "Unblocks a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
 
     )
