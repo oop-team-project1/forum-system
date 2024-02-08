@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
     private void checkModifyPermissions(List<Integer> ids, User user) {
         List<Integer> nonUserPostIds = repository.filterNonUserPostIds(ids, user);
         if (!(nonUserPostIds.isEmpty())) {
-            throw new AuthorizationException(String.format("Trying to modify resources, not belonging to user:%s",nonUserPostIds));
+            throw new AuthorizationException(String.format("Trying to modify resources, not belonging to user:%s", nonUserPostIds));
         }
     }
 

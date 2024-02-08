@@ -3,11 +3,8 @@ package com.company.web.forum.models;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class UserDto
-{
+public class UserDto {
     @NotNull(message = "First name can't be empty")
     @Size(min = 4, max = 32, message = "The first name must be between 4 symbols and 32 symbols.")
     private String firstName;
@@ -22,7 +19,8 @@ public class UserDto
     private String email;
     private String phoneNumber;
 
-    public UserDto() {}
+    public UserDto() {
+    }
 
     public String getFirstName() {
         return firstName;

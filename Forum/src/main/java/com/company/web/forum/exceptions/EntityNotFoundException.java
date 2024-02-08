@@ -1,7 +1,6 @@
 package com.company.web.forum.exceptions;
 
 public class EntityNotFoundException extends RuntimeException {
-
     public EntityNotFoundException(String type, int id) {
         this(type, "id", String.valueOf(id));
     }

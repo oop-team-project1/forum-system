@@ -2,8 +2,7 @@ package com.company.web.forum.helpers;
 
 import java.util.Optional;
 
-public class FilterOptionsUsers
-{
+public class FilterOptionsUsers {
     private Optional<String> username;
     private Optional<String> firstName;
     private Optional<String> lastName;
@@ -13,8 +12,7 @@ public class FilterOptionsUsers
 
     public FilterOptionsUsers(String username, String firstName,
                               String lastName, String email,
-                              String sortBy, String sortOrder)
-    {
+                              String sortBy, String sortOrder) {
         this.username = Optional.ofNullable(username);
         this.firstName = Optional.ofNullable(firstName);
         this.lastName = Optional.ofNullable(lastName);

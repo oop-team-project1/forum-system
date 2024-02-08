@@ -9,10 +9,15 @@ import java.util.List;
 
 public interface PostService {
     List<Post> getAll(FilterOptionsPosts filterOptions);
+
     Post get(int id);
+
     void create(Post post, User user);
+
     void update(Post post, User user);
+
     void delete(int id, User user);
+
     void deleteMultiple(List<Integer> ids, User user);
 
 }

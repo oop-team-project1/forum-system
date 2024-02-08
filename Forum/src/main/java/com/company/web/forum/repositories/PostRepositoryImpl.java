@@ -38,7 +38,7 @@ public class PostRepositoryImpl implements PostRepository {
                 params.put("author", String.format("%%%s%%", value));
             });
 
-            if(filterOptions.getKeyword().isEmpty()) {
+            if (filterOptions.getKeyword().isEmpty()) {
 
                 filterOptions.getContent().ifPresent(value -> {
                     filters.add("content like :content");
@@ -57,7 +57,7 @@ public class PostRepositoryImpl implements PostRepository {
 
             filterOptions.getDateFrom().ifPresent(value -> {
                 filters.add("date_of_creation >= :dateFrom");
-                params.put("dateFrom",value);
+                params.put("dateFrom", value);
             });
             filterOptions.getDateUntil().ifPresent(value -> {
                 filters.add("date_of_creation <= :dateUntil");
@@ -80,7 +80,7 @@ public class PostRepositoryImpl implements PostRepository {
             }
             queryString.append(generateOrderBy(filterOptions));
 
-            Query<Post> query = session.createQuery(queryString.toString(),Post.class);
+            Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
             return query.list();
         }
@@ -132,13 +132,13 @@ public class PostRepositoryImpl implements PostRepository {
     @Modifying
     @Transactional
     public void deleteMultiple(List<Integer> ids, User user) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             String hql = "DELETE FROM Post WHERE id IN (:ids) AND NOT EXISTS (" +
                     "SELECT 1 FROM Post WHERE id IN (:ids) AND createdBy != :user )";
             Query<Post> query = session.createQuery(hql);
             query.setParameterList("ids", ids);
-            query.setParameter("user",user);
+            query.setParameter("user", user);
             query.executeUpdate();
             session.getTransaction().commit();
         }
@@ -151,8 +151,8 @@ public class PostRepositoryImpl implements PostRepository {
             String hql = "SELECT id FROM Post WHERE id IN (:ids) AND createdBy != :user";
 
             Query<Integer> query = session.createQuery(hql, Integer.class);
-            query.setParameterList("ids",ids);
-            query.setParameter("user",user);
+            query.setParameterList("ids", ids);
+            query.setParameter("user", user);
 
             return query.list();
         }

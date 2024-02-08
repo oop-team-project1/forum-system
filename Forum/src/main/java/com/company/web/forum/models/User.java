@@ -21,7 +21,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username",updatable = false)
+    @Column(name = "username", updatable = false)
     private String username;
 
     @JsonIgnore

@@ -10,12 +10,11 @@ import com.company.web.forum.models.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Helpers {
 
-    public static Post createMockPost(){
+    public static Post createMockPost() {
         Post mockPost = new Post();
         mockPost.setId(1);
         mockPost.setTitle("Mock title");
@@ -46,7 +45,7 @@ public class Helpers {
         Comment mockComment = new Comment();
         mockComment.setId(1);
         mockComment.setCommentContent("some content for comment");
-        mockComment.setDate_of_creation(LocalDate.of(2024,1,27));
+        mockComment.setDate_of_creation(LocalDate.of(2024, 1, 27));
         mockComment.setCreatedBy(createMockUser());
         mockComment.setPost(createMockPost());
         mockComment.setParentComment(mockComment);
@@ -74,7 +73,7 @@ public class Helpers {
         );
     }
 
-    public static FilterOptionsUsers createMockFilterOptionsUsers(){
+    public static FilterOptionsUsers createMockFilterOptionsUsers() {
         return new FilterOptionsUsers(
                 "username",
                 "firstName",
@@ -91,8 +90,8 @@ public class Helpers {
                 "username",
                 1,
                 "postTitle",
-                LocalDate.of(2024,1,25),
-                LocalDate.of(2024,1,27),
+                LocalDate.of(2024, 1, 25),
+                LocalDate.of(2024, 1, 27),
                 "date",
                 "desc"
 
