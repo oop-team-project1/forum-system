@@ -1,11 +1,9 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.exceptions.BlockedUnblockedUserException;
 import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsUsers;
-import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 import com.company.web.forum.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -31,8 +29,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void getAll_Should_CallRepository()
-    {
+    public void getAll_Should_CallRepository() {
         FilterOptionsUsers mockFilterOptions = createMockFilterOptionsUsers();
         List<User> users = new ArrayList<>();
 
@@ -40,9 +37,9 @@ public class UserServiceTest {
 
         Assertions.assertEquals(userRepository.getAll(mockFilterOptions), users);
     }
+
     @Test
-    public void getById_Should_ReturnUser_When_MatchExists()
-    {
+    public void getById_Should_ReturnUser_When_MatchExists() {
         Mockito.when(userRepository.getById(1))
                 .thenReturn(createMockUser());
 
@@ -57,8 +54,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getByName_Should_ReturnUser_When_MatchExists()
-    {
+    public void getByName_Should_ReturnUser_When_MatchExists() {
         Mockito.when(userRepository.getByUsername(createMockUser().getUsername()))
                 .thenReturn(createMockUser());
 
@@ -73,8 +69,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getByEmail_Should_ReturnUser_When_MatchExists()
-    {
+    public void getByEmail_Should_ReturnUser_When_MatchExists() {
         Mockito.when(userRepository.getByEmail(createMockUser().getEmail()))
                 .thenReturn(createMockUser());
 
@@ -89,8 +84,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void create_Should_CallRepository_When_UserDoesNotExists()
-    {
+    public void create_Should_CallRepository_When_UserDoesNotExists() {
         User mockUser = createMockUser();
 
         Mockito.when(userRepository.getByUsername(mockUser.getUsername()))
@@ -103,8 +97,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void create_Should_Throw_When_UserWithSameUsernameExists()
-    {
+    public void create_Should_Throw_When_UserWithSameUsernameExists() {
         User mockUser = createMockUser();
 
         Mockito.when(userRepository.getByUsername(mockUser.getUsername()))
@@ -115,8 +108,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void update_Should_CallRepository_When_UserDoesNotExists()
-    {
+    public void update_Should_CallRepository_When_UserDoesNotExists() {
         User mockUser = createMockUser();
 
         Mockito.when(userRepository.getByUsername(mockUser.getUsername()))
@@ -129,8 +121,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void update_Should_Throw_When_UserWithSameUsernameExists()
-    {
+    public void update_Should_Throw_When_UserWithSameUsernameExists() {
         User mockUser = createMockUser();
         User mockUser2 = createMockUser();
         mockUser2.setId(2);
@@ -141,9 +132,9 @@ public class UserServiceTest {
         Assertions.assertThrows(EntityDuplicateException.class,
                 () -> userService.update(mockUser, createMockUser()));
     }
+
     @Test
-    public void update_Should_Throw_When_UserIsBlocked()
-    {
+    public void update_Should_Throw_When_UserIsBlocked() {
         User mockUser = createMockUser();
         mockUser.setBlocked(true);
         User mockUser2 = createMockUser();

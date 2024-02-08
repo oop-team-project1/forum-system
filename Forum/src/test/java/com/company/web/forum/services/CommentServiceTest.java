@@ -85,7 +85,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void update_Should_CallRepository_When_UserIsNotBlockedAndIsAuthor () {
+    public void update_Should_CallRepository_When_UserIsNotBlockedAndIsAuthor() {
         Comment mockComment = createMockComment();
         User user = createMockUser();
 
@@ -96,7 +96,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void update_Should_Throw_When_UserIsBlocked () {
+    public void update_Should_Throw_When_UserIsBlocked() {
         Comment mockComment = createMockComment();
         User user = createMockUser();
         user.setBlocked(true);
@@ -106,7 +106,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void update_Should_Throw_When_UserIsNotAuthor () {
+    public void update_Should_Throw_When_UserIsNotAuthor() {
         Comment mockComment = createMockComment();
         User user = createMockUser();
         user.setId(2);

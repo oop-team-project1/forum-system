@@ -7,6 +7,7 @@ import com.company.web.forum.helpers.UserMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +35,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Get users with filters",
-            description = "Retrieves a list of users based on specified filter options."
+            description = "Retrieves a list of users based on specified filter options.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String username,
@@ -50,8 +52,8 @@ public class UserController {
             return userService.getAll(filterOptionsUsers);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AuthorizationException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 
@@ -59,7 +61,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Get user by ID",
-            description = "Retrieves a user based on the provided ID."
+            description = "Retrieves a user based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public User get(@PathVariable int id,
                     @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -75,7 +78,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Get user by username",
-            description = "Retrieves a user based on the provided username."
+            description = "Retrieves a user based on the provided username.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public User getByUsername(@RequestParam String username,
                               @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -86,7 +90,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
@@ -95,7 +99,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Get user by email",
-            description = "Retrieves a user based on the provided email."
+            description = "Retrieves a user based on the provided email.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public User getByEmail(@RequestParam String email,
                            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -106,8 +111,9 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AuthorizationException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());}
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
     }
 
     @PostMapping
@@ -132,7 +138,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Update user information",
-            description = "Updates user information based on the provided ID."
+            description = "Updates user information based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @PathVariable int id,
@@ -155,7 +162,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Add a post to a user's account",
-            description = "Adds a specific post to the user's account."
+            description = "Adds a specific post to the user's account.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                         @PathVariable int id,
@@ -176,7 +184,8 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Remove a post from a user's account",
-            description = "Removes a specific post from the user's account."
+            description = "Removes a specific post from the user's account.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public void removePost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                            @PathVariable int id,
@@ -188,16 +197,17 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (AuthenticationException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,e.getMessage());
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @PutMapping("/blocks/{username}")
     @Operation(
-            tags = { "User (Admin) API"},
+            tags = {"User (Admin) API"},
             summary = "Block a user",
-            description = "Blocks a user based on the provided username."
+            description = "Blocks a user based on the provided username.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable String username) {
@@ -215,9 +225,10 @@ public class UserController {
 
     @DeleteMapping("/blocks/{username}")
     @Operation(
-            tags = { "User (Admin) API"},
+            tags = {"User (Admin) API"},
             summary = "Unblock a user",
-            description = "Unblocks a user based on the provided username."
+            description = "Unblocks a user based on the provided username.",
+            security = {@SecurityRequirement(name = "basic")}
 
     )
     public void unblockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,

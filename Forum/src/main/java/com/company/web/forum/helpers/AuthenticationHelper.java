@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 
 
-
 @Component
 public class AuthenticationHelper {
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication.";
@@ -36,8 +35,9 @@ public class AuthenticationHelper {
      * appended to the text Basic as follows:
      * Basic <Base64 encoded username and password>
      * <p></p>
+     *
      * @param encodedString Base64 encoded string with
-     * user credentials separated by ":"
+     *                      user credentials separated by ":"
      * @return user with the given credentials
      */
     public User tryGetUser(String encodedString) {

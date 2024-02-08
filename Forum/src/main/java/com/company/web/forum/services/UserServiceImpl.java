@@ -57,8 +57,7 @@ public class UserServiceImpl implements UserService {
         } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
-        if (!isValidEmail(userToCreate.getEmail()))
-        {
+        if (!isValidEmail(userToCreate.getEmail())) {
             throw new IllegalArgumentException("The email is not valid!");
         }
         if (duplicateExists) {
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService {
         User userToBlock = repository.getByUsername(username);
         try {
             checkIfBlocked(userToBlock);
-        }catch (AuthorizationException ignored) {
+        } catch (AuthorizationException ignored) {
             throw new BlockedUnblockedUserException(userToBlock.getId(), "blocked");
         }
         userToBlock.setBlocked(true);
@@ -130,7 +129,8 @@ public class UserServiceImpl implements UserService {
         User userToUnblock = repository.getByUsername(username);
         try {
             checkIfBlocked(userToUnblock);
-        }catch (AuthorizationException ignored) {}
+        } catch (AuthorizationException ignored) {
+        }
         userToUnblock.setBlocked(false);
         repository.update(userToUnblock);
     }

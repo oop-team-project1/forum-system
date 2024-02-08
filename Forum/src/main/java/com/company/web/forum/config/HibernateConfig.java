@@ -24,7 +24,7 @@ public class HibernateConfig {
         dbPassword = env.getProperty("database.password");
     }
 
-    @Bean (name = "entityManagerFactory")
+    @Bean(name = "entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());

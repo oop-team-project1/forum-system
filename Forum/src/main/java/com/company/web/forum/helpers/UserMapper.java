@@ -7,26 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper
-{
+public class UserMapper {
     private final UserService userService;
 
     @Autowired
-    public UserMapper(UserService userService)
-    {
+    public UserMapper(UserService userService) {
         this.userService = userService;
     }
 
-    public User fromDto(int id, UserDto userDto)
-    {
+    public User fromDto(int id, UserDto userDto) {
         User user = fromDto(userDto);
         user.setId(id);
         user.setAdmin(false);
         return user;
     }
 
-    public User fromDto(UserDto userDto)
-    {
+    public User fromDto(UserDto userDto) {
         User user = new User();
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());

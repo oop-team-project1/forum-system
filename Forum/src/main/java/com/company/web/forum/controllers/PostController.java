@@ -12,9 +12,7 @@ import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +46,8 @@ public class PostController {
     @Operation(
             tags = {"Post API"},
             summary = "Get posts with filters",
-            description = "Retrieves a list of posts based on specified filter options."
+            description = "Retrieves a list of posts based on specified filter options.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @RequestParam(required = false) String author,
@@ -75,7 +74,8 @@ public class PostController {
     @Operation(
             tags = {"Post API"},
             summary = "Get a post by ID",
-            description = "Retrieves a post based on the provided ID."
+            description = "Retrieves a post based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public Post get(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -92,9 +92,11 @@ public class PostController {
     @Operation(
             tags = {"Post API"},
             summary = "Create a new post",
-            description = "Creates a new post."
+            description = "Creates a new post.",
+            security = {@SecurityRequirement(name = "basic")}
     )
-    public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @Valid @RequestBody PostDto postDto) {
+    public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                       @Valid @RequestBody PostDto postDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postMapper.fromDto(postDto);
@@ -109,7 +111,6 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    //@SecurityRequirement("basicAuth")
     @Operation(
             tags = {"Post API"},
             summary = "Update a post",
@@ -134,7 +135,8 @@ public class PostController {
     @Operation(
             tags = {"Post API"},
             summary = "Delete a post",
-            description = "Deletes a post based on the provided ID."
+            description = "Deletes a post based on the provided ID.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public void delete(@PathVariable int id,
                        @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -156,16 +158,17 @@ public class PostController {
     @Operation(
             tags = {"Post API"},
             summary = "Delete multiple posts",
-            description = "Deletes multiple posts based on the provided list of record IDs."
+            description = "Deletes multiple posts based on the provided list of record IDs.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public void deleteMultiple(@RequestBody List<Integer> records, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         User user;
         try {
             user = authenticationHelper.tryGetUser(encodedString);
-            postService.deleteMultiple(records,user);
+            postService.deleteMultiple(records, user);
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        } catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
 
@@ -200,13 +203,14 @@ public class PostController {
     @Operation(
             tags = {"Comment API", "Comment Replies API"},
             summary = "Create a reply to a comment",
-            description = "Creates a reply to a specific comment."
+            description = "Creates a reply to a specific comment.",
+            security = {@SecurityRequirement(name = "basic")}
     )
     public Comment createReply(@PathVariable int id,
                                @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                                @PathVariable int commentId,
-                               @Valid @RequestBody CommentDto commentDto){
-        try{
+                               @Valid @RequestBody CommentDto commentDto) {
+        try {
             User user = authenticationHelper.tryGetUser(encodedString);
             Post post = postService.get(id);
             Comment parentComment = commentService.getById(commentId);
@@ -226,10 +230,11 @@ public class PostController {
             summary = "Update a comment",
             description = "Updates an existing comment.",
             parameters = {@Parameter(name = "id", description = "ID of the post containing the comment.", example = "1"),
-            @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
-            @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
-            @Parameter(name = "commentDto", description = "Request body containing updated comment details",
-                    example = "This is some test content for comment dto." )}
+                    @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
+                    @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
+                    @Parameter(name = "commentDto", description = "Request body containing updated comment details",
+                            example = "This is some test content for comment dto.")},
+            security = {@SecurityRequirement(name = "basic")}
     )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
