@@ -30,7 +30,7 @@ public class Post {
     private String title;
 
     @ManyToOne
-    @JsonIgnoreProperties("postsByUser")
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
     @JoinColumn(name = "created_by")
     private User createdBy;
 

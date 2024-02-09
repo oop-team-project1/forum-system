@@ -99,13 +99,3 @@ create table posts_tags
         foreign key (tag_id) references tags (tag_id)
 );
 
-create table user_posts
-(
-    user_id int null,
-    post_id int null,
-    constraint user_posts_posts_post_id_fk
-        foreign key (post_id) references posts (post_id),
-    constraint user_posts_users_user_id_fk
-        foreign key (user_id) references users (user_id)
-);
-
