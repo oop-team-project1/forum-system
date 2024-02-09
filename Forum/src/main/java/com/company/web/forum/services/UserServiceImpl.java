@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void blockUser(String username, User user) {
+    public void blockUser(int id, User user) {
         checkModifyPermissions(user);
-        User userToBlock = repository.getByUsername(username);
+        User userToBlock = repository.getById(id);
         try {
             checkIfBlocked(userToBlock);
         } catch (AuthorizationException ignored) {
@@ -121,9 +121,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void unblockUser(String username, User user) {
+    public void unblockUser(int id, User user) {
         checkModifyPermissions(user);
-        User userToUnblock = repository.getByUsername(username);
+        User userToUnblock = repository.getById(id);
         try {
             checkIfBlocked(userToUnblock);
         } catch (AuthorizationException ignored) {

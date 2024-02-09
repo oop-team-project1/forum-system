@@ -30,23 +30,23 @@ public class UserRepositoryImpl implements UserRepository {
             Map<String, Object> params = new HashMap<>();
 
             filterOptions.getFirstName().ifPresent(value -> {
-                filters.add("first_name like :userFirstName");
+                filters.add("firstName like :userFirstName");
                 params.put("userFirstName", String.format("%%%s%%", value));
             });
 
             filterOptions.getLastName().ifPresent(value -> {
-                filters.add("last_name like :userLastName");
+                filters.add("lastName like :userLastName");
                 params.put("userLastName", String.format("%%%s%%", value));
             });
 
             filterOptions.getUsername().ifPresent(value -> {
                 filters.add("username like :username");
-                params.put("userFirstName", String.format("%%%s%%", value));
+                params.put("username", String.format("%%%s%%", value));
             });
 
             filterOptions.getEmail().ifPresent(value -> {
                 filters.add("email like :email");
-                params.put("userFirstName", String.format("%%%s%%", value));
+                params.put("email", String.format("%%%s%%", value));
             });
 
             StringBuilder queryString = new StringBuilder("from User");
