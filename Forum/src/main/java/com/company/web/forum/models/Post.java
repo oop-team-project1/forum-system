@@ -34,6 +34,14 @@ public class Post {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    public LocalDate getDate_of_creation() {
+        return date_of_creation;
+    }
+
+    public void setDate_of_creation(LocalDate date_of_creation) {
+        this.date_of_creation = date_of_creation;
+    }
+
     @Column(updatable = false)
     @CreationTimestamp
     @JsonFormat(pattern = "dd.MM.yyyy")
@@ -112,13 +120,6 @@ public class Post {
         this.comments = comments;
     }
 
-    public LocalDate getDate_posted() {
-        return date_of_creation;
-    }
-
-    public void setDate_posted(LocalDate date_posted) {
-        this.date_of_creation = date_posted;
-    }
 
     public Set<Tag> getTags() {
         return tags;
