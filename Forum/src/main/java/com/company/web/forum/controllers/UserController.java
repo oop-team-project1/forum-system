@@ -199,7 +199,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/blocks/{username}")
+    @PutMapping("/blocks/{id}")
     @Operation(
             tags = {"User (Admin) API"},
             summary = "Block a user",
@@ -212,10 +212,10 @@ public class UserController {
             security = {@SecurityRequirement(name = "basic")}
     )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                          @PathVariable String username) {
+                          @PathVariable int id) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            userService.blockUser(username, user);
+            userService.blockUser(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
@@ -225,7 +225,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/blocks/{username}")
+    @DeleteMapping("/blocks/{id}")
     @Operation(
             tags = {"User (Admin) API"},
             summary = "Unblock a user",
@@ -239,10 +239,10 @@ public class UserController {
 
     )
     public void unblockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                            @PathVariable String username) {
+                            @PathVariable int id) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            userService.unblockUser(username, user);
+            userService.unblockUser(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
@@ -273,7 +273,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (BlockedUnblockedUserException e) {
+        } catch (AdminException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
@@ -299,7 +299,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (BlockedUnblockedUserException e) {
+        } catch (AdminException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }

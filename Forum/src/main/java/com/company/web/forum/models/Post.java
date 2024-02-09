@@ -30,6 +30,7 @@ public class Post {
     private String title;
 
     @ManyToOne
+    @JsonIgnoreProperties("postsByUser")
     @JoinColumn(name = "created_by")
     private User createdBy;
 
@@ -51,7 +52,7 @@ public class Post {
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @SQLRestriction("parent_comment IS NULL")
-    private Set<Comment> comments = new HashSet<>();
+    private Set<Comment> comments;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
