@@ -1,6 +1,8 @@
 package com.company.web.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -40,12 +42,9 @@ public class User {
     @Column(name = "is_blocked")
     private boolean isBlocked;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_posts",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id")
-    )
+    @JsonManagedReference
+    @JsonIgnoreProperties("createdBy")
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Post> postsByUser;
 
     public Set<Post> getPostsByUser() {
