@@ -252,5 +252,33 @@ public class UserController {
         }
     }
 
+    @PutMapping("/admin/{id}")
+    public void makeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @PathVariable int id) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            userService.makeAdmin(id, user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (BlockedUnblockedUserException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
 
+    @DeleteMapping("/admin/{id}")
+    public void removeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
+                          @PathVariable int id) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            userService.removeAdmin(id, user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (BlockedUnblockedUserException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
+    }
 }

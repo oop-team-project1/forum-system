@@ -10,6 +10,10 @@ public class FilterOptionsUsers {
     private Optional<String> sortBy;
     private Optional<String> sortOrder;
 
+    public FilterOptionsUsers() {
+        this(null, null, null, null, null, null);
+    }
+
     public FilterOptionsUsers(String username, String firstName,
                               String lastName, String email,
                               String sortBy, String sortOrder) {
