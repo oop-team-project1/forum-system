@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -54,8 +54,8 @@ public class PostController {
                           @RequestParam(required = false) String title,
                           @RequestParam(required = false) String content,
                           @RequestParam(required = false) String keyword,
-                          @RequestParam(required = false) LocalDateTime dateFrom,
-                          @RequestParam(required = false) LocalDateTime dateUntil,
+                          @RequestParam(required = false) LocalDate dateFrom,
+                          @RequestParam(required = false) LocalDate dateUntil,
                           @RequestParam(required = false) List<String> tags,
                           @RequestParam(required = false) List<String> tags_exclude,
                           @RequestParam(required = false) String orderBy,

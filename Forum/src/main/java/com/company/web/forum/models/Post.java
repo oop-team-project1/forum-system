@@ -1,6 +1,7 @@
 package com.company.web.forum.models;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,7 +9,7 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLRestriction;
 
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -33,9 +34,10 @@ public class Post {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @Column(updatable = false)
     @CreationTimestamp
-    @Column(name = "date_of_creation")
-    private LocalDateTime date_posted;
+    @JsonFormat(pattern = "dd.MM.yyyy")
+    private LocalDate date_posted;
 
     @Formula(value = "(select count(likes.post_id) from likes where post_id = likes.post_id)")
     private Long likes;
@@ -110,11 +112,11 @@ public class Post {
         this.comments = comments;
     }
 
-    public LocalDateTime getDate_posted() {
+    public LocalDate getDate_posted() {
         return date_posted;
     }
 
-    public void setDate_posted(LocalDateTime date_posted) {
+    public void setDate_posted(LocalDate date_posted) {
         this.date_posted = date_posted;
     }
 

@@ -8,7 +8,6 @@ import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +62,8 @@ public class Helpers {
                 "title",
                 "content",
                 "keyword",
-                LocalDateTime.of(2024, 1, 24, 13, 30),
-                LocalDateTime.now(),
+                LocalDate.of(2024, 1, 24),
+                LocalDate.now(),
                 tags,
                 tagsExclude,
                 "author",
