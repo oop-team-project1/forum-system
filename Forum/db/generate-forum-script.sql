@@ -26,7 +26,7 @@ create table users
     password     varchar(30)          not null,
     email        varchar(30)          not null,
     is_admin     tinyint(1) default 0 not null,
-    phone_number int(20)              null,
+    phone_number char(20)              null,
     is_blocked   tinyint(1) default 0 null,
     profile_pic  int                  null,
     constraint users_pk
@@ -54,7 +54,7 @@ create table posts
     title            varchar(64)   not null,
     content          varchar(8192) not null,
     created_by       int           null,
-    date_of_creation timestamp     null,
+    date_of_creation date     null,
     constraint posts_users_user_id_fk
         foreign key (created_by) references users (user_id)
 );

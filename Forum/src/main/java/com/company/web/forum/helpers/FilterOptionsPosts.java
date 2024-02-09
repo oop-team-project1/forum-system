@@ -2,11 +2,14 @@ package com.company.web.forum.helpers;
 
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public class FilterOptionsPosts {
+    public FilterOptionsPosts() {
+        this(null,null,null,null,null,null,null,null,null,null);
+    }
 
     private Optional<String> orderBy;
     private Optional<String> order;
@@ -17,8 +20,8 @@ public class FilterOptionsPosts {
     private Optional<String> content;
     @Size(max = 30)
     private Optional<String> keyword;
-    private Optional<LocalDateTime> dateFrom;
-    private Optional<LocalDateTime> dateUntil;
+    private Optional<LocalDate> dateFrom;
+    private Optional<LocalDate> dateUntil;
     private Optional<List<String>> tags;
     private Optional<List<String>> tagsExclude;
 
@@ -27,8 +30,8 @@ public class FilterOptionsPosts {
             String title,
             String content,
             String keyword,
-            LocalDateTime dateFrom,
-            LocalDateTime dateUntil,
+            LocalDate dateFrom,
+            LocalDate dateUntil,
             List<String> tags,
             List<String> tags_exclude,
             String orderBy,
@@ -62,11 +65,11 @@ public class FilterOptionsPosts {
         return keyword;
     }
 
-    public Optional<LocalDateTime> getDateFrom() {
+    public Optional<LocalDate> getDateFrom() {
         return dateFrom;
     }
 
-    public Optional<LocalDateTime> getDateUntil() {
+    public Optional<LocalDate> getDateUntil() {
         return dateUntil;
     }
 
