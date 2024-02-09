@@ -41,7 +41,8 @@ public class UserController {
             tags = {"User API"},
             summary = "Get users with filters",
             description = "Retrieves a list of users based on specified filter options.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "email", example = "pesho@telerikacademy.com")},
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
                     @Schema(implementation = User.class ),
@@ -224,7 +225,6 @@ public class UserController {
         }
     }
 
-    //TODO: /admin/users/userId/block
     @DeleteMapping("/blocks/{username}")
     @Operation(
             tags = {"User (Admin) API"},
@@ -253,6 +253,17 @@ public class UserController {
     }
 
     @PutMapping("/admin/{id}")
+    @Operation(
+            tags = {"User (Admin) API"},
+            summary = "Make user admin",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+
+    )
     public void makeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable int id) {
         try {
@@ -268,6 +279,17 @@ public class UserController {
     }
 
     @DeleteMapping("/admin/{id}")
+    @Operation(
+            tags = {"User (Admin) API"},
+            summary = "Removes user admin",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+
+    )
     public void removeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable int id) {
         try {

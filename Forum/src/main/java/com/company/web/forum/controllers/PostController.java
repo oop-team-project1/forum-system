@@ -52,10 +52,13 @@ public class PostController {
             summary = "Get posts with filters",
             description = "Retrieves a list of posts based on specified filter options.",
             parameters = {@Parameter(name = "Authorization", example = "Authorization"),
-            @Parameter(name = "author", description = "Author username"),
-                    @Parameter(name = "title", description = "Title of the content between 16 and 64 symbols"),
-                    @Parameter(name = "content", description = "Content body between 32 and 8192 symbols"),
+                    @Parameter(name = "author", description = "Author username"),
+                    @Parameter(name = "title", description = "Title of the content between 16 and 64 symbols."),
+                    @Parameter(name = "content", description = "Content body between 32 and 8192 symbols."),
                     @Parameter(name = "dateFrom", description = "Start date."),
+                    @Parameter(name = "dateUntil", description = "End date."),
+                    @Parameter(name = "orderBy", description = "Order by likes/date posted or comments."),
+                    @Parameter(name = "order", description = "desc")
             },
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
@@ -144,7 +147,8 @@ public class PostController {
             tags = {"Post API"},
             summary = "Update a post",
             description = "Updates an existing post based on the provided ID.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
             security = {@SecurityRequirement(name = "basic")})
     public Post update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @Valid @RequestBody PostDto postDto,
@@ -166,7 +170,8 @@ public class PostController {
             tags = {"Post API"},
             summary = "Delete a post",
             description = "Deletes a post based on the provided ID.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public void delete(@PathVariable int id,
@@ -190,6 +195,9 @@ public class PostController {
             tags = {"Post API"},
             summary = "Delete multiple posts",
             description = "Deletes multiple posts based on the provided list of record IDs.",
+            requestBody =
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "ID's of the posts you want to delete, separated by comma."),
             parameters = {@Parameter(name = "Authorization", example = "Authorization")},
             security = {@SecurityRequirement(name = "basic")}
     )
@@ -217,7 +225,8 @@ public class PostController {
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
                     @Schema(implementation = Comment.class ),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE))}
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
     )
     public Comment create(@PathVariable int id,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -242,7 +251,9 @@ public class PostController {
             tags = {"Comment API", "Comment Replies API"},
             summary = "Create a reply to a comment",
             description = "Creates a reply to a specific comment.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+            @Parameter(name = "id", description = "Post ID"),
+                    @Parameter(name = "commentId", description = "Comment ID")},
             security = {@SecurityRequirement(name = "basic")}
     )
     public Comment createReply(@PathVariable int id,
@@ -268,12 +279,9 @@ public class PostController {
             tags = {"Comment API"},
             summary = "Update a comment",
             description = "Updates an existing comment.",
-            parameters = {@Parameter(name = "id", description = "ID of the post containing the comment.", example = "1"),
+            parameters = {@Parameter(name = "id", description = "ID of the post containing the comment."),
                     @Parameter(name = "Authorization", example = "Authorization"),
-                    @Parameter(name = "commentId", description = "ID of the comment to update", example = "1"),
-                    @Parameter(name = "encodedString", description = "Authorization header containing an encoded string."),
-                    @Parameter(name = "commentDto", description = "Request body containing updated comment details",
-                            example = "This is some test content for comment dto.")},
+                    @Parameter(name = "commentId", description = "ID of the comment to update"),},
             security = {@SecurityRequirement(name = "basic")}
     )
     public Comment update(@PathVariable int id, @PathVariable int commentId,
