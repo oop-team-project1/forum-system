@@ -51,7 +51,16 @@ public class PostController {
             tags = {"Post API"},
             summary = "Get posts with filters",
             description = "Retrieves a list of posts based on specified filter options.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+            @Parameter(name = "author", description = "Author username"),
+                    @Parameter(name = "title", description = "Title of the content between 16 and 64 symbols"),
+                    @Parameter(name = "content", description = "Content body between 32 and 8192 symbols"),
+                    @Parameter(name = "dateFrom", description = "Start date."),
+            },
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public List<Post> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -80,7 +89,12 @@ public class PostController {
             tags = {"Post API"},
             summary = "Get a post by ID",
             description = "Retrieves a post based on the provided ID.",
-            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post to retrieve")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public Post get(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
@@ -197,7 +211,13 @@ public class PostController {
     @Operation(
             tags = {"Comment API"},
             summary = "Create a new comment",
-            description = "Creates a new comment for a specific post."
+            description = "Creates a new comment for a specific post.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "The ID of the post for which the comment is being added.")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Comment.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))}
     )
     public Comment create(@PathVariable int id,
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
