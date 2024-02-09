@@ -29,6 +29,7 @@ public class Comment {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @JsonIgnore
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "post_id")

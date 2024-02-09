@@ -1,5 +1,6 @@
 package com.company.web.forum.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -9,9 +10,6 @@ public class CommentDto {
     @NotNull(message = "Content can't be empty")
     @Size(min = 32, max = 8192, message = "The content must be between 32 symbols and 8192 symbols.")
     private String commentContent;
-
-    private List<CommentDto> replies;
-
 
     public CommentDto() {
     }
@@ -24,11 +22,4 @@ public class CommentDto {
         this.commentContent = commentContent;
     }
 
-    public List<CommentDto> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<CommentDto> replies) {
-        this.replies = replies;
-    }
 }

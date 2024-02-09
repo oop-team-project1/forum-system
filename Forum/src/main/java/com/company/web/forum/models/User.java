@@ -1,6 +1,7 @@
 package com.company.web.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -42,6 +43,7 @@ public class User {
     @Column(name = "is_blocked")
     private boolean isBlocked;
 
+    @Schema(hidden = true)
     @JsonManagedReference
     @JsonIgnoreProperties("createdBy")
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

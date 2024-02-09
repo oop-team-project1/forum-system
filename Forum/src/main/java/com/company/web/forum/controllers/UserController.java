@@ -7,11 +7,16 @@ import com.company.web.forum.helpers.UserMapper;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +41,12 @@ public class UserController {
             tags = {"User API"},
             summary = "Get users with filters",
             description = "Retrieves a list of users based on specified filter options.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "email", example = "pesho@telerikacademy.com")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public List<User> get(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -62,6 +73,12 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by ID",
             description = "Retrieves a user based on the provided ID.",
+            parameters = {@Parameter(name = "Authorization", description = "Write 'Authorization' in the input field.",example = "Authorization"),
+            @Parameter(name = "id", description = "ID of the user to retrieve",example = "1")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User get(@PathVariable int id,
@@ -79,6 +96,14 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by username",
             description = "Retrieves a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization",
+                    description = "Write 'Authorization' in the input field.", example = "Authorization"),
+                        @Parameter(name = "username", description = "Username of the user to retrieve",
+                        example = "pesho")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User getByUsername(@RequestParam String username,
@@ -100,6 +125,13 @@ public class UserController {
             tags = {"User API"},
             summary = "Get user by email",
             description = "Retrieves a user based on the provided email.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+            @Parameter(name = "email", description = "Email of the user to retrieve",
+                    example = "pesho@telerikacademy.com")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User getByEmail(@RequestParam String email,
@@ -120,7 +152,11 @@ public class UserController {
     @Operation(
             tags = {"User API"},
             summary = "Create a new user",
-            description = "Creates a new user."
+            description = "Creates a new user.",
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))}
     )
     public User create(@Valid @RequestBody UserDto userDto) {
         try {
@@ -139,6 +175,11 @@ public class UserController {
             tags = {"User API"},
             summary = "Update user information",
             description = "Updates user information based on the provided ID.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -158,55 +199,16 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}/posts/{postId}")
-    @Operation(
-            tags = {"User API"},
-            summary = "Add a post to a user's account",
-            description = "Adds a specific post to the user's account.",
-            security = {@SecurityRequirement(name = "basic")}
-    )
-    public void addPost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                        @PathVariable int id,
-                        @PathVariable int postId) {
-        try {
-            User user = authenticationHelper.tryGetUser(encodedString);
-            userService.addPost(id, postId, user);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        } catch (AuthorizationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}/posts/{postId}")
-    @Operation(
-            tags = {"User API"},
-            summary = "Remove a post from a user's account",
-            description = "Removes a specific post from the user's account.",
-            security = {@SecurityRequirement(name = "basic")}
-    )
-    public void removePost(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
-                           @PathVariable int id,
-                           @PathVariable int postId) {
-        try {
-            User user = authenticationHelper.tryGetUser(encodedString);
-            userService.removePost(id, postId, user);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (AuthorizationException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
     @PutMapping("/blocks/{id}")
     @Operation(
             tags = {"User (Admin) API"},
             summary = "Block a user",
             description = "Blocks a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
     public void blockUser(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
@@ -228,6 +230,11 @@ public class UserController {
             tags = {"User (Admin) API"},
             summary = "Unblock a user",
             description = "Unblocks a user based on the provided username.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
 
     )
@@ -246,6 +253,17 @@ public class UserController {
     }
 
     @PutMapping("/admin/{id}")
+    @Operation(
+            tags = {"User (Admin) API"},
+            summary = "Make user admin",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+
+    )
     public void makeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable int id) {
         try {
@@ -261,6 +279,17 @@ public class UserController {
     }
 
     @DeleteMapping("/admin/{id}")
+    @Operation(
+            tags = {"User (Admin) API"},
+            summary = "Removes user admin",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = User.class ),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+
+    )
     public void removeAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @PathVariable int id) {
         try {

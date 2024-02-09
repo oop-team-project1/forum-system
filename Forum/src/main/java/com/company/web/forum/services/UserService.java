@@ -14,10 +14,6 @@ public interface UserService {
 
     User getByEmail(String email);
 
-    void addPost(int userId, int postId, User user);
-
-    void removePost(int userId, int postId, User user);
-
     void blockUser(int id, User user);
 
     void unblockUser(int id, User user);

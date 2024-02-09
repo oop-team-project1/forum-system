@@ -17,6 +17,8 @@ public class UserMapper {
 
     public User fromDto(int id, UserDto userDto) {
         User user = fromDto(userDto);
+        //TODO: fix username
+       // user.setUsername(userService.getById(id).getUsername());
         user.setId(id);
         user.setAdmin(false);
         return user;
