@@ -25,4 +25,8 @@ public interface UserService {
     void create(User userToCreate);
 
     void update(User userToUpdate, User user);
+
+    void makeAdmin(int id, User user);
+
+    void removeAdmin(int id, User user);
 }

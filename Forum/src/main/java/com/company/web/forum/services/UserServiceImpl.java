@@ -1,9 +1,6 @@
 package com.company.web.forum.services;
 
-import com.company.web.forum.exceptions.AuthorizationException;
-import com.company.web.forum.exceptions.BlockedUnblockedUserException;
-import com.company.web.forum.exceptions.EntityDuplicateException;
-import com.company.web.forum.exceptions.EntityNotFoundException;
+import com.company.web.forum.exceptions.*;
 import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
@@ -130,11 +127,39 @@ public class UserServiceImpl implements UserService {
         try {
             checkIfBlocked(userToUnblock);
         } catch (AuthorizationException ignored) {
+            userToUnblock.setBlocked(false);
+            repository.update(userToUnblock);
+            return;
         }
-        userToUnblock.setBlocked(false);
-        repository.update(userToUnblock);
+        throw new BlockedUnblockedUserException(userToUnblock.getId(), "unblocked");
     }
 
+    @Override
+    public void makeAdmin(int id, User user) {
+        checkModifyPermissions(user);
+        User userToAdmin = repository.getById(id);
+        try {
+            checkModifyPermissions(userToAdmin);
+        } catch (AuthorizationException ignored) {
+            userToAdmin.setAdmin(true);
+            repository.update(userToAdmin);
+            return;
+        }
+        throw new AdminException(userToAdmin.getId(), "admin");
+    }
+
+    @Override
+    public void removeAdmin(int id, User user) {
+        checkModifyPermissions(user);
+        User userToAdmin = repository.getById(id);
+        try {
+            checkModifyPermissions(userToAdmin);
+        } catch (AuthorizationException e) {
+            throw new AdminException(userToAdmin.getId(), "removed admin");
+        }
+        userToAdmin.setAdmin(false);
+        repository.update(userToAdmin);
+    }
 
     private void checkModifyPermissions(User user) {
         if (!(user.isAdmin())) {
