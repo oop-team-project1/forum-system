@@ -37,7 +37,7 @@ public class Post {
     @Column(updatable = false)
     @CreationTimestamp
     @JsonFormat(pattern = "dd.MM.yyyy")
-    private LocalDate date_posted;
+    private LocalDate date_of_creation;
 
     @Formula(value = "(select count(likes.post_id) from likes where post_id = likes.post_id)")
     private Long likes;
@@ -113,11 +113,11 @@ public class Post {
     }
 
     public LocalDate getDate_posted() {
-        return date_posted;
+        return date_of_creation;
     }
 
     public void setDate_posted(LocalDate date_posted) {
-        this.date_posted = date_posted;
+        this.date_of_creation = date_posted;
     }
 
     public Set<Tag> getTags() {
