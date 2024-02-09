@@ -19,14 +19,12 @@ import java.util.regex.Pattern;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    private final PostRepository postRepository;
     public static final String PERMISSION_ERROR = "Only admin or post creator can modify a post";
     public static final String USER_IS_BLOCKED = "User is blocked";
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, PostRepository postRepository) {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
-        this.postRepository = postRepository;
     }
 
     @Override
@@ -84,30 +82,6 @@ public class UserServiceImpl implements UserService {
         }
 
         repository.update(userToUpdate);
-    }
-
-    @Override
-    public void addPost(int userId, int postId, User loggedUser) {
-        checkIfBlocked(loggedUser);
-        User user = repository.getById(userId);
-        if (user.getPostsByUser().stream().anyMatch(p -> p.getId() == postId)) {
-            return;
-        }
-        Post post = postRepository.get(postId);
-        user.getPostsByUser().add(post);
-        repository.update(user);
-    }
-
-    @Override
-    public void removePost(int userId, int postId, User loggedUser) {
-        checkIfBlocked(loggedUser);
-        User user = repository.getById(userId);
-        if (user.getPostsByUser().stream().noneMatch(p -> p.getId() == postId)) {
-            throw new EntityNotFoundException("Post", postId);
-        }
-        user.getPostsByUser().removeIf(p -> p.getId() == postId);
-        postRepository.delete(postId);
-        repository.update(user);
     }
 
     @Override
