@@ -62,7 +62,7 @@ public class PostController {
             },
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
-                    @Schema(implementation = Post.class ),
+                    @Schema(implementation = Post.class),
                             mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
@@ -96,7 +96,7 @@ public class PostController {
                     @Parameter(name = "id", description = "ID of the post to retrieve")},
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
-                    @Schema(implementation = Post.class ),
+                    @Schema(implementation = Post.class),
                             mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
@@ -124,8 +124,8 @@ public class PostController {
             security = {@SecurityRequirement(name = "basic")},
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
-                    @Schema(implementation = Post.class ),
-                    mediaType = MediaType.APPLICATION_JSON_VALUE))}
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))}
     )
     public Post create(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @Valid @RequestBody PostDto postDto) {
@@ -224,7 +224,7 @@ public class PostController {
                     @Parameter(name = "id", description = "The ID of the post for which the comment is being added.")},
             responses = {@ApiResponse(responseCode = "200",
                     content = @Content(schema =
-                    @Schema(implementation = Comment.class ),
+                    @Schema(implementation = Comment.class),
                             mediaType = MediaType.APPLICATION_JSON_VALUE))},
             security = {@SecurityRequirement(name = "basic")}
     )
@@ -252,7 +252,7 @@ public class PostController {
             summary = "Create a reply to a comment",
             description = "Creates a reply to a specific comment.",
             parameters = {@Parameter(name = "Authorization", example = "Authorization"),
-            @Parameter(name = "id", description = "Post ID"),
+                    @Parameter(name = "id", description = "Post ID"),
                     @Parameter(name = "commentId", description = "Comment ID")},
             security = {@SecurityRequirement(name = "basic")}
     )
@@ -300,5 +300,31 @@ public class PostController {
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
+    }
+
+    @PostMapping("/{id}/likes")
+    public Post likePostByUser(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            return postService.addUserToLikes(user, id);
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+    }
+
+    @DeleteMapping("/{id}/likes")
+    public Post dislikePostByUser(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            return postService.removeUserFromLikes(user, id);
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
     }
 }

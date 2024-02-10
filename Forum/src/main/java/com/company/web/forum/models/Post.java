@@ -10,6 +10,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -49,6 +50,21 @@ public class Post {
 
     @Formula(value = "(select count(likes.post_id) from likes where post_id = likes.post_id)")
     private Long likes;
+
+    public Set<User> getUsersWhoLiked() {
+        return usersWhoLiked;
+    }
+
+    public void setUsersWhoLiked(Set<User> usersWhoLiked) {
+        this.usersWhoLiked = usersWhoLiked;
+    }
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
+    @JoinTable(name = "likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> usersWhoLiked;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @SQLRestriction("parent_comment IS NULL")
