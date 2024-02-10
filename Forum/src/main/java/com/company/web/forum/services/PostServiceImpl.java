@@ -1,6 +1,7 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
@@ -16,10 +17,12 @@ public class PostServiceImpl implements PostService {
     public static final String PERMISSION_ERROR = "Only admin or post creator can modify a post";
     public static final String USER_IS_BLOCKED = "Unable to create post, user is blocked";
     private final PostRepository repository;
+    private final UserService userService;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository) {
+    public PostServiceImpl(PostRepository repository, UserService userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Override
@@ -77,5 +80,27 @@ public class PostServiceImpl implements PostService {
         if (user.isBlocked()) {
             throw new AuthorizationException(USER_IS_BLOCKED);
         }
+    }
+
+    @Override
+    public Post addUserToLikes(User user, int postId) {
+        Post post = repository.get(postId);
+        if (post.getUsersWhoLiked().stream().anyMatch(u -> u.equals(user))) {
+            return post;
+        }
+        post.getUsersWhoLiked().add(user);
+        repository.update(post);
+        return post;
+    }
+
+    @Override
+    public Post removeUserFromLikes(User user, int postId) {
+        Post post = repository.get(postId);
+        if (post.getUsersWhoLiked().stream().noneMatch(u -> u.equals(user))) {
+            throw new EntityNotFoundException("Can't remove a non existing like");
+        }
+        post.getUsersWhoLiked().removeIf(u->u.equals(user));
+        repository.update(post);
+        return post;
     }
 }

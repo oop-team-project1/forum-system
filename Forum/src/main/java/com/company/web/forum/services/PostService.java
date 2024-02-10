@@ -19,5 +19,8 @@ public interface PostService {
     void delete(int id, User user);
 
     void deleteMultiple(List<Integer> ids, User user);
+    Post addUserToLikes(User user, int postId);
+
+    Post removeUserFromLikes(User user, int postId);
 
 }
