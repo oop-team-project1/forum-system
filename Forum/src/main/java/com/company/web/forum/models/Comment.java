@@ -26,6 +26,7 @@ public class Comment {
     private LocalDate date_of_creation;
 
     @ManyToOne
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
     @JoinColumn(name = "created_by")
     private User createdBy;
 
