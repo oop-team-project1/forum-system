@@ -1,7 +1,8 @@
 package com.company.web.forum.helpers;
 
 import com.company.web.forum.models.User;
-import com.company.web.forum.models.UserDto;
+import com.company.web.forum.models.UserDtoCreation;
+import com.company.web.forum.models.UserDtoUpdating;
 import com.company.web.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,20 +16,36 @@ public class UserMapper {
         this.userService = userService;
     }
 
-    public User fromDto(int id, UserDto userDto) {
-        User user = fromDto(userDto);
-        //TODO: fix username
-       // user.setUsername(userService.getById(id).getUsername());
+    public User fromDtoCreation(int id, UserDtoCreation userDto) {
+        User user = fromDtoCreation(userDto);
+        user.setUsername(userService.getById(id).getUsername());
         user.setId(id);
         user.setAdmin(false);
         return user;
     }
 
-    public User fromDto(UserDto userDto) {
+    public User fromDtoCreation(UserDtoCreation userDto) {
         User user = new User();
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        return user;
+    }
+
+    public User fromDtoUpdating(int id, UserDtoUpdating userDto) {
+        User user = fromDtoUpdating(userDto);
+        user.setId(id);
+        user.setAdmin(false);
+        return user;
+    }
+
+    public User fromDtoUpdating(UserDtoUpdating userDto) {
+        User user = new User();
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());

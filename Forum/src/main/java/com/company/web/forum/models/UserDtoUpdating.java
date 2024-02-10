@@ -1,11 +1,9 @@
 package com.company.web.forum.models;
 
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
-public class UserDto {
+public class UserDtoUpdating {
     @NotNull(message = "First name can't be empty")
     @Size(min = 4, max = 32, message = "The first name must be between 4 symbols and 32 symbols.")
     private String firstName;
@@ -16,20 +14,9 @@ public class UserDto {
     private String password;
     @NotNull(message = "Email can't be empty")
     private String email;
-
-    @NotNull(message = "Username can't be empty")
-    private String username;
     private String phoneNumber;
 
-    public UserDto() {
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public UserDtoUpdating() {
     }
 
     public String getFirstName() {

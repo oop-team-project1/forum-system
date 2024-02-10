@@ -158,9 +158,9 @@ public class UserController {
                     @Schema(implementation = User.class ),
                             mediaType = MediaType.APPLICATION_JSON_VALUE))}
     )
-    public User create(@Valid @RequestBody UserDto userDto) {
+    public User create(@Valid @RequestBody UserDtoCreation userDto) {
         try {
-            User userToCreate = userMapper.fromDto(userDto);
+            User userToCreate = userMapper.fromDtoCreation(userDto);
             userService.create(userToCreate);
             return userToCreate;
         } catch (EntityDuplicateException e) {
@@ -184,10 +184,10 @@ public class UserController {
     )
     public User update(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                        @PathVariable int id,
-                       @Valid @RequestBody UserDto userDto) {
+                       @Valid @RequestBody UserDtoUpdating userDto) {
         try {
             User user = authenticationHelper.tryGetUser(encodedString);
-            User userToUpdate = userMapper.fromDto(id, userDto);
+            User userToUpdate = userMapper.fromDtoUpdating(id, userDto);
             userService.update(userToUpdate, user);
             return userToUpdate;
         } catch (EntityNotFoundException e) {
