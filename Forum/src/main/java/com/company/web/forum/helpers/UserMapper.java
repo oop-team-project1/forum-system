@@ -1,5 +1,6 @@
 package com.company.web.forum.helpers;
 
+import com.company.web.forum.models.RegisterDto;
 import com.company.web.forum.models.User;
 import com.company.web.forum.models.UserDtoCreation;
 import com.company.web.forum.models.UserDtoUpdating;
@@ -49,6 +50,16 @@ public class UserMapper {
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
+        return user;
+    }
+
+    public User fromDtoRegister(RegisterDto registerDto) {
+        User user = new User();
+        user.setUsername(registerDto.getUsername());
+        user.setFirstName(registerDto.getFirstName());
+        user.setLastName(registerDto.getLastName());
+        user.setPassword(registerDto.getPassword());
+        user.setEmail(registerDto.getEmail());
         return user;
     }
 }
