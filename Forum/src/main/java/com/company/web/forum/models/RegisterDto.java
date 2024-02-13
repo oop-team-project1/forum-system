@@ -1,18 +1,18 @@
 package com.company.web.forum.models;
 
-import jakarta.validation.constraints.Email;
+
 import jakarta.validation.constraints.NotEmpty;
 
 public class RegisterDto extends LoginDto{
+    @NotEmpty(message = "Username can't be empty!")
+    private String username;
     @NotEmpty(message = "Password confirmation can't be empty!")
     private String passwordConfirm;
     @NotEmpty(message = "First name can't be empty!")
     private String firstName;
     @NotEmpty(message = "Last name can't be empty!")
     private String lastName;
-    @Email(message = "Email must be valid")
-    @NotEmpty(message = "Email can't be empty!")
-    private String email;
+
 
     public String getPasswordConfirm() {
         return passwordConfirm;
@@ -38,11 +38,11 @@ public class RegisterDto extends LoginDto{
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
