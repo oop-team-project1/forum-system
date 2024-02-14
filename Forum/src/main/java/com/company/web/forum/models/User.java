@@ -49,6 +49,18 @@ public class User {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Post> postsByUser;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn(name = "profile_pic")
+    private UserProfilePic profilePic;
+
+    public UserProfilePic getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(UserProfilePic profilePic) {
+        this.profilePic = profilePic;
+    }
+
     public Set<Post> getPostsByUser() {
         return postsByUser;
     }
