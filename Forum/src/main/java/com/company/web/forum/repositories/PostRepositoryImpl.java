@@ -81,6 +81,10 @@ public class PostRepositoryImpl implements PostRepository {
             queryString.append(generateOrderBy(filterOptions));
 
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
+            filterOptions.getLimit().ifPresent(query::setMaxResults);
+            filterOptions.getPage().ifPresent(value -> {
+                query.setFirstResult(value - 1);
+            });
             query.setProperties(params);
             return query.list();
         }
@@ -170,7 +174,7 @@ public class PostRepositoryImpl implements PostRepository {
                 orderBy = "likes";
                 break;
             case "date":
-                orderBy = "date_posted";
+                orderBy = "date_of_creation";
                 break;
             case "comments":
                 orderBy = "comments";
