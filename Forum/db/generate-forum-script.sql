@@ -13,7 +13,7 @@ create table user_profile_pic
 (
     pic_id int auto_increment
         primary key,
-    pic    blob not null
+    pic    varchar(500) not null
 );
 
 create table users
