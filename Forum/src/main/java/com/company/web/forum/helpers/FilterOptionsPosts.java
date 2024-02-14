@@ -1,5 +1,7 @@
 package com.company.web.forum.helpers;
 
+import com.company.web.forum.models.Tag;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
@@ -8,7 +10,19 @@ import java.util.Optional;
 
 public class FilterOptionsPosts {
     public FilterOptionsPosts() {
-        this(null,null,null,null,null,null,null,null,null,null);
+        this(null, null, null, null, null, null, null, null, null, null, null, null);
+    }
+
+    public FilterOptionsPosts(String orderBy,String order) {
+        this(null, null, null,
+                null, null, null,
+                null, null,
+                orderBy, order, null, null);
+    }
+    public FilterOptionsPosts(List<String> tag) {
+        this(null, null, null,
+                null, null, null,
+                tag, null,null, null, null, null);
     }
 
     private Optional<String> orderBy;
@@ -24,6 +38,10 @@ public class FilterOptionsPosts {
     private Optional<LocalDate> dateUntil;
     private Optional<List<String>> tags;
     private Optional<List<String>> tagsExclude;
+    @Size(max = 100)
+    private Optional<Integer> limit;
+    private Optional<Integer> page;
+
 
     public FilterOptionsPosts(
             String author,
@@ -35,7 +53,9 @@ public class FilterOptionsPosts {
             List<String> tags,
             List<String> tags_exclude,
             String orderBy,
-            String order
+            String order,
+            Integer limit,
+            Integer page
     ) {
         this.author = Optional.ofNullable(author);
         this.title = Optional.ofNullable(title);
@@ -47,6 +67,9 @@ public class FilterOptionsPosts {
         this.tagsExclude = Optional.ofNullable(tags_exclude);
         this.order = Optional.ofNullable(order);
         this.orderBy = Optional.ofNullable(orderBy);
+        this.limit = Optional.ofNullable(limit);
+        this.page = Optional.ofNullable(page);
+
     }
 
     public Optional<String> getAuthor() {
@@ -87,6 +110,18 @@ public class FilterOptionsPosts {
 
     public Optional<String> getOrder() {
         return order;
+    }
+
+    public Optional<List<String>> getTagsExclude() {
+        return tagsExclude;
+    }
+
+    public Optional<Integer> getLimit() {
+        return limit;
+    }
+
+    public Optional<Integer> getPage() {
+        return page;
     }
 
 
