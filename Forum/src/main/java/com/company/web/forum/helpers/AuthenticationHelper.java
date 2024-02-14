@@ -72,9 +72,9 @@ public class AuthenticationHelper {
         return userService.getByUsername(currentUser);
     }
 
-    public User verifyAuthentication(String username, String password) {
+    public User verifyAuthentication(String email, String password) {
         try {
-            User user = userService.getByUsername(username);
+            User user = userService.getByEmail(email);
             if(!user.getPassword().equals(password)) {
                 throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
             }

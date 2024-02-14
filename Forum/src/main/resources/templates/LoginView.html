@@ -25,6 +25,8 @@
 
     <!--    self-->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
     <meta property="og:title" content="Reader | Hugo Personal Blog Template"/>
     <meta property="og:description" content="This is meta description"/>
@@ -60,7 +62,7 @@
                            href="#">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
+                        <a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
                             out</a>
                     </li>
 
@@ -82,7 +84,7 @@
     <div class="container">
         <div class="row">
             <div class="log-in text-center">
-                <h6 class="mb-0 pb-3"><span>Log In </span><span>Sign Up</span></h6>
+                <h6 class="mb-0 pb-3"><span>Log In </span><span>Register</span></h6>
             </div>
         </div>
         <div class="checkbox-container">
@@ -163,23 +165,24 @@
                       th:object="${login}">
                     <div class="form-group">
                         <input type="text" name="email" id="email" class="form-control" th:field="*{email}"
-                               placeholder="Email">
+                        placeholder="Email">
                         <i class="input-icon uil uil-at"></i>
-                        <label class="error" th:errors="*{email}"></label>
-<!--
+                        <label class="error" id="email-err" th:errors="*{email}"></label>
+
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" id="password" class="form-control" th:field="*{password}"
-                               placeholder="Password">
+                        placeholder="Password">
                         <i class="input-icon uil uil-lock-alt"></i>
-                        <label class="error" th:errors="*{password}"></label>
+                        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+                        <label class="error" id="password-err" th:errors="*{password}"></label>
                     </div>
                     <div class="btn-container">
                         <button type="submit" value="Login" class="btn btn-primary">Log In</button>
                     </div>
                 </form>
 
-                <!--registration form-->
+
 
             </div>
         </div>
@@ -240,5 +243,6 @@
 
 <!-- Main Script -->
 <script src="..static/js/script.js" th:src="@{/js/script.js}"></script>
+<script src="..static/js/pass.js" th:src="@{/js/pass.js}"></script>
 </body>
 </html>

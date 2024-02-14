@@ -18,6 +18,8 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}" media="screen">
+    <link rel="stylesheet" href="../static/css/pass.css" th:href="@{/css/pass.css}" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!--Favicon-->
     <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
@@ -60,7 +62,7 @@
                            href="#">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
+                        <a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
                             out</a>
                     </li>
 
@@ -82,7 +84,7 @@
     <div class="container">
         <div class="row">
             <div class="log-in text-center">
-                <h6 class="mb-0 pb-3"><span>Log In </span><span>Sign Up</span></h6>
+                <h6 class="mb-0 pb-3"><span>Log In </span><span>Register</span></h6>
             </div>
         </div>
 <!--        -->
@@ -164,35 +166,37 @@
                     <div class="form-group">
                         <input type="text" name="firstName" id="firstName" class="form-control" th:field="*{firstName}"
                                placeholder="First Name">
-                        <label class="error" th:errors="*{firstName}"></label>
+                        <label class="error" id="f-name-err" th:errors="*{firstName}"></label>
                     </div>
                     <div class="form-group">
                         <input type="text" name="firstName" id="lastName" class="form-control" th:field="*{lastName}"
                                placeholder="Last Name">
-                        <label class="error" th:errors="*{lastName}"></label>
+                        <label class="error" id="l-name-err" th:errors="*{lastName}"></label>
                     </div>
                     <div class="form-group">
                         <input type="text" name="username" id="username" class="form-control" th:field="*{username}"
                                placeholder="Username">
-                        <label class="error" th:errors="*{username}">User error placeholder</label>
+                        <label class="error" id="username-err" th:errors="*{username}">User error placeholder</label>
                     </div>
                     <div class="form-group">
                         <input type="text" name="email" id="email" class="form-control" th:field="*{email}"
                                placeholder="Email">
                         <i class="input-icon uil uil-at"></i>
-                        <label class="error" th:errors="*{email}"></label>
+                        <label class="error" id="email-error" th:errors="*{email}"></label>
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" id="password" class="form-control" th:field="*{password}"
                                placeholder="Password">
                         <i class="input-icon uil uil-lock-alt"></i>
-                        <label class="error" th:errors="*{password}"></label>
+                        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+                        <label class="error" id="pass-err" th:errors="*{password}"></label>
                     </div>
                     <div class="form-group">
                         <input type="password" name="password" id="passwordConfirm" class="form-control" th:field="*{passwordConfirm}"
                                placeholder="Confirm Password">
                         <i class="input-icon uil uil-lock-alt"></i>
-                        <label class="error" th:errors="*{passwordConfirm}"></label>
+                        <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+                        <label class="error" id="pass-confirm-err" th:errors="*{passwordConfirm}"></label>
                     </div>
                     <div class="btn-container">
                         <button type="submit" value="Register" class="btn btn-primary">Register</button>
@@ -258,5 +262,6 @@
 
 <!-- Main Script -->
 <script src="..static/js/script.js" th:src="@{/js/script.js}"></script>
+<script src="..static/js/pass.js" th:src="@{/js/pass.js}"></script>
 </body>
 </html>

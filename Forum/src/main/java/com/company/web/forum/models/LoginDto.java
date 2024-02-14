@@ -10,7 +10,7 @@ public class LoginDto {
 
     @NotEmpty(message = "Email can't be empty!")
     @Pattern(
-            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$",
+            regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
             message = "Please provide a valid email address. The email format should be like user@example.com"
     )
     private String email;
