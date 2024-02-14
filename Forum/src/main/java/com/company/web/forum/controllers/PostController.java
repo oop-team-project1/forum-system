@@ -3,13 +3,11 @@ package com.company.web.forum.controllers;
 import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
-import com.company.web.forum.helpers.AuthenticationHelper;
-import com.company.web.forum.helpers.CommentMapper;
-import com.company.web.forum.helpers.FilterOptionsPosts;
-import com.company.web.forum.helpers.PostMapper;
+import com.company.web.forum.helpers.*;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
+import com.company.web.forum.services.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,14 +34,18 @@ public class PostController {
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
     private final CommentService commentService;
+    private final TagService tagService;
+    private final TagMapper tagMapper;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper, CommentMapper commentMapper, CommentService commentService, TagService tagService, TagMapper tagMapper) {
         this.authenticationHelper = authenticationHelper;
         this.postService = postService;
         this.postMapper = postMapper;
         this.commentMapper = commentMapper;
         this.commentService = commentService;
+        this.tagService = tagService;
+        this.tagMapper = tagMapper;
     }
 
     @GetMapping
@@ -76,8 +78,10 @@ public class PostController {
                           @RequestParam(required = false) List<String> tags,
                           @RequestParam(required = false) List<String> tags_exclude,
                           @RequestParam(required = false) String orderBy,
-                          @RequestParam(required = false) String order) {
-        FilterOptionsPosts filterOptions = new FilterOptionsPosts(author, title, content, keyword, dateFrom, dateUntil, tags, tags_exclude, orderBy, order);
+                          @RequestParam(required = false) String order,
+                          @RequestParam(required = false, defaultValue = "10") Integer limit,
+                          @RequestParam(required = false, defaultValue = "1") Integer page) {
+        FilterOptionsPosts filterOptions = new FilterOptionsPosts(author, title, content, keyword, dateFrom, dateUntil, tags, tags_exclude, orderBy, order, limit, page);
         try {
             authenticationHelper.tryGetUser(encodedString);
         } catch (AuthenticationException e) {
@@ -188,7 +192,6 @@ public class PostController {
         }
 
     }
-
 
     @DeleteMapping("/selection")
     @Operation(
@@ -326,5 +329,45 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
+    }
+
+    @PostMapping("/{id}/tags")
+    public void addTag(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @RequestBody TagDto tagDto) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            Tag tag = tagMapper.fromDto(tagDto);
+            tagService.create(tag, id, user);
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}/tags/{tagId}")
+    public void deleteTag(@PathVariable int id, @PathVariable int tagId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            tagService.delete(id, tagId, user);
+
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("{id}/tags")
+    public List<Tag> getTags(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+        try {
+            authenticationHelper.tryGetUser(encodedString);
+            return tagService.getAll(id);
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.company.web.forum.models;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tags")
@@ -46,5 +47,8 @@ public class Tag {
 
     @Column
     private String name;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private Set<Post> posts;
 
 }
