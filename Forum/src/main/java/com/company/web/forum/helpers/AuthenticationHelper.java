@@ -1,6 +1,7 @@
 package com.company.web.forum.helpers;
 
 import com.company.web.forum.exceptions.AuthenticationException;
+import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.models.User;
 import com.company.web.forum.services.UserService;
@@ -69,5 +70,17 @@ public class AuthenticationHelper {
         }
 
         return userService.getByUsername(currentUser);
+    }
+
+    public User verifyAuthentication(String email, String password) {
+        try {
+            User user = userService.getByEmail(email);
+            if(!user.getPassword().equals(password)) {
+                throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+            }
+            return user;
+        } catch (EntityNotFoundException e) {
+            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+        }
     }
 }
