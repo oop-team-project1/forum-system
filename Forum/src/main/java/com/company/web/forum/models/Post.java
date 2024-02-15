@@ -26,6 +26,15 @@ public class Post {
     @Column(name = "content")
     private String content;
 
+    @Column(name="description")
+    private String description;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
+    @JoinTable(name = "post_ingredients", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    private List<Ingredient> ingredients;
+
 
     @Column(name = "title")
     private String title;
@@ -143,6 +152,14 @@ public class Post {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Post() {
