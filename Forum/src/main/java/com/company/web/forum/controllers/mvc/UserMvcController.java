@@ -1,6 +1,8 @@
 package com.company.web.forum.controllers.mvc;
 
+import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
+import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.FilterOptionsUsers;
 import com.company.web.forum.models.Post;
@@ -15,10 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -28,11 +27,13 @@ import java.util.Set;
 public class UserMvcController {
     private final UserService userService;
     private final PostService postService;
+    private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public UserMvcController(UserService userService, PostService postService) {
+    public UserMvcController(UserService userService, PostService postService, AuthenticationHelper authenticationHelper) {
         this.userService = userService;
         this.postService = postService;
+        this.authenticationHelper = authenticationHelper;
     }
 
     @ModelAttribute("posts")
@@ -50,7 +51,7 @@ public class UserMvcController {
         List<User> users = userService.getAll(new FilterOptionsUsers());
         if (populateIsAuthenticated(session)){
             String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+            model.addAttribute("currentUser", userService.getByEmail(currentUsername));
         }
         model.addAttribute("users", users);
         return "UsersView";
@@ -65,6 +66,30 @@ public class UserMvcController {
             model.addAttribute("user", user);
             model.addAttribute("posts", posts);
             return "UserView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @PostMapping("/blocks/{id}")
+    public String updateBlocked(@PathVariable int id, Model model, HttpSession session){
+        try {
+            User user;
+            try {
+                user = authenticationHelper.tryGetUser(session);
+            } catch (AuthorizationException e) {
+                return "redirect:/auth/login";
+            }
+
+            User userToBlock = userService.getById(id);
+            if(userToBlock.isBlocked()){
+                userService.unblockUser(userToBlock.getId(), user);
+            } else {
+                userService.blockUser(userToBlock.getId(), user);
+            }
+            return "redirect:/users";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
