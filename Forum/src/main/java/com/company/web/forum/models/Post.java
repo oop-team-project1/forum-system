@@ -22,6 +22,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private int id;
+    @Column(name = "title")
+    private String title;
 
     @Column(name = "content")
     private String content;
@@ -29,18 +31,15 @@ public class Post {
     @Column(name="description")
     private String description;
 
-    @JsonIgnore
+    /*@JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
     @JoinTable(name = "post_ingredients", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
-    private List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;*/
 
-
-    @Column(name = "title")
-    private String title;
 
     @ManyToOne
-    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked","profilePic"})
     @JoinColumn(name = "created_by")
     private User createdBy;
 
