@@ -1,22 +1,24 @@
 package com.company.web.forum.controllers.mvc;
 
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.FilterOptionsUsers;
-import com.company.web.forum.models.Post;
-import com.company.web.forum.models.User;
-import com.company.web.forum.models.UserProfilePic;
+import com.company.web.forum.helpers.UserMapper;
+import com.company.web.forum.models.*;
 import com.company.web.forum.services.PostService;
 import com.company.web.forum.services.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +30,14 @@ public class UserMvcController {
     private final UserService userService;
     private final PostService postService;
     private final AuthenticationHelper authenticationHelper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserMvcController(UserService userService, PostService postService, AuthenticationHelper authenticationHelper) {
+    public UserMvcController(UserService userService, PostService postService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
         this.userService = userService;
         this.postService = postService;
         this.authenticationHelper = authenticationHelper;
+        this.userMapper = userMapper;
     }
 
     @ModelAttribute("posts")
@@ -58,8 +62,13 @@ public class UserMvcController {
     }
 
     @GetMapping("/{id}")
-    public String showSingleUser(@PathVariable int id, Model model) {
+    public String showSingleUser(@PathVariable int id, Model model, HttpSession session) {
         try {
+            if (populateIsAuthenticated(session)){
+                String currentUsername = (String) session.getAttribute("currentUser");
+                model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+            }
+
             User user = userService.getById(id);
             Set<Post> posts = user.getPostsByUser();
 
@@ -94,6 +103,43 @@ public class UserMvcController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        }
+    }
+
+    @GetMapping("/edit")
+    public String showUserEditPage (Model model, HttpSession session) {
+        if (populateIsAuthenticated(session)){
+            String currentUsername = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+        }
+
+        model.addAttribute("userEdit", new UserDtoUpdating());
+        return "UserEditView";
+    }
+
+    @PostMapping("/edit")
+    public String handleRegister(@Valid @ModelAttribute("userEdit") UserDtoUpdating userDtoUpdating,
+                                 BindingResult bindingResult,
+                                 HttpSession session) {
+        if(bindingResult.hasErrors()) {
+            return "UserEditView";
+        }
+        try {
+            User user;
+            try {
+                user = authenticationHelper.tryGetUser(session);
+            } catch (AuthorizationException e) {
+                return "redirect:/auth/login";
+            }
+
+            User userToUpdate = userMapper.fromDtoUpdating(userDtoUpdating, user);
+            userService.update(userToUpdate, user);
+            session.removeAttribute("currentUser");
+            session.setAttribute("currentUser", userToUpdate.getEmail());
+            return "redirect:/";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("username", "username_error", e.getMessage());
+            return "UserEditView";
         }
     }
 }
