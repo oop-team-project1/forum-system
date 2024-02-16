@@ -39,7 +39,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void create(Comment comment, User user, Post post, Comment parentComment) {
-        //TODO: check if user is logged
         checkIfUserIsBlocked(user);
         comment.setCreatedBy(user);
         comment.setPost(post);
@@ -49,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void update(Comment comment, User user) {
-        //TODO: check if user is logged
         checkIfUserIsBlocked(user);
         checkIfUserIsOwnerOfTheComment(comment, user);
         commentRepository.update(comment);

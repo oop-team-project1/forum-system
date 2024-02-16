@@ -161,7 +161,7 @@
 						<div class="card-body">
 							<h3 class="mb-3"><a class="post-title" th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
 							<p th:text="${post.content}">Post Content</p>
-							<a th:href="@{'/post/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
+							<a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
 						</div>
 					</article>
 				</div>
