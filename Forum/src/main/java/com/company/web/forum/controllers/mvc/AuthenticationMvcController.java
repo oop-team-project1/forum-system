@@ -66,7 +66,7 @@ public class AuthenticationMvcController {
             User user = authenticationHelper.verifyAuthentication(loginDto.getEmail(), loginDto.getPassword());
             session.setAttribute("currentUser", loginDto.getEmail());
             session.setAttribute("isAdmin", user.isAdmin());
-            return "redirect :/";
+            return "redirect:/";
 
         } catch (AuthorizationException e) {
             bindingResult.rejectValue("email", "auth_error", e.getMessage());
@@ -77,7 +77,7 @@ public class AuthenticationMvcController {
     @GetMapping("/logout")
     public String handleLogout(HttpSession session) {
         session.removeAttribute("currentUser");
-        return "redirect :/";
+        return "redirect:/auth/login";
     }
 
     @GetMapping("/register")
