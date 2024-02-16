@@ -34,4 +34,21 @@ public class CommentMapper {
         return comment;
     }
 
+    public Comment fromDtoUpdatingComment(CommentDto commentDto, Comment oldComment) {
+        Comment newComment = new Comment();
+        newComment.setId(oldComment.getId());
+        newComment.setCommentContent(commentDto.getCommentContent());
+        newComment.setCreatedBy(oldComment.getCreatedBy());
+        newComment.setParentComment(newComment);
+        newComment.setReplies(oldComment.getReplies());
+        newComment.setPost(oldComment.getPost());
+        return newComment;
+    }
+
+    public CommentDto toDto(Comment comment) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setCommentContent(comment.getCommentContent());
+        return commentDto;
+    }
+
 }
