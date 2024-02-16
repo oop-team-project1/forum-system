@@ -22,16 +22,24 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private int id;
+    @Column(name = "title")
+    private String title;
 
     @Column(name = "content")
     private String content;
 
+    @Column(name="description")
+    private String description;
 
-    @Column(name = "title")
-    private String title;
+    /*@JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
+    @JoinTable(name = "post_ingredients", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    private List<Ingredient> ingredients;*/
+
 
     @ManyToOne
-    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked"})
+    @JsonIgnoreProperties({"postsByUser","id","firstName","lastName","email","admin","blocked","profilePic"})
     @JoinColumn(name = "created_by")
     private User createdBy;
 
@@ -143,6 +151,14 @@ public class Post {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Post() {
