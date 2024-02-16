@@ -62,6 +62,7 @@ h5, .h5 {
 h6, .h6 {
   font-size: 13px;
 }
+
 /*self*/
 .ti-calendar::before {
   margin-right: 10px;
@@ -81,6 +82,7 @@ li {
   border-color: #d21f1f !important;
   color: #fff;
 }
+
 /* Button style */
 .btn {
   font-size: 14px;

@@ -1,9 +1,12 @@
 package com.company.web.forum.controllers.mvc;
 
+import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.models.Post;
+import com.company.web.forum.models.User;
 import com.company.web.forum.services.TagService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +23,12 @@ import java.util.List;
 public class HomeMvcController {
     final PostService postService;
     final TagService tagService;
+    final AuthenticationHelper authenticationHelper;
 
-    public HomeMvcController(PostService postService, TagService tagService) {
+    public HomeMvcController(PostService postService, TagService tagService, AuthenticationHelper authenticationHelper) {
         this.postService = postService;
         this.tagService = tagService;
+        this.authenticationHelper =authenticationHelper;
     }
 
     @ModelAttribute("isAuthenticated")
@@ -46,9 +51,11 @@ public class HomeMvcController {
         List<Post> filteredPosts = postService.getAll(new FilterOptionsPosts(tags));
 
         model.addAttribute("posts", filteredPosts);
+        model.addAttribute("tag",tag);
 
         return "FilteredPostsView";
     }
+
 
 
 }
