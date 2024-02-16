@@ -83,7 +83,7 @@
         <ul class="list-inline">
           <li class="list-inline-item"><a class="text-default" href="">Home
               &nbsp; &nbsp; /</a></li>
-          <li class="list-inline-item text-primary">Author</li>
+          <li class="list-inline-item text-primary">Users</li>
         </ul>
       </div>
     </div>
@@ -146,9 +146,6 @@
             <img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
             <h3 class="mb-2"><a th:href="'/users/' + ${user.id}" class="post-title" th:text="${user.username}">Username</a></h3>
             <p class="mb-3" th:text="${user.firstName + ' ' + user.lastName}" >User &amp name</p>
-            <!--<button class="btn btn-outline-block" th:if="${currentUser.isAdmin() && !user.isBlocked()}">Block</button>
-            <button class="btn btn-outline-primary" th:if="${currentUser.isAdmin() && user.isBlocked()}">Unblock</button>-->
-
             <form th:if="${currentUser.isAdmin()}" action="#"
                   th:action="@{/users/blocks/__${user.id}__}" method="post">
               <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">

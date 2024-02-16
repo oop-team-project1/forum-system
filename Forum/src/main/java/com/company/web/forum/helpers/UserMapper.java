@@ -42,7 +42,6 @@ public class UserMapper {
         user.setAdmin(false);
         return user;
     }
-
     public User fromDtoUpdating(UserDtoUpdating userDto) {
         User user = new User();
         user.setFirstName(userDto.getFirstName());
@@ -51,6 +50,22 @@ public class UserMapper {
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
         return user;
+    }
+
+    public User fromDtoUpdating(UserDtoUpdating userDto, User user) {
+        User userToUpdate = new User();
+        userToUpdate.setFirstName(userDto.getFirstName());
+        userToUpdate.setLastName(userDto.getLastName());
+        userToUpdate.setPassword(userDto.getPassword());
+        userToUpdate.setEmail(userDto.getEmail());
+        userToUpdate.setPhoneNumber(userDto.getPhoneNumber());
+        userToUpdate.setId(user.getId());
+        userToUpdate.setUsername(user.getUsername());
+        userToUpdate.setBlocked(user.isBlocked());
+        userToUpdate.setAdmin(user.isAdmin());
+        userToUpdate.setPostsByUser(user.getPostsByUser());
+        userToUpdate.setProfilePic(user.getProfilePic());
+        return userToUpdate;
     }
 
     public User fromDtoRegister(RegisterDto registerDto) {

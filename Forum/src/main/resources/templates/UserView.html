@@ -145,6 +145,7 @@
 			<img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
 			<h3 class="mb-2" th:text="${user.firstName + ' ' + user.lastName}"></h3>
 			<a class="post-count mb-1" href="#"><i class="ti-pencil-alt mr-2"></i><span class="text-primary" th:text="${user.postsByUser.size()}"></span> Posts by this user</a>
+			<a class="btn btn-outline-primary" th:if="${currentUser.id == user.id}" th:href="@{/users/edit}" href="#">Edit profile</a>
 		</div>
 	</div>
 </div>
