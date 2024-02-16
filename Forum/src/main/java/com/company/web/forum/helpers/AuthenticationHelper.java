@@ -69,7 +69,7 @@ public class AuthenticationHelper {
             throw new AuthenticationException("No user logged in.");
         }
 
-        return userService.getByUsername(currentUser);
+        return userService.getByEmail(currentUser);
     }
 
     public User tryGetCurrentUserByEmail(HttpSession session) {
