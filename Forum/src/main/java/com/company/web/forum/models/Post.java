@@ -67,7 +67,7 @@ public class Post {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @SQLRestriction("parent_comment IS NULL")
+    @SQLRestriction("parent_comment= comment_id")
     private Set<Comment> comments;
 
 

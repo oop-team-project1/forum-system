@@ -31,4 +31,25 @@ public class PostMapper {
         post.setContent(postDto.getContent());
         return post;
     }
+
+    public Post fromDtoUpdating(PostDto postDto, Post post) {
+        Post newPost = new Post();
+        newPost.setId(post.getId());
+        newPost.setTitle(postDto.getTitle());
+        newPost.setContent(postDto.getContent());
+        newPost.setCreatedBy(post.getCreatedBy());
+        newPost.setLikes(post.getLikes());
+        newPost.setUsersWhoLiked(post.getUsersWhoLiked());
+        newPost.setComments(post.getComments());
+        newPost.setTags(post.getTags());
+
+        return newPost;
+    }
+
+    public PostDto toDto(Post post) {
+        PostDto postDto = new PostDto();
+        postDto.setTitle(post.getTitle());
+        postDto.setContent(post.getContent());
+        return postDto;
+    }
 }
