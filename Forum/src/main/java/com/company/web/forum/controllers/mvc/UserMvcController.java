@@ -51,12 +51,29 @@ public class UserMvcController {
     }
 
     @GetMapping
-    public String showAllUsers(Model model, HttpSession session) {
-        List<User> users = userService.getAll(new FilterOptionsUsers());
+    public String showAllUsers(@ModelAttribute("filterOptions") FilterDtoUser filterDto, Model model, HttpSession session) {
+       // List<User> users = userService.getAll(new FilterOptionsUsers());
+       // if (populateIsAuthenticated(session)){
+       //     String currentUsername = (String) session.getAttribute("currentUser");
+       //     model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+       // }
+       // model.addAttribute("users", users);
+       // return "UsersView";
+
+        FilterOptionsUsers filterOptions = new FilterOptionsUsers(
+                filterDto.getUsername(),
+                filterDto.getFirstName(),
+                filterDto.getLastName(),
+                filterDto.getEmail(),
+                filterDto.getSortBy(),
+                filterDto.getSortOrder());
+
+        List<User> users = userService.getAll(filterOptions);
         if (populateIsAuthenticated(session)){
             String currentUsername = (String) session.getAttribute("currentUser");
             model.addAttribute("currentUser", userService.getByEmail(currentUsername));
         }
+        model.addAttribute("filterOptionsUsers", filterDto);
         model.addAttribute("users", users);
         return "UsersView";
     }
