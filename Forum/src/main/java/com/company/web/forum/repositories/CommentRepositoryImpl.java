@@ -67,8 +67,10 @@ public class CommentRepositoryImpl implements CommentRepository {
             StringBuilder queryString = new StringBuilder("from Comment");
             queryString.append(" where id = parentComment.id ");
 
-            if (!filters.isEmpty()) {
+            if (!filters.isEmpty() && filters.size() > 1) {
                 queryString.append(String.join(" and ", filters));
+            } else if (filters.size() == 1) {
+                queryString.append(String.format(" and %s ",filters));
             }
 
             queryString.append(generateOrderBy(filterOptions));

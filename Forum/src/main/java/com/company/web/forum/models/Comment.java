@@ -3,10 +3,12 @@ package com.company.web.forum.models;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -41,6 +43,18 @@ public class Comment {
     @JoinColumn(name = "parent_comment")
     private Comment parentComment;
 
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @SQLRestriction("parent_comment != comment_id")
+    private Set<Comment> replies;
+
+    public Set<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Set<Comment> replies) {
+        this.replies = replies;
+    }
 
     public LocalDate getDate_of_creation() {
         return date_of_creation;
