@@ -141,7 +141,7 @@
                     <h3 id="we-would-love-to-hear-from-you">Add Comment</h3>
                 </div>
                 <!--comment form-->
-                <form id="comment-form" class="auth-form" method="POST" action="#" th:action="@{/posts/id/comments}"
+                <form id="comment-form" class="auth-form" method="POST" action="#" th:action="@{'/posts/' + ${post.id} + '/comments'}"
                       th:object="${comment}">
                     <div class="form-group">
 <!--                        <input type="text" name="email" id="email" class="form-control" th:field="*{email}"-->
