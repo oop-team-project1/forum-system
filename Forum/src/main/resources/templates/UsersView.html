@@ -146,6 +146,7 @@
             <img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
             <h3 class="mb-2"><a th:href="'/users/' + ${user.id}" class="post-title" th:text="${user.username}">Username</a></h3>
             <p class="mb-3" th:text="${user.firstName + ' ' + user.lastName}" >User &amp name</p>
+
             <form th:if="${currentUser.isAdmin()}" action="#"
                   th:action="@{/users/blocks/__${user.id}__}" method="post">
               <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
@@ -154,6 +155,19 @@
                 </div>
                 <div th:if="${!user.isBlocked()}" class ="text-center">
                   <button type="submit" class="btn btn-outline-block" href="#">Block
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <form th:if="${currentUser.isAdmin()}" action="#"
+                  th:action="@{/users/admin/__${user.id}__}" method="post">
+              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div th:if="${user.isAdmin()}" class="text-center">
+                  <button type="submit" class="btn btn-outline-block" href="#">Remove Admin</button>
+                </div>
+                <div th:if="${!user.isAdmin()}" class ="text-center">
+                  <button type="submit" class="btn btn-outline-primary" href="#">Make Admin
                   </button>
                 </div>
               </div>

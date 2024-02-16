@@ -106,6 +106,53 @@ public class UserMvcController {
         }
     }
 
+    @GetMapping("/deletes/{id}")
+    public String deleteUser(@PathVariable int id, Model model, HttpSession session){
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            userService.deleteUser(id, user);
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @PostMapping("/admin/{id}")
+    public String makeAdmin(@PathVariable int id, Model model, HttpSession session){
+        try {
+            User user;
+            try {
+                user = authenticationHelper.tryGetUser(session);
+            } catch (AuthorizationException e) {
+                return "redirect:/auth/login";
+            }
+
+            User userAdmin = userService.getById(id);
+            if(userAdmin.isAdmin()){
+                userService.removeAdmin(userAdmin.getId(), user);
+            } else {
+                userService.makeAdmin(userAdmin.getId(), user);
+            }
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
     @GetMapping("/edit")
     public String showUserEditPage (Model model, HttpSession session) {
         if (populateIsAuthenticated(session)){
