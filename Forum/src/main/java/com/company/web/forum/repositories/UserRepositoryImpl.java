@@ -2,6 +2,7 @@ package com.company.web.forum.repositories;
 
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsUsers;
+import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -119,6 +120,16 @@ public class UserRepositoryImpl implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(user);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void deleteUser(int id) {
+        User userToDelete = getById(id);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(userToDelete);
             session.getTransaction().commit();
         }
     }
