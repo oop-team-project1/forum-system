@@ -72,16 +72,6 @@ public class AuthenticationHelper {
         return userService.getByEmail(currentUser);
     }
 
-    public User tryGetCurrentUserByEmail(HttpSession session) {
-        String currentUserEmail = (String) session.getAttribute("currentUser");
-
-        if (currentUserEmail == null) {
-            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
-        }
-
-        return userService.getByEmail(currentUserEmail);
-    }
-
     public User verifyAuthentication(String email, String password) {
         try {
             User user = userService.getByEmail(email);
