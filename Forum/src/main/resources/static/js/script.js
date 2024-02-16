@@ -14,6 +14,7 @@ $(window).on('load', function () {
 (function ($) {
 	'use strict';
 
+
 	$(window).on('scroll', function () {
 		var scrolling = $(this).scrollTop();
 		if (scrolling > 10) {
@@ -129,7 +130,6 @@ $(window).on('load', function () {
 	$('#myModal').on('hide.bs.modal', function (e) {
 		$('#video').attr('src', $videoSrc);
 	});
-
 
 
 })(jQuery);
