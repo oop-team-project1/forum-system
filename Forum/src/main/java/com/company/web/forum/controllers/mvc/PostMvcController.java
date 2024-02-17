@@ -54,8 +54,8 @@ public class PostMvcController {
     public String showSinglePost(@PathVariable int id, Model model,
                                  HttpSession session) {
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
 
         try {
@@ -134,7 +134,7 @@ public class PostMvcController {
                                    HttpSession session) {
 
         try {
-           authenticationHelper.tryGetUser(session);
+            authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
@@ -216,7 +216,7 @@ public class PostMvcController {
                                           Model model, HttpSession session) {
 
         try {
-             authenticationHelper.tryGetUser(session);
+            authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }

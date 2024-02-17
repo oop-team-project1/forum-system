@@ -10,7 +10,7 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Reader | Hugo Personal Blog Template</title>
+    <title>TastyTale</title>
 
     <!-- mobile responsive meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -56,9 +56,6 @@
                         <a class="nav-link" th:href="@{/users}" href="#">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/about}" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
                     </li>
                     <li class="nav-item">
@@ -86,9 +83,9 @@
 
                     <h1 th:text="${post.title}" class="h2"></h1>
                     <ul class="card-meta my-3 list-inline">
-<!--                        <li class="list-inline-item">-->
-<!--                            <i class="ti-timer"></i>3 Min To Read-->
-<!--                        </li>-->
+                        <!--                        <li class="list-inline-item">-->
+                        <!--                            <i class="ti-timer"></i>3 Min To Read-->
+                        <!--                        </li>-->
                         <li class="list-inline-item" style="font-size: 14px;">
                             <i th:text="${#temporals.format(post.date_of_creation, 'dd/MM/yyyy')}"
                                class="ti-calendar"></i>
@@ -102,8 +99,8 @@
                 </article>
                 <hr>
                 <div>
-                    <form th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post" style="display: inline-block;">
-
+                    <form th:if="${isAuthenticated && !currentUser.isBlocked()}"
+                          th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post" style="display: inline-block;">
                         <input type="hidden" name="postId" th:value="${post.id}"/>
                         <button class="btn btn-outline-block" type="submit">
                             <i class="fa fa-heart"></i>
@@ -111,7 +108,20 @@
                         </button>
                     </form>
 
-                    <a class="btn btn-outline-primary" th:href="@{'/posts/' + ${post.id} + '/comments'}">
+                    <form th:unless="${isAuthenticated}" th:action="@{'/auth/login'}" style="display: inline-block;">
+                        <input type="hidden" name="postId" th:value="${post.id}"/>
+                        <button class="btn btn-outline-block" type="submit">
+                            <i class="fa fa-heart"></i>
+                            <span th:text="${post.likes}"></span>
+                        </button>
+                    </form>
+
+
+                    <a th:if="${isAuthenticated && !currentUser.isBlocked()}" class="btn btn-outline-primary"
+                       th:href="@{'/posts/' + ${post.id} + '/comments'}">
+                        Comment
+                    </a>
+                    <a th:unless="${isAuthenticated}" class="btn btn-outline-primary" th:href="@{'/auth/login'}">
                         Comment
                     </a>
 
@@ -128,18 +138,20 @@
                                         <p th:text="${comment.commentContent}"></p>
                                         <p th:text="${#temporals.format(comment.date_of_creation, 'dd/MM/yyyy')}"></p>
                                         <a class="btn btn-outline-primary"
+                                           th:if="${isAuthenticated && !currentUser.isBlocked()}"
                                            th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
-                                           >Reply
+                                        >Reply
                                         </a>
                                         <a class="btn btn-outline-primary"
-                                           th:if="${currentUser.isAdmin() || comment.createdBy.equals(currentUser)}"
+                                           th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
                                            th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/update'}"
                                            style="margin-left: 20px;">Edit comment
                                         </a>
                                         <ul th:if="${comment.replies}">
                                             <div class="replies">
 
-                                                <li th:each="reply : ${comment.replies}" style="margin-bottom: 50px; margin-top: 50px;">
+                                                <li th:each="reply : ${comment.replies}"
+                                                    style="margin-bottom: 50px; margin-top: 50px;">
                                                     <h5 th:text="${reply.createdBy.firstName + ' ' + reply.createdBy.lastName}"></h5>
                                                     <img class="mr-3" src="/images/post/arrow.png" alt="">
                                                     <p th:text="${reply.commentContent}"
@@ -147,12 +159,12 @@
                                                     <p th:text="${#temporals.format(reply.date_of_creation, 'dd/MM/yyyy')}"
                                                        style="padding-left: 170px;"></p>
 
-                                                    <a th:if="${!currentUser.isBlocked()}"
+                                                    <a th:if="${isAuthenticated && !currentUser.isBlocked()}"
                                                        class="btn btn-outline-primary"
                                                        th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
                                                        style="margin-left: 160px;">Reply</a>
                                                     <a class="text-primary font-weight-600"
-                                                       th:if="${currentUser.isAdmin() || comment.createdBy.equals(currentUser)}"
+                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
                                                        th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/update'}"
                                                        style="padding-left: 250px;">Edit comment
                                                     </a>
@@ -164,12 +176,12 @@
                                 </ul>
                             </div>
                         </div>
-<!--                        <div class="media d-block d-sm-flex">-->
-<!--                            <div class="d-inline-block mr-2 mb-3 mb-md-0" href="#">-->
-<!--                                <img class="mr-3" src="/images/post/arrow.png" alt="">-->
-<!--                                <a href="#!"><img src="/images/post/user-02.jpg" class="mr-3 rounded-circle" alt=""></a>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <!--                        <div class="media d-block d-sm-flex">-->
+                        <!--                            <div class="d-inline-block mr-2 mb-3 mb-md-0" href="#">-->
+                        <!--                                <img class="mr-3" src="/images/post/arrow.png" alt="">-->
+                        <!--                                <a href="#!"><img src="/images/post/user-02.jpg" class="mr-3 rounded-circle" alt=""></a>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -180,12 +192,12 @@
                         th:text="${post.createdBy.firstName + ' ' + post.createdBy.lastName}">First name Last name</h2>
                     <div>
                         <a class="btn btn-outline-primary"
-                           th:if="${currentUser.isAdmin() || currentUser.postsByUser.contains(post)}"
+                           th:if="${ isAuthenticated && (currentUser.isAdmin() || currentUser.postsByUser.contains(post))}"
                            th:href="@{'/posts/' + ${post.id} + '/update'}">
                             Edit post
                         </a>
                         <a class="btn btn-outline-block"
-                           th:if="${currentUser.isAdmin() || currentUser.postsByUser.contains(post)}"
+                           th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.postsByUser.contains(post))}"
                            th:href="@{'/posts/' + ${post.id} + '/delete'}">
                             Delete post
                         </a>

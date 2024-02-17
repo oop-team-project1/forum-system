@@ -163,7 +163,7 @@
                 <!--login form-->
                 <form id="login-form" class="auth-form" method="POST" action="#" th:action="@{/auth/login}"
                       th:object="${login}">
-                    <div class="form-group">
+                <div class="form-group">
                         <input type="text" name="email" id="email" class="form-control" th:field="*{email}"
                         placeholder="Email">
                         <i class="input-icon uil uil-at"></i>
@@ -175,6 +175,7 @@
                         placeholder="Password">
                         <i class="input-icon uil uil-lock-alt"></i>
                         <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+
                         <label class="error" id="password-err" th:errors="*{password}"></label>
                     </div>
                     <div class="btn-container">
