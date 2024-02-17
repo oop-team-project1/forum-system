@@ -151,10 +151,13 @@
 			<form th:if="${currentUser.isAdmin() || currentUser.id == user.id}" action="#"
 				  th:action="@{/users/deletes/__${user.id}__}" method="get">
 				<div class ="text-center">
-					<button type="submit" class="btn btn-outline-block" href="#">Delete Profile
+					<button type="submit" class="btn btn-outline-block" href="#">
+						Delete Profile
 					</button>
 				</div>
+
 			</form>
+
 		</div>
 	</div>
 </div>
@@ -164,10 +167,18 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 mx-auto">
-
+				<form th:action="@{'/users/' + ${id} + '/delete'}" method="post" onsubmit="return validateForm()">
+					<button th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.id == user.id)}"
+							class="btn btn-outline-block" type="submit" style="margin-bottom: 30px;">
+						Delete Selected Posts
+					</button>
 				<div th:each="post : ${posts}">
 					<article class="card mb-4">
 						<div class="card-body">
+							<label>
+								<input type="checkbox" th:id="'postCheckbox_' + ${post.id}" th:name="selectedPosts"
+									   th:value="${post.id}" />
+							</label>
 							<h3 class="mb-3"><a class="post-title" th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
 							<p th:text="${post.content}">Post Content</p>
 							<a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
@@ -175,6 +186,22 @@
 						</div>
 					</article>
 				</div>
+				</form>
+				<script>
+					function validateForm() {
+						var checkboxes = document.getElementsByName('selectedPosts');
+						var checked = Array.prototype.slice.call(checkboxes).some(function (checkbox) {
+							return checkbox.checked;
+						});
+
+						if (!checked) {
+							alert('Please select at least one post.');
+							return false;
+						}
+
+						return true;
+					}
+				</script>
 			</div>
 		</div>
 	</div>

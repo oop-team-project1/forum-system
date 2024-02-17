@@ -206,4 +206,19 @@ public class UserMvcController {
             return "UserEditView";
         }
     }
+
+    @PostMapping("{id}/delete")
+    public String deleteMultiplePosts(@PathVariable int id,
+            @RequestParam("selectedPosts") List<Integer> selectedPostIds,
+                                      HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+        postService.deleteMultiple(selectedPostIds,user);
+
+        return "redirect:/users/"+id;
+    }
 }
