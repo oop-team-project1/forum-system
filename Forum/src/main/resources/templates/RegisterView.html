@@ -52,9 +52,6 @@
                         <a class="nav-link" th:href="@{/users}" href="#">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/about}" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
                     </li>
                     <li class="nav-item">
