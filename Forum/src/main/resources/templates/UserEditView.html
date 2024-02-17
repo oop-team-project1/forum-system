@@ -81,28 +81,6 @@
 </header>
 <!-- /navigation -->
 <div class="header text-center">
-    <div class="container">
-        <div class="row">
-            <div class="log-in text-center">
-                <h6 class="mb-0 pb-3"><span>Log In </span><span>Register</span></h6>
-            </div>
-        </div>
-        <!--        -->
-        <div class="checkbox-container" style="transform: rotate(-180deg)">
-            <input class="checkbox" type="checkbox" id="reg-log" name="reg-log" onclick="redirectOnCheckbox()">
-            <label for="reg-log" ></label>
-        </div>
-        <script th:inline="javascript">
-            function redirectOnCheckbox() {
-                var checkbox = document.getElementById('reg-log');
-                if (checkbox.checked) {
-                    // Redirect to your desired Thymeleaf endpoint
-                    window.location.href = '/auth/login';
-                }
-            }
-        </script>
-    </div>
-
     <svg class="header-shape-1" width="39" height="40" viewBox="0 0 39 40" fill="none"
          xmlns="http://www.w3.org/2000/svg">
         <path d="M0.965848 20.6397L0.943848 38.3906L18.6947 38.4126L18.7167 20.6617L0.965848 20.6397Z" stroke="#040306"
