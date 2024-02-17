@@ -16,4 +16,5 @@ public interface CommentRepository {
     void create(Comment comment);
 
     void update(Comment comment);
+    void deleteComment(int id);
 }

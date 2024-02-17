@@ -3,6 +3,7 @@ package com.company.web.forum.repositories;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
+import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -137,20 +138,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
-//    @Override
-//    public void createReply(Comment reply) {
-//        try (Session session = sessionFactory.openSession()) {
-//            session.beginTransaction();
-//            session.merge(reply);
-//            session.getTransaction().commit();
-//        }
-//    }
-
     @Override
     public void update(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(comment);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void deleteComment(int id) {
+        Comment commentToDelete = getById(id);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(commentToDelete);
             session.getTransaction().commit();
         }
     }

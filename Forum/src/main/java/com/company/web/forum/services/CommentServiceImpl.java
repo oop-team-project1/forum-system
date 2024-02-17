@@ -1,6 +1,7 @@
 package com.company.web.forum.services;
 
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
 import com.company.web.forum.models.Post;
@@ -51,6 +52,14 @@ public class CommentServiceImpl implements CommentService {
         checkIfUserIsBlocked(user);
         checkIfUserIsOwnerOfTheComment(comment, user);
         commentRepository.update(comment);
+    }
+
+    @Override
+    public void deleteComment(int id, User user) {
+        Comment comment = commentRepository.getById(id);
+        checkIfUserIsBlocked(user);
+        checkIfUserIsOwnerOfTheComment(comment,user);
+        commentRepository.deleteComment(id);
     }
 
     private void checkIfUserIsBlocked(User user) {

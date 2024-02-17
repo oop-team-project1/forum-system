@@ -52,9 +52,6 @@
                         <a class="nav-link" th:href="@{/users}" href="#">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/about}" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
                     </li>
                     <li class="nav-item">
@@ -68,14 +65,6 @@
 
                 </ul>
             </div>
-            <!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
-            <!--                &lt;!&ndash; search &ndash;&gt;-->
-
-            <!--                <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"-->
-            <!--                        data-target="#navigation">-->
-            <!--                    <i class="ti-menu"></i>-->
-            <!--                </button>-->
-            <!--            </div>-->
         </nav>
     </div>
 </header>
@@ -95,7 +84,6 @@
             function redirectOnCheckbox() {
                 var checkbox = document.getElementById('reg-log');
                 if (checkbox.checked) {
-                    // Redirect to your desired Thymeleaf endpoint
                     window.location.href = '/auth/register';
                 }
             }

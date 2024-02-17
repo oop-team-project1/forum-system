@@ -291,7 +291,6 @@ public class PostController {
                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString,
                           @Valid @RequestBody CommentDto commentDto) {
         try {
-            //TODO: add authorization
             User user = authenticationHelper.tryGetUser(encodedString);
             Comment comment = commentMapper.fromDto(commentId, commentDto);
             commentService.update(comment, user);
@@ -303,6 +302,20 @@ public class PostController {
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
+    }
+    @DeleteMapping("/{id}/comments/{commentId}")
+    public void deleteComment(@PathVariable int id,
+                              @PathVariable int commentId,
+                              @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
+        try {
+            User user = authenticationHelper.tryGetUser(encodedString);
+            commentService.deleteComment(commentId, user);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @PostMapping("/{id}/likes")
@@ -370,4 +383,5 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
 }
