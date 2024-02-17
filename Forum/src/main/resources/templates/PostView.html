@@ -29,8 +29,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--Favicon-->
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
-    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/img_1.png" type="image/x-icon">
+    <link rel="icon" href="/images/img_1.png" type="image/x-icon">
 
     <meta property="og:title" content="Reader | Hugo Personal Blog Template"/>
     <meta property="og:description" content="This is meta description"/>
@@ -83,9 +83,6 @@
 
                     <h1 th:text="${post.title}" class="h2"></h1>
                     <ul class="card-meta my-3 list-inline">
-                        <!--                        <li class="list-inline-item">-->
-                        <!--                            <i class="ti-timer"></i>3 Min To Read-->
-                        <!--                        </li>-->
                         <li class="list-inline-item" style="font-size: 14px;">
                             <i th:text="${#temporals.format(post.date_of_creation, 'dd/MM/yyyy')}"
                                class="ti-calendar"></i>
@@ -116,7 +113,6 @@
                         </button>
                     </form>
 
-
                     <a th:if="${isAuthenticated && !currentUser.isBlocked()}" class="btn btn-outline-primary"
                        th:href="@{'/posts/' + ${post.id} + '/comments'}">
                         Comment
@@ -128,7 +124,8 @@
                 </div>
                 <div class="mt-5">
                     <div class="mb-5 border-top mt-4 pt-5">
-                        <h3 class="mb-4">Comments</h3>
+                        <h3 th:if="${!post.comments.isEmpty()}" class="mb-4">Comments</h3>
+                        <hr>
                         <div class="media d-block d-sm-flex mb-4 pb-4">
 
                             <div class="media-body">
@@ -136,7 +133,7 @@
                                     <li th:each="comment : ${post.comments}" style="margin-bottom: 50px;">
                                         <h5 th:text="${comment.createdBy.firstName + ' ' + comment.createdBy.lastName}"></h5>
                                         <p th:text="${comment.commentContent}"></p>
-                                        <p th:text="${#temporals.format(comment.date_of_creation, 'dd/MM/yyyy')}"></p>
+                                        <p th:text="${#temporals.format(comment.date_of_creation, 'dd/MM/yyyy')}" style="color: rgba(211,222,222,1);"></p>
                                         <a class="btn btn-outline-primary"
                                            th:if="${isAuthenticated && !currentUser.isBlocked()}"
                                            th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
@@ -157,16 +154,16 @@
                                                     <p th:text="${reply.commentContent}"
                                                        style="padding-left: 170px;"></p>
                                                     <p th:text="${#temporals.format(reply.date_of_creation, 'dd/MM/yyyy')}"
-                                                       style="padding-left: 170px;"></p>
+                                                       style="padding-left: 170px; color: rgba(211,222,222,1);"></p>
 
                                                     <a th:if="${isAuthenticated && !currentUser.isBlocked()}"
                                                        class="btn btn-outline-primary"
                                                        th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
                                                        style="margin-left: 160px;">Reply</a>
-                                                    <a class="text-primary font-weight-600"
-                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
-                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/update'}"
-                                                       style="padding-left: 250px;">Edit comment
+                                                    <a class="btn btn-outline-primary"
+                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || reply.createdBy.equals(currentUser))}"
+                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies/' + ${reply.id} + '/update'}"
+                                                       >Edit comment
                                                     </a>
                                                 </li>
                                             </div>
@@ -176,12 +173,6 @@
                                 </ul>
                             </div>
                         </div>
-                        <!--                        <div class="media d-block d-sm-flex">-->
-                        <!--                            <div class="d-inline-block mr-2 mb-3 mb-md-0" href="#">-->
-                        <!--                                <img class="mr-3" src="/images/post/arrow.png" alt="">-->
-                        <!--                                <a href="#!"><img src="/images/post/user-02.jpg" class="mr-3 rounded-circle" alt=""></a>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
                     </div>
                 </div>
             </div>
