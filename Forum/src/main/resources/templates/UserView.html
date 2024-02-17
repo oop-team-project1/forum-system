@@ -33,36 +33,8 @@
 <!-- navigation -->
 <header class="navigation fixed-top">
 	<div class="container">
-		<nav class="navbar navbar-expand-lg navbar-white">
-			<a class="navbar-brand order-1" href="HomeView.html">
-				<img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
-					 alt="Tasty tale logo">
-			</a>
-			<div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
-				<ul class="navbar-nav mx-auto">
-					<li class="nav-item">
-						<a class="nav-link" th:href="@{/}" href="#">Home</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:href="@{/users}" href="#">Users</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:href="@{/about}" href="#">About</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
-						   href="#">Register</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
-							out</a>
-					</li>
+		<div th:replace="~{fragments/PageForm :: navbar}"></div>
 
-				</ul>
-			</div>
 			<!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
 			<!--                &lt;!&ndash; search &ndash;&gt;-->
 
@@ -71,7 +43,7 @@
 			<!--                    <i class="ti-menu"></i>-->
 			<!--                </button>-->
 			<!--            </div>-->
-		</nav>
+
 	</div>
 </header>
 <!-- /navigation -->
@@ -167,7 +139,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 mx-auto">
-				<form th:action="@{'/users/' + ${id} + '/delete'}" method="post" onsubmit="return validateForm()">
+				<form th:action="@{'/users/' + ${id} + '/delete'}" method="post" onsubmit="return confirmDelete()">
 					<button th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.id == user.id)}"
 							class="btn btn-outline-block" type="submit" style="margin-bottom: 30px;">
 						Delete Selected Posts
@@ -188,18 +160,19 @@
 				</div>
 				</form>
 				<script>
-					function validateForm() {
+
+					function confirmDelete() {
 						var checkboxes = document.getElementsByName('selectedPosts');
 						var checked = Array.prototype.slice.call(checkboxes).some(function (checkbox) {
 							return checkbox.checked;
 						});
 
-						if (!checked) {
-							alert('Please select at least one post.');
-							return false;
+						if (checked) {
+							return confirm('Are you sure you want to delete? This action is irreversible and cannot be undone.');
 						}
 
-						return true;
+						alert('Please select at least one post.');
+						return false;
 					}
 				</script>
 			</div>
