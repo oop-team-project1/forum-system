@@ -6,7 +6,6 @@ import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.PostMapper;
-import com.company.web.forum.models.FilterOptionsDto;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
@@ -18,11 +17,9 @@ import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +28,18 @@ import java.util.List;
 @Controller
 @RequestMapping("/posts")
 public class PostMvcController {
- private final PostService postService;
- private final CommentService commentService;
- private final UserService userService;
- private final AuthenticationHelper authenticationHelper;
- private final PostMapper postMapper;
- private final CommentMapper commentMapper;
- private final TagService tagService;
+    private final PostService postService;
+    private final CommentService commentService;
+    private final UserService userService;
+    private final AuthenticationHelper authenticationHelper;
+    private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
+    private final TagService tagService;
 
- @Autowired
+    @Autowired
     public PostMvcController(PostService postService, CommentService commentService,
                              UserService userService, AuthenticationHelper authenticationHelper,
-                             PostMapper postMapper, CommentMapper commentMapper) {
-
-    public PostMvcController(PostService postService, CommentService commentService, UserService userService, AuthenticationHelper authenticationHelper, PostMapper postMapper, TagService tagService) {
+                             PostMapper postMapper, CommentMapper commentMapper, TagService tagService) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
@@ -58,12 +53,26 @@ public class PostMvcController {
     public boolean populateIsAuthenticated(HttpSession session) {
         return session.getAttribute("currentUser") != null;
     }
+    @GetMapping
+    public String showAllPosts(@ModelAttribute("filterOptions") FilterOptionsDto filterDto, Model model, HttpSession session) {
+        FilterOptionsPosts filterOptionsPosts = new FilterOptionsPosts(
+                filterDto.getContent());
+        List<Post> posts = postService.getAll(filterOptionsPosts);
+        if (populateIsAuthenticated(session)) {
+            String currentUsername = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+        }
+        model.addAttribute("filterOptions", filterDto);
+        model.addAttribute("posts", posts);
+        model.addAttribute("tags", tagService.getTrending(10));
+        return "PostsView";
+    }
 
 
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable int id, Model model,
                                  HttpSession session) {
-        if (populateIsAuthenticated(session)){
+        if (populateIsAuthenticated(session)) {
             String currentUsername = (String) session.getAttribute("currentUser");
             model.addAttribute("currentUser", userService.getByEmail(currentUsername));
         }
@@ -80,7 +89,7 @@ public class PostMvcController {
     }
 
     @GetMapping("/{id}/comments")
-    public String showAddCommentPage(@PathVariable int id, Model model, HttpSession session){
+    public String showAddCommentPage(@PathVariable int id, Model model, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -89,7 +98,7 @@ public class PostMvcController {
         }
 
         try {
-              Post post = postService.get(id);
+            Post post = postService.get(id);
             model.addAttribute("post", post);
             model.addAttribute("comment", new CommentDto());
             return "CommentView";
@@ -101,12 +110,13 @@ public class PostMvcController {
 
 
     }
+
     @PostMapping("/{id}/comments")
-    public String createComment (@PathVariable int id,
-            @Valid @ModelAttribute("comment") CommentDto commentDto,
-                                 BindingResult bindingResult,
-                                 Model model,
-                                 HttpSession httpSession) {
+    public String createComment(@PathVariable int id,
+                                @Valid @ModelAttribute("comment") CommentDto commentDto,
+                                BindingResult bindingResult,
+                                Model model,
+                                HttpSession httpSession) {
 
         User user;
         try {
@@ -153,10 +163,10 @@ public class PostMvcController {
         try {
 
             Post post = postService.get(id);
-                PostDto postDto = postMapper.toDto(post);
-                model.addAttribute("postId", id);
-                model.addAttribute("post", postDto);
-                return "PostUpdateView";
+            PostDto postDto = postMapper.toDto(post);
+            model.addAttribute("postId", id);
+            model.addAttribute("post", postDto);
+            return "PostUpdateView";
 
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -184,7 +194,7 @@ public class PostMvcController {
 
         try {
             Post oldPost = postService.get(id);
-            Post post = postMapper.fromDtoUpdating( dto, oldPost);
+            Post post = postMapper.fromDtoUpdating(dto, oldPost);
             postService.update(post, user);
             return "redirect:/posts/" + id;
         } catch (AuthorizationException e) {
@@ -224,7 +234,7 @@ public class PostMvcController {
     @GetMapping("/{id}/comments/{commentId}/replies")
     public String showAddCommentReplyPage(@PathVariable int id,
                                           @PathVariable int commentId,
-                                          Model model, HttpSession session){
+                                          Model model, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -249,12 +259,12 @@ public class PostMvcController {
     }
 
     @PostMapping("/{id}/comments/{commentId}/replies")
-    public String createComment (@PathVariable int id,
-                                 @PathVariable int commentId,
-                                 @Valid @ModelAttribute("comment") CommentDto commentDto,
-                                 BindingResult bindingResult,
-                                 Model model,
-                                 HttpSession httpSession) {
+    public String createComment(@PathVariable int id,
+                                @PathVariable int commentId,
+                                @Valid @ModelAttribute("comment") CommentDto commentDto,
+                                BindingResult bindingResult,
+                                Model model,
+                                HttpSession httpSession) {
 
         User user;
         try {
@@ -288,7 +298,6 @@ public class PostMvcController {
     }
 
 
-
     @GetMapping("/filterByTag")
     public String filterPostsByTag(@RequestParam("tag") String tag, Model model) {
 
@@ -303,13 +312,13 @@ public class PostMvcController {
     }
 
     @PostMapping("/delete-selection")
-    public String deletePosts(@RequestParam("selectedPosts") List<Integer> selectedPostsIds, HttpSession session,Model model) {
-        if (populateIsAuthenticated(session)){
+    public String deletePosts(@RequestParam("selectedPosts") List<Integer> selectedPostsIds, HttpSession session, Model model) {
+        if (populateIsAuthenticated(session)) {
             String currentUsername = (String) session.getAttribute("currentUser");
             model.addAttribute("currentUser", userService.getByUsername(currentUsername));
         }
-        postService.deleteMultiple(selectedPostsIds,userService.getByUsername((String) session.getAttribute("currentUser")));
-        return "redirect:/posts"; // Redirect to the posts page after deletion
+        postService.deleteMultiple(selectedPostsIds, userService.getByUsername((String) session.getAttribute("currentUser")));
+        return "redirect:/posts";
     }
 }
 
