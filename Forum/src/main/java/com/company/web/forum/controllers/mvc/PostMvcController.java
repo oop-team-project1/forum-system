@@ -375,7 +375,7 @@ public class PostMvcController {
 
         try {
             commentService.deleteComment(commentId, user);
-            return "redirect:/posts/"+id;
+            return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -389,10 +389,10 @@ public class PostMvcController {
 
     @GetMapping("/{id}/comments/{commentId}/replies/{replyId}/update")
     public String showEditReplyPage(@PathVariable int id,
-                                      @PathVariable int commentId,
-                                      @PathVariable int replyId,
-                                      Model model,
-                                      HttpSession session) {
+                                    @PathVariable int commentId,
+                                    @PathVariable int replyId,
+                                    Model model,
+                                    HttpSession session) {
         try {
             authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
@@ -412,14 +412,15 @@ public class PostMvcController {
             return "ErrorView";
         }
     }
+
     @PostMapping("/{id}/comments/{commentId}/replies/{replyId}/update")
     public String updateReplyToComment(@PathVariable int id,
-                                @PathVariable int commentId,
-                                @PathVariable int replyId,
-                                @Valid @ModelAttribute("comment") CommentDto replyDto,
-                                BindingResult bindingResult,
-                                Model model,
-                                HttpSession session) {
+                                       @PathVariable int commentId,
+                                       @PathVariable int replyId,
+                                       @Valid @ModelAttribute("comment") CommentDto replyDto,
+                                       BindingResult bindingResult,
+                                       Model model,
+                                       HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -461,7 +462,7 @@ public class PostMvcController {
 
         try {
             commentService.deleteComment(replyId, user);
-            return "redirect:/posts/"+id;
+            return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -472,9 +473,6 @@ public class PostMvcController {
             return "ErrorView";
         }
     }
-
-
-
 
 }
 
