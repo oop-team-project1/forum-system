@@ -8,7 +8,6 @@ import java.util.List;
 
 public class CommentDto {
     @NotNull(message = "Content can't be empty")
-    @Size(min = 32, max = 8192, message = "The content must be between 32 symbols and 8192 symbols.")
     private String commentContent;
 
     public CommentDto() {

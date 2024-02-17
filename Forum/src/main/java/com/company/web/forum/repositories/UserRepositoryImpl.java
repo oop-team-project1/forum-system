@@ -2,6 +2,7 @@ package com.company.web.forum.repositories;
 
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsUsers;
+import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,19 +30,19 @@ public class UserRepositoryImpl implements UserRepository {
             List<String> filters = new ArrayList<>();
             Map<String, Object> params = new HashMap<>();
 
-            filterOptions.getFirstName().ifPresent(value -> {
-                filters.add("firstName like :userFirstName");
-                params.put("userFirstName", String.format("%%%s%%", value));
-            });
-
-            filterOptions.getLastName().ifPresent(value -> {
-                filters.add("lastName like :userLastName");
-                params.put("userLastName", String.format("%%%s%%", value));
-            });
-
             filterOptions.getUsername().ifPresent(value -> {
                 filters.add("username like :username");
                 params.put("username", String.format("%%%s%%", value));
+            });
+
+            filterOptions.getFirstName().ifPresent(value -> {
+                filters.add("firstName like :firstName");
+                params.put("firstName", String.format("%%%s%%", value));
+            });
+
+            filterOptions.getLastName().ifPresent(value -> {
+                filters.add("lastName like :lastName");
+                params.put("lastName", String.format("%%%s%%", value));
             });
 
             filterOptions.getEmail().ifPresent(value -> {
@@ -123,6 +124,16 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Override
+    public void deleteUser(int id) {
+        User userToDelete = getById(id);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(userToDelete);
+            session.getTransaction().commit();
+        }
+    }
+
     private String generateOrderBy(FilterOptionsUsers filterOptions) {
         if (filterOptions.getSortBy().isEmpty()) {
             return "";
@@ -131,10 +142,10 @@ public class UserRepositoryImpl implements UserRepository {
         String orderBy = "";
         switch (filterOptions.getSortBy().get()) {
             case "firstName":
-                orderBy = "first_name";
+                orderBy = "firstName";
                 break;
             case "lastName":
-                orderBy = "last_name";
+                orderBy = "lastName";
                 break;
             case "username":
                 orderBy = "username";
@@ -144,11 +155,14 @@ public class UserRepositoryImpl implements UserRepository {
                 break;
         }
 
-        orderBy = String.format(" order by %s", orderBy);
+        if (!orderBy.isEmpty()) {
+            orderBy = " ORDER BY " + orderBy;
 
-        if (filterOptions.getSortOrder().isPresent() &&
-                filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
-            orderBy = String.format("%s desc", orderBy);
+            // Append sorting order if specified
+            if (filterOptions.getSortOrder().isPresent() &&
+                    filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
+                orderBy += " DESC";
+            }
         }
 
         return orderBy;

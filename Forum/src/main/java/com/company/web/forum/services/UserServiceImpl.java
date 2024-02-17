@@ -135,6 +135,12 @@ public class UserServiceImpl implements UserService {
         repository.update(userToAdmin);
     }
 
+    @Override
+    public void deleteUser(int id, User user) {
+        checkModifyPermissions(user);
+        repository.deleteUser(id);
+    }
+
     private void checkModifyPermissions(User user) {
         if (!(user.isAdmin())) {
             throw new AuthorizationException(PERMISSION_ERROR);

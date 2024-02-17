@@ -63,6 +63,26 @@ h6, .h6 {
   font-size: 13px;
 }
 
+/*self*/
+.ti-calendar::before {
+  margin-right: 10px;
+}
+li {
+  list-style-type: none;
+}
+
+.btn-outline-block {
+  background: transparent;
+  color: #d21f1f;
+  border-color: #d21f1f;
+}
+
+.btn-outline-block:active, .btn-outline-block:hover, .btn-outline-block.focus, .btn-outline-block.active {
+  background: #d21f1f !important;
+  border-color: #d21f1f !important;
+  color: #fff;
+}
+
 /* Button style */
 .btn {
   font-size: 14px;

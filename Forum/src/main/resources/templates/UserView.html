@@ -34,109 +34,43 @@
 <header class="navigation fixed-top">
 	<div class="container">
 		<nav class="navbar navbar-expand-lg navbar-white">
-			<a class="navbar-brand order-1" href="index.html">
-				<img class="img-fluid" width="100px" src="images/logo.png"
-					 alt="Reader | Hugo Personal Blog Template">
+			<a class="navbar-brand order-1" href="HomeView.html">
+				<img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
+					 alt="Tasty tale logo">
 			</a>
 			<div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
 				<ul class="navbar-nav mx-auto">
-					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-						   aria-expanded="false">
-							homepage <i class="ti-angle-down ml-1"></i>
-						</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="index-full.html">Homepage Full Width</a>
-
-							<a class="dropdown-item" href="index-full-left.html">Homepage Full With Left Sidebar</a>
-
-							<a class="dropdown-item" href="index-full-right.html">Homepage Full With Right Sidebar</a>
-
-							<a class="dropdown-item" href="index-list.html">Homepage List Style</a>
-
-							<a class="dropdown-item" href="index-list-left.html">Homepage List With Left Sidebar</a>
-
-							<a class="dropdown-item" href="index-list-right.html">Homepage List With Right Sidebar</a>
-
-							<a class="dropdown-item" href="index-grid.html">Homepage Grid Style</a>
-
-							<a class="dropdown-item" href="index-grid-left.html">Homepage Grid With Left Sidebar</a>
-
-							<a class="dropdown-item" href="index-grid-right.html">Homepage Grid With Right Sidebar</a>
-
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-						   aria-expanded="false">
-							About <i class="ti-angle-down ml-1"></i>
-						</a>
-						<div class="dropdown-menu">
-
-							<a class="dropdown-item" href="about-me.html">About Me</a>
-
-							<a class="dropdown-item" href="about-us.html">About Us</a>
-
-						</div>
-					</li>
-
 					<li class="nav-item">
-						<a class="nav-link" href="contact.html">Contact</a>
+						<a class="nav-link" th:href="@{/}" href="#">Home</a>
 					</li>
-
-					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-						   aria-expanded="false">Pages <i class="ti-angle-down ml-1"></i>
-						</a>
-						<div class="dropdown-menu">
-
-							<a class="dropdown-item" href="author.html">Users</a>
-
-							<a class="dropdown-item" href="author-single.html">User Single</a>
-
-							<a class="dropdown-item" href="advertise.html">Advertise</a>
-
-							<a class="dropdown-item" href="post-details.html">Post Details</a>
-
-							<a class="dropdown-item" href="post-elements.html">Post Elements</a>
-
-							<a class="dropdown-item" href="tags.html">Tags</a>
-
-							<a class="dropdown-item" href="search-result.html">Search Result</a>
-
-							<a class="dropdown-item" href="search-not-found.html">Search Not Found</a>
-
-							<a class="dropdown-item" href="privacy-policy.html">Privacy Policy</a>
-
-							<a class="dropdown-item" href="terms-conditions.html">Terms Conditions</a>
-
-							<a class="dropdown-item" href="404.html">404 Page</a>
-
-						</div>
-					</li>
-
 					<li class="nav-item">
-						<a class="nav-link" href="shop.html">Shop</a>
+						<a class="nav-link" th:href="@{/users}" href="#">Users</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/about}" href="#">About</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
+						   href="#">Register</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
+							out</a>
+					</li>
+
 				</ul>
 			</div>
+			<!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
+			<!--                &lt;!&ndash; search &ndash;&gt;-->
 
-			<div class="order-2 order-lg-3 d-flex align-items-center">
-				<select class="m-2 border-0 bg-transparent" id="select-language">
-					<option id="en" value="" selected>En</option>
-					<option id="fr" value="">Fr</option>
-				</select>
-
-				<!-- search -->
-				<form class="search-bar">
-					<input id="search-query" name="s" type="search" placeholder="Type &amp; Hit Enter...">
-				</form>
-
-				<button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse" data-target="#navigation">
-					<i class="ti-menu"></i>
-				</button>
-			</div>
-
+			<!--                <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"-->
+			<!--                        data-target="#navigation">-->
+			<!--                    <i class="ti-menu"></i>-->
+			<!--                </button>-->
+			<!--            </div>-->
 		</nav>
 	</div>
 </header>
@@ -206,11 +140,19 @@
 <!-- User Profile Information -->
 <div class="container mt-5">
 	<div class="row">
-		<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-center"> <!-- Added 'offset-md-2 offset-lg-3' for centering -->
+		<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-center">
 			<img th:if="${user.profilePic != null}" th:src="${user.profilePic.pic}" alt="Profile Picture" class="author-image">
 			<img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
 			<h3 class="mb-2" th:text="${user.firstName + ' ' + user.lastName}"></h3>
 			<a class="post-count mb-1" href="#"><i class="ti-pencil-alt mr-2"></i><span class="text-primary" th:text="${user.postsByUser.size()}"></span> Posts by this user</a>
+			<a class="btn btn-outline-primary" th:if="${currentUser.id == user.id}" th:href="@{/users/edit}" href="#">Edit Profile</a>
+			<form th:if="${currentUser.isAdmin() || currentUser.id == user.id}" action="#"
+				  th:action="@{/users/deletes/__${user.id}__}" method="get">
+				<div class ="text-center">
+					<button type="submit" class="btn btn-outline-block" href="#">Delete Profile
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
@@ -220,14 +162,14 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 mx-auto">
-				<!-- Thymeleaf iteration over posts -->
+
 				<div th:each="post : ${posts}">
 					<article class="card mb-4">
 						<div class="card-body">
 							<h3 class="mb-3"><a class="post-title" th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
-							<!-- Other post details can be added here -->
 							<p th:text="${post.content}">Post Content</p>
-							<a th:href="@{'/post/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
+							<a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
+							<a th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-outline-primary">Edit Post</a>
 						</div>
 					</article>
 				</div>
