@@ -2,9 +2,11 @@ package com.company.web.forum.controllers.mvc;
 
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
+import com.company.web.forum.models.FilterOptionsDto;
 import com.company.web.forum.models.Post;
 import com.company.web.forum.models.User;
 import com.company.web.forum.services.TagService;
+import com.company.web.forum.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -22,39 +24,29 @@ import java.util.List;
 @RequestMapping("/")
 public class HomeMvcController {
     final PostService postService;
-    final TagService tagService;
     final AuthenticationHelper authenticationHelper;
+    final UserService userService;
 
-    public HomeMvcController(PostService postService, TagService tagService, AuthenticationHelper authenticationHelper) {
+    public HomeMvcController(PostService postService, TagService tagService, AuthenticationHelper authenticationHelper, UserService userService) {
         this.postService = postService;
-        this.tagService = tagService;
-        this.authenticationHelper =authenticationHelper;
+        this.authenticationHelper = authenticationHelper;
+        this.userService = userService;
     }
 
     @ModelAttribute("isAuthenticated")
     public boolean populateIsAuthenticated(HttpSession session) {
         return session.getAttribute("currentUser") != null;
     }
+
     @GetMapping
     public String showHomePage(Model model) {
-        model.addAttribute("trending", postService.getAll(new FilterOptionsPosts("desc","likes")));
-        model.addAttribute("recent",postService.getAll(new FilterOptionsPosts("desc","date")));
-        model.addAttribute("tags",tagService.getTrending(10));
+        model.addAttribute("trending", postService.getAll(new FilterOptionsPosts("desc", "likes")));
+        model.addAttribute("recent", postService.getAll(new FilterOptionsPosts("desc", "date")));
         return "HomeView";
     }
 
-    @GetMapping("/posts/filterByTag")
-    public String filterPostsByTag(@RequestParam("tag") String tag, Model model) {
 
-        List<String> tags = new ArrayList<>();
-        tags.add(tag);
-        List<Post> filteredPosts = postService.getAll(new FilterOptionsPosts(tags));
 
-        model.addAttribute("posts", filteredPosts);
-        model.addAttribute("tag",tag);
-
-        return "FilteredPostsView";
-    }
 
 
 

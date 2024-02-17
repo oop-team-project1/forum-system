@@ -244,9 +244,9 @@
                                     <span th:text="${#temporals.format(post.getDate_of_creation(),'dd MMMM yyyy') }"></span>
                                 </li>
                             </ul>
-                            <p>Heading example Here is example of hedings. You can use this heading by following
-                                markdownify rules.</p>
-                            <a href="post-elements.html" class="btn btn-outline-primary">Read More</a>
+                            <p></p>
+                            <p th:text="${post.getDescription()}"></p>
+                            <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
                         </div>
                     </div>
                 </article>
