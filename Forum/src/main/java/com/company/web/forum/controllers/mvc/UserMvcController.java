@@ -182,7 +182,7 @@ public class UserMvcController {
     }
 
     @PostMapping("/edit")
-    public String handleRegister(@Valid @ModelAttribute("userEdit") UserDtoUpdating userDtoUpdating,
+    public String handleUserEdit(@Valid @ModelAttribute("userEdit") UserDtoUpdating userDtoUpdating,
                                  BindingResult bindingResult,
                                  HttpSession session) {
         if(bindingResult.hasErrors()) {
