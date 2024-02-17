@@ -138,6 +138,43 @@
 </div>
 
   <section th:if="${isAuthenticated}" class="section-sm">
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <form action="#" th:action="@{/users}" method="get" th:object="${filterOptionsUsers}">
+            <h3 class="text-center">Filtering</h3>
+            <div class="form-group">
+              <div class="form-inline justify-content-center">
+                <input type="text" class="form-control mr-2" placeholder="Username" th:field="*{username}">
+                <input type="text" class="form-control mr-2" placeholder="First name" th:field="*{firstName}">
+                <input type="text" class="form-control mr-2" placeholder="Last name" th:field="*{lastName}">
+                <input type="text" class="form-control mr-2" placeholder="Email" th:field="*{email}">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-inline justify-content-center">
+                <select class="form-control mr-2" th:field="*{sortBy}">
+                  <option value="">Sort By</option>
+                  <option value="username">Username</option>
+                  <option value="firstName">First name</option>
+                  <option value="email">Email</option>
+                </select>
+                <select class="form-control mr-2" th:field="*{sortOrder}">
+                  <option value="">Sort Order</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
     <div class="container">
       <div class="row no-gutters">
         <div th:each="user : ${users}" class="col-lg-4 col-sm-6 author-block">
@@ -146,6 +183,7 @@
             <img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
             <h3 class="mb-2"><a th:href="'/users/' + ${user.id}" class="post-title" th:text="${user.username}">Username</a></h3>
             <p class="mb-3" th:text="${user.firstName + ' ' + user.lastName}" >User &amp name</p>
+
             <form th:if="${currentUser.isAdmin()}" action="#"
                   th:action="@{/users/blocks/__${user.id}__}" method="post">
               <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
@@ -154,6 +192,19 @@
                 </div>
                 <div th:if="${!user.isBlocked()}" class ="text-center">
                   <button type="submit" class="btn btn-outline-block" href="#">Block
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <form th:if="${currentUser.isAdmin()}" action="#"
+                  th:action="@{/users/admin/__${user.id}__}" method="post">
+              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div th:if="${user.isAdmin()}" class="text-center">
+                  <button type="submit" class="btn btn-outline-block" href="#">Remove Admin</button>
+                </div>
+                <div th:if="${!user.isAdmin()}" class ="text-center">
+                  <button type="submit" class="btn btn-outline-primary" href="#">Make Admin
                   </button>
                 </div>
               </div>

@@ -140,12 +140,21 @@
 <!-- User Profile Information -->
 <div class="container mt-5">
 	<div class="row">
-		<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-center"> <!-- Added 'offset-md-2 offset-lg-3' for centering -->
+		<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 text-center">
 			<img th:if="${user.profilePic != null}" th:src="${user.profilePic.pic}" alt="Profile Picture" class="author-image">
 			<img th:unless="${user.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
 			<h3 class="mb-2" th:text="${user.firstName + ' ' + user.lastName}"></h3>
 			<a class="post-count mb-1" href="#"><i class="ti-pencil-alt mr-2"></i><span class="text-primary" th:text="${user.postsByUser.size()}"></span> Posts by this user</a>
-			<a class="btn btn-outline-primary" th:if="${currentUser.id == user.id}" th:href="@{/users/edit}" href="#">Edit profile</a>
+			<a class="btn btn-outline-primary" th:if="${currentUser.id == user.id}" th:href="@{/users/edit}" href="#">Edit Profile</a>
+			<br>
+			<br>
+			<form th:if="${currentUser.isAdmin() || currentUser.id == user.id}" action="#"
+				  th:action="@{/users/deletes/__${user.id}__}" method="get">
+				<div class ="text-center">
+					<button type="submit" class="btn btn-outline-block" href="#">Delete Profile
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
@@ -162,6 +171,7 @@
 							<h3 class="mb-3"><a class="post-title" th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
 							<p th:text="${post.content}">Post Content</p>
 							<a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
+							<a th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-outline-primary">Edit Post</a>
 						</div>
 					</article>
 				</div>

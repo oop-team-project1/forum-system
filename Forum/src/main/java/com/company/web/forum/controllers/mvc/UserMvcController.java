@@ -51,12 +51,29 @@ public class UserMvcController {
     }
 
     @GetMapping
-    public String showAllUsers(Model model, HttpSession session) {
-        List<User> users = userService.getAll(new FilterOptionsUsers());
+    public String showAllUsers(@ModelAttribute("filterOptions") FilterDtoUser filterDto, Model model, HttpSession session) {
+       // List<User> users = userService.getAll(new FilterOptionsUsers());
+       // if (populateIsAuthenticated(session)){
+       //     String currentUsername = (String) session.getAttribute("currentUser");
+       //     model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+       // }
+       // model.addAttribute("users", users);
+       // return "UsersView";
+
+        FilterOptionsUsers filterOptions = new FilterOptionsUsers(
+                filterDto.getUsername(),
+                filterDto.getFirstName(),
+                filterDto.getLastName(),
+                filterDto.getEmail(),
+                filterDto.getSortBy(),
+                filterDto.getSortOrder());
+
+        List<User> users = userService.getAll(filterOptions);
         if (populateIsAuthenticated(session)){
             String currentUsername = (String) session.getAttribute("currentUser");
             model.addAttribute("currentUser", userService.getByEmail(currentUsername));
         }
+        model.addAttribute("filterOptionsUsers", filterDto);
         model.addAttribute("users", users);
         return "UsersView";
     }
@@ -97,6 +114,53 @@ public class UserMvcController {
                 userService.unblockUser(userToBlock.getId(), user);
             } else {
                 userService.blockUser(userToBlock.getId(), user);
+            }
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @GetMapping("/deletes/{id}")
+    public String deleteUser(@PathVariable int id, Model model, HttpSession session){
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            userService.deleteUser(id, user);
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @PostMapping("/admin/{id}")
+    public String makeAdmin(@PathVariable int id, Model model, HttpSession session){
+        try {
+            User user;
+            try {
+                user = authenticationHelper.tryGetUser(session);
+            } catch (AuthorizationException e) {
+                return "redirect:/auth/login";
+            }
+
+            User userAdmin = userService.getById(id);
+            if(userAdmin.isAdmin()){
+                userService.removeAdmin(userAdmin.getId(), user);
+            } else {
+                userService.makeAdmin(userAdmin.getId(), user);
             }
             return "redirect:/users";
         } catch (EntityNotFoundException e) {

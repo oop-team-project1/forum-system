@@ -46,17 +46,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(User userToCreate) {
-        boolean duplicateExists = true;
+        boolean duplicateUsernameExists = true;
+        boolean duplicateEmailExists = true;
+
         try {
             repository.getByUsername(userToCreate.getUsername());
         } catch (EntityNotFoundException e) {
-            duplicateExists = false;
+            duplicateUsernameExists = false;
         }
+
+        try {
+            repository.getByEmail(userToCreate.getEmail());
+        } catch (EntityNotFoundException e) {
+            duplicateEmailExists = false;
+        }
+
         if (!isValidEmail(userToCreate.getEmail())) {
             throw new IllegalArgumentException("The email is not valid!");
         }
-        if (duplicateExists) {
+
+        if (duplicateUsernameExists) {
             throw new EntityDuplicateException("User", "username", userToCreate.getUsername());
+        }
+
+        if (duplicateEmailExists) {
+            throw new EntityDuplicateException("User", "email", userToCreate.getUsername());
         }
         repository.create(userToCreate);
     }
@@ -133,6 +147,12 @@ public class UserServiceImpl implements UserService {
         }
         userToAdmin.setAdmin(false);
         repository.update(userToAdmin);
+    }
+
+    @Override
+    public void deleteUser(int id, User user) {
+        checkModifyPermissions(user);
+        repository.deleteUser(id);
     }
 
     private void checkModifyPermissions(User user) {
