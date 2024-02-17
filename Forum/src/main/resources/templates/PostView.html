@@ -144,6 +144,11 @@
                                            th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/update'}"
                                            style="margin-left: 20px;">Edit comment
                                         </a>
+                                        <a class="btn btn-outline-block"
+                                           th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
+                                           th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}"
+                                           style="margin-left: 20px;">Delete comment
+                                        </a>
                                         <ul th:if="${comment.replies}">
                                             <div class="replies">
 
@@ -163,7 +168,13 @@
                                                     <a class="btn btn-outline-primary"
                                                        th:if="${isAuthenticated && (currentUser.isAdmin() || reply.createdBy.equals(currentUser))}"
                                                        th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies/' + ${reply.id} + '/update'}"
-                                                       >Edit comment
+                                                       >Edit reply
+                                                    </a>
+                                                    <a class="btn btn-outline-block"
+                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || reply.createdBy.equals(currentUser))}"
+                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies/' + ${reply.id} + '/delete'}"
+                                                    >
+                                                        Delete reply
                                                     </a>
                                                 </li>
                                             </div>
