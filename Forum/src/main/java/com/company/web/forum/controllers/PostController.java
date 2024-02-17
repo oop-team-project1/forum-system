@@ -303,6 +303,20 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
+
+    @Operation(
+            tags = {"Post API", "Comment API"},
+            summary = "Delete Comment",
+            description = "Delete a comment on the specified post.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post"),
+                    @Parameter(name = "commentId", description = "ID of the comment to delete")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @DeleteMapping("/{id}/comments/{commentId}")
     public void deleteComment(@PathVariable int id,
                               @PathVariable int commentId,
@@ -318,6 +332,18 @@ public class PostController {
 
     }
 
+    @Operation(
+            tags = {"Post API"},
+            summary = "Like Post by User",
+            description = "Add user's like to the specified post.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @PostMapping("/{id}/likes")
     public Post likePostByUser(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -331,6 +357,18 @@ public class PostController {
 
     }
 
+    @Operation(
+            tags = {"Post API"},
+            summary = "Dislike Post by User",
+            description = "Remove user's like from the specified post.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @DeleteMapping("/{id}/likes")
     public Post dislikePostByUser(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -344,6 +382,18 @@ public class PostController {
 
     }
 
+    @Operation(
+            tags = {"Post API"},
+            summary = "Add Tag to Resource",
+            description = "Add a new tag to the specified resource.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @PostMapping("/{id}/tags")
     public void addTag(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString, @RequestBody TagDto tagDto) {
         try {
@@ -357,6 +407,19 @@ public class PostController {
         }
     }
 
+    @Operation(
+            tags = {"Post API"},
+            summary = "Delete Tag by ID",
+            description = "Delete a tag based on the provided resource and tag IDs.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post"),
+                    @Parameter(name = "tagId", description = "ID of the tag")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @DeleteMapping("{id}/tags/{tagId}")
     public void deleteTag(@PathVariable int id, @PathVariable int tagId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
@@ -372,6 +435,18 @@ public class PostController {
         }
     }
 
+    @Operation(
+            tags = {"Post API"},
+            summary = "Get all tags",
+            description = "Retrieve a list of tags based on the provided ID.",
+            parameters = {@Parameter(name = "Authorization", example = "Authorization"),
+                    @Parameter(name = "id", description = "ID of the post")},
+            responses = {@ApiResponse(responseCode = "200",
+                    content = @Content(schema =
+                    @Schema(implementation = Post.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))},
+            security = {@SecurityRequirement(name = "basic")}
+    )
     @GetMapping("{id}/tags")
     public List<Tag> getTags(@PathVariable int id, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String encodedString) {
         try {
