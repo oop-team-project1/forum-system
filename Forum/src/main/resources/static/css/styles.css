@@ -403,17 +403,24 @@ mark {
 
 /* search */
 .search-bar {
+  display: flex;
+  align-items: center;
   position: relative;
   background-color: #F9F9F9;
+  width: 200px;
+  margin: 10px auto;
+  border-radius: 20px;
 }
 .search-bar input {
+  width: 200px;
   background-color: transparent;
   border: 1px solid #EBEBEB;
   height: 40px;
+  align-items: center;
   padding-left: 15px;
   position: relative;
-  border-radius: 5px;
   z-index: 1;
+  border-radius: 20px;
 }
 .search-bar input:focus {
   border-color: #4FD675;
@@ -427,13 +434,14 @@ mark {
 }
 @media (max-width: 991px) {
   .search-bar input {
-    width: 40px;
+    width: 10px;
     padding-left: 30px;
   }
   .search-bar input:focus {
     padding-left: 10px;
-    width: 200px;
+    width: 50px;
     position: absolute;
+    align-content: center;
     top: 50%;
     transform: translateY(-50%);
     height: 50px;
@@ -1469,3 +1477,42 @@ mark {
   box-shadow: none !important;
 }
 /*# sourceMappingURL=style.css.map */
+
+.checkbox-container {
+  position: absolute;
+  top: -25px;
+  right: -20px;
+}
+
+.checkbox-pea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #008000; /* Green border color */
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  margin-right: 10px; /* Adjust spacing between checkbox and label */
+}
+
+.checkbox-pea:checked {
+  background-color: #008000; /* Green background color when checked */
+}
+
+.checkbox-pea:focus {
+  box-shadow: 0 0 0 3px rgba(0, 128, 0, 0.3); /* Green shadow when focused */
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Adjust spacing as needed */
+}
+
+.btn-danger {
+  margin-top: -20px; /* Adjust margin as needed to move the button */
+}
