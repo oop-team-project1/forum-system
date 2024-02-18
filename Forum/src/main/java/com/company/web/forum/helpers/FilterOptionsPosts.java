@@ -24,6 +24,11 @@ public class FilterOptionsPosts {
                 null, null, null,
                 tag, null,null, null, null, null);
     }
+    public FilterOptionsPosts(String content) {
+        this(null, null, content,
+                null, null, null,
+                null, null,null, null, null, null);
+    }
 
     private Optional<String> orderBy;
     private Optional<String> order;
