@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/PageFrame :: head('New Beer')}"></div>
+<body>
+<div th:replace="~{fragments/PageFrame :: navbar}"></div>
+<div class="masthead">
+    <div class="container d-flex align-items-center flex-column">
+        <form th:replace="~{fragments/PostForm :: details('New Beer')}"></form>
+    </div>
+</div>
+<div th:replace="~{fragments/PageFrame :: footer}"></div>
+<div th:replace="~{fragments/PageFrame :: scripts}"></div>
+</body>
+</html>

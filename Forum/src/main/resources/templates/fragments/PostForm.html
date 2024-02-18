@@ -1,0 +1,27 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="details(bodyTitle)">
+    <h2 th:text="${bodyTitle}">Body Title</h2>
+    <form action="#" th:action="@{__${requestURI}__}" th:object="${post}" method="post">
+        <label th:text="#{post.label.title}">Beer</label>
+        <br/>
+        <input type="text" th:field="*{name}"/>
+        <label class="error" th:errors="*{name}">Name error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{post.label.content}">ABV</label>
+        <br/>
+        <input type="text" th:field="*{content}"/>
+        <label class="error" th:errors="*{content}">ABV error placeholder</label>
+        <br/><br/>
+
+        <label th:text="#{post.label.description}">Style</label>
+        <br/>
+        <select th:field="*{description}">
+        </select>
+        <label class="error" th:errors="*{description}">Description error placeholder</label>
+        <br/><br/>
+
+        <input type="submit" value="Save"/>
+    </form>
+</div>
+</html>
