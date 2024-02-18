@@ -1,6 +1,7 @@
 package com.company.web.forum.controllers.mvc;
 
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
@@ -59,8 +60,8 @@ public class PostMvcController {
                 filterDto.getContent());
         List<Post> posts = postService.getAll(filterOptionsPosts);
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
         model.addAttribute("filterOptions", filterDto);
         model.addAttribute("posts", posts);
@@ -314,11 +315,50 @@ public class PostMvcController {
     @PostMapping("/delete-selection")
     public String deletePosts(@RequestParam("selectedPosts") List<Integer> selectedPostsIds, HttpSession session, Model model) {
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
-        postService.deleteMultiple(selectedPostsIds, userService.getByUsername((String) session.getAttribute("currentUser")));
+        postService.deleteMultiple(selectedPostsIds, userService.getByEmail((String) session.getAttribute("currentUser")));
         return "redirect:/posts";
+    }
+
+
+    @GetMapping("/new")
+    public String showNewPostPage(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        model.addAttribute("beer", new PostDto());
+        return "PostCreateView";
+    }
+    @PostMapping("/new")
+    public String createBeer(@Valid @ModelAttribute("beer") PostDto postDto,
+                             BindingResult bindingResult,
+                             Model model,
+                             HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "PostCreateView";
+        }
+
+        try {
+            Post post = postMapper.fromDto(postDto);
+            postService.create(post, user);
+            return "redirect:/posts";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
     }
 }
 
