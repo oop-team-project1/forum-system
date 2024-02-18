@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="utf-8">
     <title>TastyTale</title>
@@ -21,8 +20,8 @@
     <link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}" media="screen">
 
     <!--Favicon-->
-    <link rel="shortcut icon" href="/images/img_1.png" type="image/x-icon">
-    <link rel="icon" href="/images/img_1.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
 
     <!--    self-->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
@@ -35,7 +34,13 @@
     <meta property="og:url" content=""/>
     <meta property="og:updated_time" content="2020-03-15T15:40:24+06:00"/>
 </head>
-<body style="overflow: hidden;">
+<body>
+<!-- navigation -->
+<header class="navigation fixed-top">
+    <div class="container">
+        <div th:replace="~{fragments/PageForm :: navbar}"></div>
+    </div>
+</header>
 
 <div class="header text-center">
 
@@ -90,18 +95,54 @@
     </svg>
 </div>
 
-<div class="error-wrap">
-    <img class="error-bg" src="../static/assets/img/not_found.jpg" th:src="@{/assets/img/not_found.jpg}" alt="">
-    <div class="d-flex align-items-center justify-content-center vh-100">
-        <div class="error-content" style="margin-bottom: 300px;">
-            <h2 class="display-1 fw-bold" th:text="${statusCode}">HTTP Status Code</h2>
-            <h5 class="fs-3 text-danger">Opps!</h5>
-            <h5 th:unless="${error == null}" class="error" th:text="${error}">Error placeholder</h5>
+<section class="section-sm">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto" style="height: 100%">
+                <div class="content mb-5">
+                    <h3 id="we-would-love-to-hear-from-you">Edit Comment</h3>
+                </div>
+                <!--edit comment form-->
+                <form id="comment-update-form" class="auth-form" method="POST" action="#" th:action="@{'/posts/' + ${id} + '/comments/' + ${commentId} + '/update'}"
+                      th:object="${comment}">
 
-            <a href="HomeView.html" class="btn btn-primary" style="margin-left: 160px; margin-top: 50px;" th:href="@{/}">Go Home</a>
+                    <div class="form-group">
+                        <textarea class="form-control" id="description" rows="5"
+                                  name="description"
+                                  placeholder="Content" th:field="${comment.commentContent}"
+                                  required="required"></textarea>
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="submit" value="Submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<footer class="footer">
+    <svg class="footer-border" height="214" viewBox="0 0 2204 214" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2203 213C2136.58 157.994 1942.77 -33.1996 1633.1 53.0486C1414.13 114.038 1200.92 188.208 967.765 118.127C820.12 73.7483 263.977 -143.754 0.999958 158.899"
+              stroke-width="2"/>
+    </svg>
+
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-4">
+                <img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
+                     alt="Tasty tale logo">
+            </div>
+            <div class="col-12">
+                <div class="border-bottom border-default"></div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
 <!-- JS Plugins -->
 <script src="/plugins/jQuery/jquery.min.js"></script>
 

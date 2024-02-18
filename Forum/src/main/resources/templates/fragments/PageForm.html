@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-us" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>TastyTale</title>
+
+    <!-- mobile responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="This is meta description">
+    <meta name="author" content="Themefisher">
+    <meta name="generator" content="Hugo 0.74.3"/>
+
+    <!-- plugins -->
+
+    <link rel="stylesheet" href="/plugins/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/plugins/themify-icons/themify-icons.css">
+    <link rel="stylesheet" href="/plugins/slick/slick.css">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}" media="screen">
+    <link rel="stylesheet" href="../static/css/pass.css" th:href="@{/css/pass.css}" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+
+    <!--    self-->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+
+    <meta property="og:title" content="Reader | Hugo Personal Blog Template"/>
+    <meta property="og:description" content="This is meta description"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content=""/>
+    <meta property="og:updated_time" content="2020-03-15T15:40:24+06:00"/>
+</head>
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-white">
+    <a class="navbar-brand order-1" th:href="@{/}" href="#">
+        <img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
+             alt="Tasty tale logo">
+    </a>
+    <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:text="#{header.home}" th:href="@{/}" href="#"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:text="#{header.users}" th:href="@{/users}" href="#"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:text="#{header.login}"
+                   th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:text="#{header.register}" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
+                   href="#"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:text="#{header.logout}"
+                   th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+</body>
+</html>

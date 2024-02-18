@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!--Favicon-->
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
-    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/img_1.png" type="image/x-icon">
+    <link rel="icon" href="/images/img_1.png" type="image/x-icon">
 
     <!--    self-->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
@@ -38,36 +38,8 @@
 <!-- navigation -->
 <header class="navigation fixed-top">
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-white">
-            <a class="navbar-brand order-1" href="HomeView.html">
-                <img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
-                     alt="Tasty tale logo">
-            </a>
-            <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/users}" href="#">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/about}" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
-                           href="#">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
-                            out</a>
-                    </li>
+        <div th:replace="~{fragments/PageForm :: navbar}"></div>
 
-                </ul>
-            </div>
             <!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
             <!--                &lt;!&ndash; search &ndash;&gt;-->
 
@@ -76,7 +48,6 @@
             <!--                    <i class="ti-menu"></i>-->
             <!--                </button>-->
             <!--            </div>-->
-        </nav>
     </div>
 </header>
 <!-- /navigation -->

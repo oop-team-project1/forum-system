@@ -2,6 +2,7 @@ package com.company.web.forum.models;
 
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public class RegisterDto extends LoginDto{
     @NotEmpty(message = "Username can't be empty!")
@@ -9,8 +10,10 @@ public class RegisterDto extends LoginDto{
     @NotEmpty(message = "Password confirmation can't be empty!")
     private String passwordConfirm;
     @NotEmpty(message = "First name can't be empty!")
+    @Size(min = 4, max = 32, message = "First name must be between 4 symbols and 32 symbols.")
     private String firstName;
     @NotEmpty(message = "Last name can't be empty!")
+    @Size(min = 4, max = 32, message = "Last name must be between 4 symbols and 32 symbols.")
     private String lastName;
 
 
