@@ -63,8 +63,8 @@ public class PostMvcController {
                 filterDto.getContent());
         List<Post> posts = postService.getAll(filterOptionsPosts);
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
         model.addAttribute("filterOptions", filterDto);
         model.addAttribute("posts", posts);
@@ -513,10 +513,10 @@ public class PostMvcController {
     @PostMapping("/delete-selection")
     public String deletePosts(@RequestParam("selectedPosts") List<Integer> selectedPostsIds, HttpSession session, Model model) {
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
-        postService.deleteMultiple(selectedPostsIds, userService.getByUsername((String) session.getAttribute("currentUser")));
+        postService.deleteMultiple(selectedPostsIds, userService.getByEmail((String) session.getAttribute("currentUser")));
         return "redirect:/posts";
     }
 }

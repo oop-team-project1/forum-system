@@ -66,7 +66,7 @@ public class AuthenticationMvcController {
             User user = authenticationHelper.verifyAuthentication(loginDto.getEmail(), loginDto.getPassword());
             session.setAttribute("currentUser", loginDto.getEmail());
             session.setAttribute("isAdmin", user.isAdmin());
-            return "redirect:/";
+            return "redirect:/posts";
 
         } catch (AuthorizationException e) {
             bindingResult.rejectValue("email", "auth_error", e.getMessage());
