@@ -21,9 +21,6 @@ public class PostDto {
         this.description = description;
     }
 
-    @Size(min = 2, max = 20, message ="Ingredients must be between 2 and 200 symbols ")
-    private List<Ingredient> ingredients;
-
     @Size(min=20, max = 200, message = "Description must be between 20 and 200 symbols")
     private String description;
 
