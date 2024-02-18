@@ -127,7 +127,7 @@
                                                 <li th:each="reply : ${comment.replies}"
                                                     style="margin-bottom: 50px; margin-top: 50px;">
                                                     <h5 th:text="${reply.createdBy.firstName + ' ' + reply.createdBy.lastName}"></h5>
-                                                    <img class="mr-3" src="/images/post/arrow.png" alt="">
+                                                    <img class="mr-3" src="../images/arrow.png" alt="">
                                                     <p th:text="${reply.commentContent}"
                                                        style="padding-left: 170px;"></p>
                                                     <p th:text="${#temporals.format(reply.date_of_creation, 'dd/MM/yyyy')}"
