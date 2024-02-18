@@ -10,7 +10,7 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Reader | Hugo Personal Blog Template</title>
+    <title>TastyTale</title>
 
     <!-- mobile responsive meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -26,10 +26,11 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="/css/styles.css" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--Favicon-->
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
-    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/img_1.png" type="image/x-icon">
+    <link rel="icon" href="/images/img_1.png" type="image/x-icon">
 
     <meta property="og:title" content="Reader | Hugo Personal Blog Template"/>
     <meta property="og:description" content="This is meta description"/>
@@ -41,38 +42,7 @@
 <!-- navigation -->
 <header class="navigation fixed-top">
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-white">
-            <a class="navbar-brand order-1" href="index.html">
-                <img class="img-fluid" width="80px" src="/images/logo-removebg-preview.png"
-                     alt="Tasty tale logo">
-            </a>
-            <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/users}" href="#">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/about}" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
-                           href="#">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${isAuthenticated}" th:href="@{/auth/logout}" href="#">Log
-                            out</a>
-                    </li>
-
-                </ul>
-            </div>
-
-        </nav>
+        <div th:replace="~{fragments/PageForm :: navbar}"></div>
     </div>
 </header>
 <!-- /navigation -->
@@ -85,66 +55,100 @@
 
                     <h1 th:text="${post.title}" class="h2"></h1>
                     <ul class="card-meta my-3 list-inline">
-<!--                        <li class="list-inline-item">-->
-<!--                            <a href="author-single.html" class="card-meta-author">-->
-<!--                                <img src="/images/john-doe.jpg" alt="John Doe">-->
-<!--                                <span th:text="${post.createdBy.firstName + ' ' + post.createdBy.lastName} " ></span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-                        <li class="list-inline-item">
-                            <i class="ti-timer"></i>3 Min To Read
-                        </li>
-                        <li class="list-inline-item">
-                            <i th:text="${#temporals.format(post.date_of_creation, 'dd/MM/yyyy')}" class="ti-calendar"></i>
+                        <li class="list-inline-item" style="font-size: 14px;">
+                            <i th:text="${#temporals.format(post.date_of_creation, 'dd/MM/yyyy')}"
+                               class="ti-calendar"></i>
                         </li>
                     </ul>
                     <div class="content">
                         <hr>
-                        <p style="font-weight: 500" th:text="${post.content}" ></p>
+                        <p style="font-weight: 500" th:text="${post.content}"></p>
 
                     </div>
                 </article>
                 <hr>
                 <div>
-                    <a  class="btn btn-outline-block" th:href="@{'/posts/' + ${post.id} + '/likes'}">
-                        Like
-                        <!--                            <input type="submit" class="btn btn-primary" value="Comment">-->
-                    </a>
+                    <form th:if="${isAuthenticated && !currentUser.isBlocked()}"
+                          th:action="@{'/posts/' + ${post.id} + '/likes'}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="postId" th:value="${post.id}"/>
+                        <button class="btn btn-outline-block" type="submit">
+                            <i class="fa fa-heart"></i>
+                            <span th:text="${post.likes}"></span>
+                        </button>
+                    </form>
 
-                        <a  class="btn btn-outline-primary" th:href="@{'/posts/' + ${post.id} + '/comments'}">
-                            Comment
-                            <!--                            <input type="submit" class="btn btn-primary" value="Comment">-->
-                        </a>
+                    <form th:unless="${isAuthenticated}" th:action="@{'/auth/login'}" style="display: inline-block;">
+                        <input type="hidden" name="postId" th:value="${post.id}"/>
+                        <button class="btn btn-outline-block" type="submit">
+                            <i class="fa fa-heart"></i>
+                            <span th:text="${post.likes}"></span>
+                        </button>
+                    </form>
+
+                    <a th:if="${isAuthenticated && !currentUser.isBlocked()}" class="btn btn-outline-primary"
+                       th:href="@{'/posts/' + ${post.id} + '/comments'}">
+                        Comment
+                    </a>
+                    <a th:unless="${isAuthenticated}" class="btn btn-outline-primary" th:href="@{'/auth/login'}">
+                        Comment
+                    </a>
 
                 </div>
                 <div class="mt-5">
                     <div class="mb-5 border-top mt-4 pt-5">
-                        <h3 class="mb-4">Comments</h3>
+                        <h3 th:if="${!post.comments.isEmpty()}" class="mb-4">Comments</h3>
+                        <hr>
                         <div class="media d-block d-sm-flex mb-4 pb-4">
 
                             <div class="media-body">
                                 <ul>
-                                    <li  th:each="comment : ${post.comments}">
+                                    <li th:each="comment : ${post.comments}" style="margin-bottom: 50px;">
                                         <h5 th:text="${comment.createdBy.firstName + ' ' + comment.createdBy.lastName}"></h5>
-                                        <a class="d-inline-block mr-2 mb-3 mb-md-0" href="#">
-                                            <img th:if="${comment.createdBy.profilePic != null}" th:src="${comment.createdBy.profilePic.pic}" class="mr-3 rounded-circle" alt="">
+                                        <p th:text="${comment.commentContent}"></p>
+                                        <p th:text="${#temporals.format(comment.date_of_creation, 'dd/MM/yyyy')}" style="color: rgba(211,222,222,1);"></p>
+                                        <a class="btn btn-outline-primary"
+                                           th:if="${isAuthenticated && !currentUser.isBlocked()}"
+                                           th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
+                                        >Reply
                                         </a>
-                                        <p th:text="${comment.commentContent}" ></p>
-                                        <p th:text="${#temporals.format(comment.date_of_creation, 'dd/MM/yyyy')}"></p>
-                                        <a class="text-primary font-weight-600" th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}" style="padding-left: 250px;">Reply</a>
+                                        <a class="btn btn-outline-primary"
+                                           th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
+                                           th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/update'}"
+                                           style="margin-left: 20px;">Edit comment
+                                        </a>
+                                        <a class="btn btn-outline-block"
+                                           th:if="${isAuthenticated && (currentUser.isAdmin() || comment.createdBy.equals(currentUser))}"
+                                           th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}"
+                                           style="margin-left: 20px;">Delete comment
+                                        </a>
                                         <ul th:if="${comment.replies}">
                                             <div class="replies">
 
-                                            <li th:each="reply : ${comment.replies}">
-                                                <h5 th:text="${comment.createdBy.firstName + ' ' + comment.createdBy.lastName}"></h5>
-                                                <img class="mr-3" src="/images/post/arrow.png" alt="">
-                                                <img class="mr-3 rounded-circle" th:if="${reply.createdBy.profilePic != null}" th:src="${reply.createdBy.profilePic.pic}" alt="Profile picture">
-<!--                                                <img th:unless="${reply.createdBy.profilePic != null}" src="../images/default-profile-pic.png" class="mr-3 rounded-circle" alt="Default Profile Picture" >-->
-                                                <p th:text="${reply.commentContent}" style="padding-left: 170px;" ></p>
-                                                <p th:text="${#temporals.format(reply.date_of_creation, 'dd/MM/yyyy')}" style="padding-left: 170px;"></p>
+                                                <li th:each="reply : ${comment.replies}"
+                                                    style="margin-bottom: 50px; margin-top: 50px;">
+                                                    <h5 th:text="${reply.createdBy.firstName + ' ' + reply.createdBy.lastName}"></h5>
+                                                    <img class="mr-3" src="/images/post/arrow.png" alt="">
+                                                    <p th:text="${reply.commentContent}"
+                                                       style="padding-left: 170px;"></p>
+                                                    <p th:text="${#temporals.format(reply.date_of_creation, 'dd/MM/yyyy')}"
+                                                       style="padding-left: 170px; color: rgba(211,222,222,1);"></p>
 
-                                                <a  th:if="${!currentUser.isBlocked()}" class="text-primary font-weight-600" th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}" style="padding-left: 250px;">Reply</a>
-                                            </li>
+                                                    <a th:if="${isAuthenticated && !currentUser.isBlocked()}"
+                                                       class="btn btn-outline-primary"
+                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies'}"
+                                                       style="margin-left: 160px;">Reply</a>
+                                                    <a class="btn btn-outline-primary"
+                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || reply.createdBy.equals(currentUser))}"
+                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies/' + ${reply.id} + '/update'}"
+                                                       >Edit reply
+                                                    </a>
+                                                    <a class="btn btn-outline-block"
+                                                       th:if="${isAuthenticated && (currentUser.isAdmin() || reply.createdBy.equals(currentUser))}"
+                                                       th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/replies/' + ${reply.id} + '/delete'}"
+                                                    >
+                                                        Delete reply
+                                                    </a>
+                                                </li>
                                             </div>
                                         </ul>
 
@@ -152,31 +156,24 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="media d-block d-sm-flex">
-                            <div class="d-inline-block mr-2 mb-3 mb-md-0" href="#">
-                                <img class="mr-3" src="/images/post/arrow.png" alt="">
-                                <a href="#!"><img src="/images/post/user-02.jpg" class="mr-3 rounded-circle" alt=""></a>
-                            </div>
-                        </div>
                     </div>
-
                 </div>
             </div>
             <aside class="col-lg-4 @@sidebar">
                 <!-- about me -->
                 <div class="widget widget-about">
-
-                    <img th:if="${post.createdBy.profilePic != null}" th:src="${post.createdBy.profilePic.pic}" class="img-fluid" alt="Profile picture">
-                    <img th:unless="${post.createdBy.profilePic != null}" src="../images/default-profile-pic.png" alt="Default Profile Picture" class="author-image">
-                    <h2 class="widget-title" style="margin-top: 20px;" th:text="${post.createdBy.firstName + ' ' + post.createdBy.lastName}">First name Last name</h2>
+                    <h2 class="widget-title" style="margin-top: 20px;"
+                        th:text="${post.createdBy.firstName + ' ' + post.createdBy.lastName}">First name Last name</h2>
                     <div>
-                            <a class="btn btn-outline-primary" th:if="${currentUser.isAdmin() || currentUser.postsByUser.contains(post)}" th:href="@{'/posts/' + ${post.id} + '/update'}">
-                                Edit post
-                                <!--                            <input type="submit" class="btn btn-primary" value="Comment">-->
-                            </a>
-                        <a class="btn btn-outline-block" th:if="${currentUser.isAdmin() || currentUser.postsByUser.contains(post)}" th:href="@{'/posts/' + ${post.id} + '/delete'}">
-                           Delete post
-                            <!--                            <input type="submit" class="btn btn-primary" value="Comment">-->
+                        <a class="btn btn-outline-primary"
+                           th:if="${ isAuthenticated && (currentUser.isAdmin() || currentUser.postsByUser.contains(post))}"
+                           th:href="@{'/posts/' + ${post.id} + '/update'}">
+                            Edit post
+                        </a>
+                        <a class="btn btn-outline-block"
+                           th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.postsByUser.contains(post))}"
+                           th:href="@{'/posts/' + ${post.id} + '/delete'}">
+                            Delete post
                         </a>
                     </div>
                 </div>

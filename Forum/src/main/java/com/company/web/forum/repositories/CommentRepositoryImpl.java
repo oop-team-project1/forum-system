@@ -3,6 +3,7 @@ package com.company.web.forum.repositories;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.FilterOptionsComments;
 import com.company.web.forum.models.Comment;
+import com.company.web.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -23,83 +24,6 @@ public class CommentRepositoryImpl implements CommentRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    @Override
-    public List<Comment> getAll(FilterOptionsComments filterOptions) {
-        try (Session session = sessionFactory.openSession()) {
-            List<String> filters = new ArrayList<>();
-            Map<String, Object> params = new HashMap<>();
-
-            filterOptions.getContent().ifPresent(value -> {
-                filters.add("content like :commentContent");
-                params.put("commentContent", String.format("%%%s%%", value));
-            });
-
-            filterOptions.getUserId().ifPresent(value -> {
-                filters.add("createdBy.id = :userId");
-                params.put("userId", value);
-            });
-
-            filterOptions.getUsername().ifPresent(value -> {
-                filters.add("createdBy.username like :username");
-                params.put("username", value);
-            });
-
-            filterOptions.getPostId().ifPresent(value -> {
-                filters.add("post.id = :postId");
-                params.put("postId", value);
-            });
-
-            filterOptions.getPostTitle().ifPresent(value -> {
-                filters.add("post.title like :postTitle");
-                params.put("postTitle", value);
-            });
-
-            filterOptions.getStartDate().ifPresent(value -> {
-                filters.add("date_of_creation >= :startDate");
-                params.put("startDate", value);
-            });
-
-            filterOptions.getEndDate().ifPresent(value -> {
-                filters.add("date_of_creation <= :endDate");
-                params.put("endDate", value);
-            });
-
-            StringBuilder queryString = new StringBuilder("from Comment");
-            queryString.append(" where id = parentComment.id ");
-
-            if (!filters.isEmpty() && filters.size() > 1) {
-                queryString.append(String.join(" and ", filters));
-            } else if (filters.size() == 1) {
-                queryString.append(String.format(" and %s ",filters));
-            }
-
-            queryString.append(generateOrderBy(filterOptions));
-
-            Query<Comment> query = session.createQuery(queryString.toString(), Comment.class);
-            query.setProperties(params);
-            return query.list();
-        }
-    }
-
-    private String generateOrderBy(FilterOptionsComments filterOptions) {
-        if (filterOptions.getSortBy().isEmpty()) {
-            return "";
-        }
-
-        String orderBy = "";
-        if (filterOptions.getSortBy().get().equalsIgnoreCase("date")) {
-            orderBy = "date_of_creation";
-        }
-
-        orderBy = String.format(" order by %s desc, id desc", orderBy);
-
-        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equalsIgnoreCase("desc")) {
-            orderBy = String.format("%s desc", orderBy);
-
-        }
-
-        return orderBy;
-    }
 
     @Override
     public Comment getById(int id) {
@@ -137,20 +61,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
-//    @Override
-//    public void createReply(Comment reply) {
-//        try (Session session = sessionFactory.openSession()) {
-//            session.beginTransaction();
-//            session.merge(reply);
-//            session.getTransaction().commit();
-//        }
-//    }
-
     @Override
     public void update(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(comment);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void deleteComment(int id) {
+        Comment commentToDelete = getById(id);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(commentToDelete);
             session.getTransaction().commit();
         }
     }
