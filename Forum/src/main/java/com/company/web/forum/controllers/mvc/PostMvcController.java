@@ -73,8 +73,8 @@ public class PostMvcController {
     public String showSinglePost(@PathVariable int id, Model model,
                                  HttpSession session) {
         if (populateIsAuthenticated(session)) {
-            String currentUsername = (String) session.getAttribute("currentUser");
-            model.addAttribute("currentUser", userService.getByEmail(currentUsername));
+            String currentEmail = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByEmail(currentEmail));
         }
 
         try {
