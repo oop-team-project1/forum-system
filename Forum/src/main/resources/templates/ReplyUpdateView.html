@@ -103,7 +103,7 @@
                     <h3 id="we-would-love-to-hear-from-you">Edit Reply</h3>
                 </div>
                 <!--edit comment form-->
-                <form id="comment-update-form" class="auth-form" method="POST" action="#" th:action="@{'/posts/' + ${id} + '/comments/' + ${commentId} + '/update'}"
+                <form id="comment-update-form" class="auth-form" method="POST" action="#" th:action="@{'/posts/' + ${id} + '/comments/' + ${commentId} + '/replies/' + ${replyId} + '/update'}"
                       th:object="${reply}">
 
                     <div class="form-group">
