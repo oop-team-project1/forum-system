@@ -1,14 +1,21 @@
-const passwordField = document.getElementById("password");
-const togglePassword = document.querySelector(".password-toggle-icon i");
 
-togglePassword.addEventListener("click", function () {
-    if (passwordField.type === "password") {
-        passwordField.type = "text";
-        togglePassword.classList.remove("fa-eye");
-        togglePassword.classList.add("fa-eye-slash");
+const passwordFields = document.querySelectorAll("[type='password']");
+const togglePasswordIcons = document.querySelectorAll(".password-toggle-icon i");
+
+function togglePasswordVisibility(index) {
+    if (passwordFields[index].type === "password") {
+        passwordFields[index].type = "text";
+        togglePasswordIcons[index].classList.remove("fa-eye");
+        togglePasswordIcons[index].classList.add("fa-eye-slash");
     } else {
-        passwordField.type = "password";
-        togglePassword.classList.remove("fa-eye-slash");
-        togglePassword.classList.add("fa-eye");
+        passwordFields[index].type = "password";
+        togglePasswordIcons[index].classList.remove("fa-eye-slash");
+        togglePasswordIcons[index].classList.add("fa-eye");
     }
+}
+
+togglePasswordIcons.forEach((icon, index) => {
+    icon.addEventListener("click", function () {
+        togglePasswordVisibility(index);
+    });
 });
