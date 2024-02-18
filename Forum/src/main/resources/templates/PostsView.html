@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../plugins/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../plugins/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="../plugins/slick/slick.css">
+    <script src="..static/js/deletebutton.js" th:src="@{/js/deletebutton.js}"></script>
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="../css/styles.css" media="screen">
@@ -129,9 +130,7 @@
                 </select>
 
                 <!-- search -->
-                <form class="search-bar" >
-                    <input id="search-query" name="s" type="search" placeholder="Type &amp; Hit Enter..." >
-                </form>
+
 
                 <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"
                         data-target="#navigation">
@@ -151,8 +150,9 @@
         <div class="row">
             <div class="col-lg-9 mx-auto">
                 <h1 class="mb-5">What Would You <br> Like To Taste Today?</h1>
-                <ul  class="list-inline widget-list-inline" >
-                        <li class="list-inline-item" th:each=" tag : ${tags}"   ><a th:href="@{'../posts/filterByTag?tag=' + ${tag.name}}" th:text="${tag.name}"></a></li>
+                <ul class="list-inline widget-list-inline">
+                    <li class="list-inline-item" th:each=" tag : ${tags}"><a
+                            th:href="@{'../posts/filterByTag?tag=' + ${tag.name}}" th:text="${tag.name}"></a></li>
                 </ul>
             </div>
         </div>
@@ -208,60 +208,27 @@
                 stroke-width="2"/>
     </svg>
 </div>
-<!-- end of banner -->
-<section th:unless="${isAuthenticated}" class="section pb-0">
-    <div class="container">
-        <div>
-            <h2 class="h5 section-title">Trending Posts</h2>
-            <div class="row">
-                <div th:each="post : ${trending}" class="col-sm-6 mb-3">
-                        <article class="card mb-4">
-                            <div class="card-body d-flex">
-                                <img class="card-img-sm" src="../images/default_post_pic.jpg" alt="Default Post Pic">
-                                <div class="ml-3">
-                                    <h4 th:text="${post.getTitle()}" >Advice From a Twenty Something</h4>
-                                    <ul class="card-meta list-inline mb-0">
-                                        <li class="list-inline-item mb-0"
-                                            th:text="${post.getDate_of_creation()}">
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="ti-timer"></i>2 Min To Read
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </article>
-                </div></div></div>
-                <h2 class="h5 section-title">Recent Posts</h2>
-                <div class="row">
-                    <div th:each="recentPost : ${recent}" class="col-sm-6 mb-3">
-                        <article class="card mb-4">
-                            <div class="card-body d-flex">
-                                <img class="card-img-sm" src="../images/default_post_pic.jpg" alt="Default Post Pic">
-                                <div class="ml-3">
-                                    <h4 th:text="${recentPost.getTitle()}" >Advice From a Twenty Something</h4>
-                                    <ul class="card-meta list-inline mb-0">
-                                        <li class="list-inline-item mb-0"
-                                            th:text="${recentPost.getDate_of_creation()}">
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="ti-timer"></i>2 Min To Read
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                </div>
-    </div>
 
-</section>
 
 <section th:if="${isAuthenticated}" class="section-sm">
     <div class="container">
+        <form class="search-bar" th:object="${filterOptions}">
+            <input id="search-query" name="s" type="search" placeholder="Type &amp; Hit Enter..."
+                   th:field="*{content}">
+        </form>
+        <br>
         <div class="row justify-content-center">
             <div class="col-lg-8 mb-5 mb-lg-0">
-                <h2 class="h5 section-title">All Posts</h2>
+                <div class="flex-container">
+                    <h2 class="h5 section-title">All Posts</h2>
+                    <form id="deleteForm" th:action="@{/posts/delete-selection}" method="post">
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete
+                                Selected Posts
+                            </button>
+                        </div></form>
+                </div>
+
                 <article th:each="post : ${posts}" class="card mb-4">
                     <div class="row card-body">
                         <div class="col-md-4 mb-4 mb-md-0">
@@ -296,9 +263,19 @@
                             <p></p>
                             <p th:text="${post.getDescription()}"></p>
                             <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
+                            <form th:action="@{/posts/delete-selection}" method="post">
+                                <div class="checkbox-container">
+                                    <!--th:if="${post.getCreatedBy().equals(currentUser)||currentUser.isAdmin() }" -->
+                                    <input type="checkbox" class=checkbox-pea th:id="'post_' + ${post.id}"
+                                           th:name="'selectedPosts'"
+                                           th:value="${post.id}"/>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </article>
+
             </div>
         </div>
     </div>

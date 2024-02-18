@@ -6,18 +6,23 @@ import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
 import com.company.web.forum.helpers.FilterOptionsPosts;
 import com.company.web.forum.helpers.PostMapper;
+import com.company.web.forum.models.Post;
 import com.company.web.forum.models.*;
 import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
+import com.company.web.forum.services.TagService;
 import com.company.web.forum.services.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Set;
 
@@ -31,22 +36,39 @@ public class PostMvcController {
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
+    private final TagService tagService;
+
 
     @Autowired
     public PostMvcController(PostService postService, CommentService commentService,
                              UserService userService, AuthenticationHelper authenticationHelper,
-                             PostMapper postMapper, CommentMapper commentMapper) {
+                             PostMapper postMapper, CommentMapper commentMapper, TagService tagService) {
         this.postService = postService;
         this.commentService = commentService;
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.postMapper = postMapper;
         this.commentMapper = commentMapper;
+        this.tagService = tagService;
     }
 
     @ModelAttribute("isAuthenticated")
     public boolean populateIsAuthenticated(HttpSession session) {
         return session.getAttribute("currentUser") != null;
+    }
+    @GetMapping
+    public String showAllPosts(@ModelAttribute("filterOptions") FilterOptionsDto filterDto, Model model, HttpSession session) {
+        FilterOptionsPosts filterOptionsPosts = new FilterOptionsPosts(
+                filterDto.getContent());
+        List<Post> posts = postService.getAll(filterOptionsPosts);
+        if (populateIsAuthenticated(session)) {
+            String currentUsername = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+        }
+        model.addAttribute("filterOptions", filterDto);
+        model.addAttribute("posts", posts);
+        model.addAttribute("tags", tagService.getTrending(10));
+        return "PostsView";
     }
 
 
@@ -71,7 +93,6 @@ public class PostMvcController {
 
     @GetMapping("/{id}/comments")
     public String showAddCommentPage(@PathVariable int id, Model model, HttpSession session) {
-
         try {
             authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
@@ -96,7 +117,6 @@ public class PostMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
-
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -214,7 +234,6 @@ public class PostMvcController {
     public String showAddCommentReplyPage(@PathVariable int id,
                                           @PathVariable int commentId,
                                           Model model, HttpSession session) {
-
         try {
             authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
@@ -244,7 +263,6 @@ public class PostMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
-
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -412,6 +430,19 @@ public class PostMvcController {
             return "ErrorView";
         }
     }
+  
+  @GetMapping("/filterByTag")
+    public String filterPostsByTag(@RequestParam("tag") String tag, Model model) {
+
+        List<String> tags = new ArrayList<>();
+        tags.add(tag);
+        List<Post> filteredPosts = postService.getAll(new FilterOptionsPosts(tags));
+
+        model.addAttribute("posts", filteredPosts);
+        model.addAttribute("tag", tag);
+
+        return "FilteredPostsView";
+    }
 
     @PostMapping("/{id}/comments/{commentId}/replies/{replyId}/update")
     public String updateReplyToComment(@PathVariable int id,
@@ -474,5 +505,14 @@ public class PostMvcController {
         }
     }
 
+    @PostMapping("/delete-selection")
+    public String deletePosts(@RequestParam("selectedPosts") List<Integer> selectedPostsIds, HttpSession session, Model model) {
+        if (populateIsAuthenticated(session)) {
+            String currentUsername = (String) session.getAttribute("currentUser");
+            model.addAttribute("currentUser", userService.getByUsername(currentUsername));
+        }
+        postService.deleteMultiple(selectedPostsIds, userService.getByUsername((String) session.getAttribute("currentUser")));
+        return "redirect:/posts";
+    }
 }
 
