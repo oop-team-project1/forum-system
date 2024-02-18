@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="../css/styles.css" media="screen">
 
     <!--Favicon rel="icon" -> icon in browser-->
-    <link rel="shortcut icon" href="../images/favicon.png" type="image/x-icon">
-    <link rel="icon" href="../images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/img_1.png" type="image/x-icon">
+    <link rel="icon" href="/images/img_1.png" type="image/x-icon">
 
     <meta property="og:title" content="Tasty Tale | Once upon a time there was a healthy and tasty dish..."/>
     <meta property="og:description" content="This is meta description"/>
@@ -131,7 +131,8 @@
                             <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete
                                 Selected Posts
                             </button>
-                        </div></form>
+                        </div>
+                    </form>
                 </div>
 
                 <article th:each="post : ${posts}" class="card mb-4">
@@ -170,7 +171,6 @@
                             <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
                             <form th:action="@{/posts/delete-selection}" method="post">
                                 <div class="checkbox-container">
-                                    <!--th:if="${post.getCreatedBy().equals(currentUser)||currentUser.isAdmin() }" -->
                                     <input type="checkbox" class=checkbox-pea th:id="'post_' + ${post.id}"
                                            th:name="'selectedPosts'"
                                            th:value="${post.id}"/>
