@@ -140,7 +140,7 @@
 		<div class="row">
 			<div class="col-lg-8 mx-auto">
 				<form th:action="@{'/users/' + ${id} + '/delete'}" method="post" onsubmit="return confirmDelete()">
-					<button th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.id == user.id)}"
+					<button th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.id == user.id) && !user.getPostsByUser().isEmpty()}"
 							class="btn btn-outline-block" type="submit" style="margin-bottom: 30px;">
 						Delete Selected Posts
 					</button>
@@ -160,7 +160,6 @@
 				</div>
 				</form>
 				<script>
-
 					function confirmDelete() {
 						var checkboxes = document.getElementsByName('selectedPosts');
 						var checked = Array.prototype.slice.call(checkboxes).some(function (checkbox) {

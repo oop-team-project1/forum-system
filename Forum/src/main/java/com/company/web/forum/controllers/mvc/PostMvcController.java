@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -93,6 +94,7 @@ public class PostMvcController {
 
     @GetMapping("/{id}/comments")
     public String showAddCommentPage(@PathVariable int id, Model model, HttpSession session) {
+
         try {
             authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
@@ -117,6 +119,7 @@ public class PostMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
+
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -234,6 +237,7 @@ public class PostMvcController {
     public String showAddCommentReplyPage(@PathVariable int id,
                                           @PathVariable int commentId,
                                           Model model, HttpSession session) {
+
         try {
             authenticationHelper.tryGetUser(session);
         } catch (AuthorizationException e) {
@@ -263,6 +267,7 @@ public class PostMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
+
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
@@ -430,7 +435,7 @@ public class PostMvcController {
             return "ErrorView";
         }
     }
-  
+
   @GetMapping("/filterByTag")
     public String filterPostsByTag(@RequestParam("tag") String tag, Model model) {
 
