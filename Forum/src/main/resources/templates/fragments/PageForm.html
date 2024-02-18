@@ -46,15 +46,11 @@
                 <a class="nav-link"  th:text="#{header.home}" th:href="@{/}" href="#"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:text="#{header.users}" th:href="@{/users}" href="#"></a>
+                <a th:if="${isAuthenticated}" class="nav-link" th:text="#{header.users}" th:href="@{/users}" href="#"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:text="#{header.login}"
                    th:unless="${isAuthenticated}" th:href="@{/auth/login}" href="#"></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:text="#{header.register}" th:unless="${isAuthenticated}" th:href="@{/auth/register}"
-                   href="#"></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:text="#{header.logout}"
