@@ -151,7 +151,7 @@
 								<input type="checkbox" th:id="'postCheckbox_' + ${post.id}" th:name="selectedPosts"
 									   th:value="${post.id}" />
 							</label>
-							<h3 class="mb-3"><a class="post-title" th:href="@{'/post/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
+							<h3 class="mb-3"><a class="post-title" th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Post Title</a></h3>
 							<p th:text="${post.content}">Post Content</p>
 							<a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary">Read More</a>
 							<a th:if="${post.createdBy.id == currentUser.id}" th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-outline-primary">Edit Post</a>
