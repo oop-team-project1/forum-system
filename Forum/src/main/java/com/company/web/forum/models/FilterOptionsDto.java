@@ -10,6 +10,7 @@ public class FilterOptionsDto {
         return content;
     }
 
+
     public void setContent(String content) {
         this.content = content;
     }
