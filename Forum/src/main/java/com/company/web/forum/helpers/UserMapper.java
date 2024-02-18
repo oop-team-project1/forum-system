@@ -53,12 +53,7 @@ public class UserMapper {
     }
 
     public User fromDtoUpdating(UserDtoUpdating userDto, User user) {
-        User userToUpdate = new User();
-        userToUpdate.setFirstName(userDto.getFirstName());
-        userToUpdate.setLastName(userDto.getLastName());
-        userToUpdate.setPassword(userDto.getPassword());
-        userToUpdate.setEmail(userDto.getEmail());
-        userToUpdate.setPhoneNumber(userDto.getPhoneNumber());
+        User userToUpdate = fromDtoUpdating(userDto);
         userToUpdate.setId(user.getId());
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setBlocked(user.isBlocked());
