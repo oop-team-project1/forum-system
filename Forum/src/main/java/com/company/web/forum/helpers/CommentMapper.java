@@ -39,7 +39,7 @@ public class CommentMapper {
         newComment.setId(oldComment.getId());
         newComment.setCommentContent(commentDto.getCommentContent());
         newComment.setCreatedBy(oldComment.getCreatedBy());
-        newComment.setParentComment(newComment);
+        newComment.setParentComment(oldComment.getParentComment());
         newComment.setReplies(oldComment.getReplies());
         newComment.setPost(oldComment.getPost());
         return newComment;
