@@ -1,5 +1,6 @@
 package com.company.web.forum.controllers.mvc;
 
+import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
@@ -97,7 +98,7 @@ public class PostMvcController {
 
         try {
             authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -123,7 +124,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -158,7 +159,7 @@ public class PostMvcController {
 
         try {
             authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -186,7 +187,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -240,7 +241,7 @@ public class PostMvcController {
 
         try {
             authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -271,7 +272,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -304,7 +305,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -334,7 +335,7 @@ public class PostMvcController {
                                       HttpSession session) {
         try {
             authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -363,7 +364,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -392,7 +393,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -418,7 +419,7 @@ public class PostMvcController {
                                     HttpSession session) {
         try {
             authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -460,7 +461,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -492,7 +493,7 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 

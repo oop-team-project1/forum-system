@@ -1,5 +1,6 @@
 package com.company.web.forum.controllers.mvc;
 
+import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
 import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
@@ -52,13 +53,11 @@ public class UserMvcController {
 
     @GetMapping
     public String showAllUsers(@ModelAttribute("filterOptions") FilterDtoUser filterDto, Model model, HttpSession session) {
-       // List<User> users = userService.getAll(new FilterOptionsUsers());
-       // if (populateIsAuthenticated(session)){
-       //     String currentUsername = (String) session.getAttribute("currentUser");
-       //     model.addAttribute("currentUser", userService.getByEmail(currentUsername));
-       // }
-       // model.addAttribute("users", users);
-       // return "UsersView";
+        try {
+            authenticationHelper.tryGetUser(session);
+        } catch (AuthenticationException e) {
+            return "redirect:/auth/login";
+        }
 
         FilterOptionsUsers filterOptions = new FilterOptionsUsers(
                 filterDto.getUsername(),
@@ -81,6 +80,11 @@ public class UserMvcController {
     @GetMapping("/{id}")
     public String showSingleUser(@PathVariable int id, Model model, HttpSession session) {
         try {
+            try {
+                authenticationHelper.tryGetUser(session);
+            } catch (AuthenticationException e) {
+                return "redirect:/auth/login";
+            }
             if (populateIsAuthenticated(session)){
                 String currentUsername = (String) session.getAttribute("currentUser");
                 model.addAttribute("currentUser", userService.getByEmail(currentUsername));
@@ -105,7 +109,7 @@ public class UserMvcController {
             User user;
             try {
                 user = authenticationHelper.tryGetUser(session);
-            } catch (AuthorizationException e) {
+            } catch (AuthenticationException e) {
                 return "redirect:/auth/login";
             }
 
@@ -128,7 +132,7 @@ public class UserMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
 
@@ -152,7 +156,7 @@ public class UserMvcController {
             User user;
             try {
                 user = authenticationHelper.tryGetUser(session);
-            } catch (AuthorizationException e) {
+            } catch (AuthenticationException e) {
                 return "redirect:/auth/login";
             }
 
@@ -172,6 +176,12 @@ public class UserMvcController {
 
     @GetMapping("/edit")
     public String showUserEditPage (Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetUser(session);
+        } catch (AuthenticationException e) {
+            return "redirect:/auth/login";
+        }
+
         if (populateIsAuthenticated(session)){
             String currentUsername = (String) session.getAttribute("currentUser");
             model.addAttribute("currentUser", userService.getByEmail(currentUsername));
@@ -192,7 +202,7 @@ public class UserMvcController {
             User user;
             try {
                 user = authenticationHelper.tryGetUser(session);
-            } catch (AuthorizationException e) {
+            } catch (AuthenticationException e) {
                 return "redirect:/auth/login";
             }
 
@@ -214,7 +224,7 @@ public class UserMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(session);
-        } catch (AuthorizationException e) {
+        } catch (AuthenticationException e) {
             return "redirect:/auth/login";
         }
         postService.deleteMultiple(selectedPostIds,user);
