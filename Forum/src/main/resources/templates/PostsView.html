@@ -210,7 +210,7 @@
 </div>
 
 
-<section th:unless="${isAuthenticated}" class="section-sm">
+<section th:if="${isAuthenticated}" class="section-sm">
     <div class="container">
         <form class="search-bar" th:object="${filterOptions}">
             <input id="search-query" name="s" type="search" placeholder="Type &amp; Hit Enter..."
