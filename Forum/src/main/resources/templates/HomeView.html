@@ -123,7 +123,9 @@
                         <div class="card-body d-flex">
                             <img class="card-img-sm" src="../images/default_post_pic.jpg" alt="Default Post Pic">
                             <div class="ml-3">
-                                <h4 th:text="${post.getTitle()}">Advice From a Twenty Something</h4>
+                                <a th:href="@{/posts/{postId}(postId=${post.getId()})}">
+                                    <h4 class="post-title" th:text="${post.getTitle()}"></h4>
+                                </a>
                                 <ul class="card-meta list-inline mb-0">
 
                                     <li class="list-inline-item">
@@ -148,7 +150,9 @@
                     <div class="card-body d-flex">
                         <img class="card-img-sm" src="../images/default_post_pic.jpg" alt="Default Post Pic">
                         <div class="ml-3">
-                            <h4 th:text="${recentPost.getTitle()}">Advice From a Twenty Something</h4>
+                            <a th:href="@{/posts/{postId}(postId=${recentPost.getId()})}">
+                                <h4 class="post-title" th:text="${recentPost.getTitle()}">Post title</h4>
+                            </a>
                             <ul class="card-meta list-inline mb-0">
                                 <li class="list-inline-item mb-0"
                                     th:text="${recentPost.getDate_of_creation()}">

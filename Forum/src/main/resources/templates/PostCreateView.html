@@ -118,7 +118,7 @@
                                th:field="${post.description}"
                                placeholder="Description"
                                required="required">
-                        <label class="error" th:errors="*{description}" > </label>
+                        <label class="error" style="color: red" th:errors="*{description}" > </label>
 
 
 
@@ -134,7 +134,7 @@
                                   name="description"
                                   placeholder="Content" th:field="${post.content}"
                                   required="required"></textarea>
-                        <label class="error" th:errors="*{content}"></label>
+                        <label class="error" style="color: red" th:errors="*{content}"></label>
 
 
                     </div>

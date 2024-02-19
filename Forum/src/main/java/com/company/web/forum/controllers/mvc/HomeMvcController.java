@@ -33,8 +33,8 @@ public class HomeMvcController {
 
     @GetMapping
     public String showHomePage(Model model) {
-        model.addAttribute("trending", postService.getAll(new FilterOptionsPosts("desc", "likes")));
-        model.addAttribute("recent", postService.getAll(new FilterOptionsPosts("desc", "date")));
+        model.addAttribute("trending", postService.getAll(new FilterOptionsPosts("desc", "likes", 10)));
+        model.addAttribute("recent", postService.getAll(new FilterOptionsPosts("desc", "date", 10)));
         return "HomeView";
     }
 

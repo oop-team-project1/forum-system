@@ -13,11 +13,11 @@ public class FilterOptionsPosts {
         this(null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
-    public FilterOptionsPosts(String orderBy,String order) {
+    public FilterOptionsPosts(String orderBy,String order, int limit) {
         this(null, null, null,
                 null, null, null,
                 null, null,
-                orderBy, order, null, null);
+                orderBy, order, limit, null);
     }
     public FilterOptionsPosts(List<String> tag) {
         this(null, null, null,
