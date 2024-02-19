@@ -134,7 +134,7 @@
                     <h2 class="h5 section-title">All Posts</h2>
                     <form id="deleteForm" th:action="@{/posts/delete-selection}" method="post">
                         <div class="col-md-auto">
-                            <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;" onclick="return confirmDelete()">Delete
                                 Selected Posts
                             </button>
                         </div>
@@ -220,13 +220,7 @@
     });
 
     function confirmDelete() {
-        var checkboxes = document.querySelectorAll('.checkbox-pea:checked');
-        if (checkboxes.length > 0) {
-            return confirm('Are you sure you want to delete? This action is irreversible and cannot be undone.');
-        } else {
-            alert('Please select at least one post.');
-            return false;
-        }
+        return confirm('Are you sure you want to delete? This action is irreversible and cannot be undone.');
     }
 
     function getSelectedIds() {
