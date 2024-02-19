@@ -47,6 +47,18 @@
 <!-- /navigation -->
 
 <!-- start of banner -->
+<div class="banner text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 mx-auto">
+                <h1 class="mb-5">What Would You <br> Like To Taste Today?</h1>
+                <ul class="list-inline widget-list-inline">
+                    <li class="list-inline-item" th:each=" tag : ${tags}"><a
+                            th:href="@{'../posts/filterByTag?tag=' + ${tag.name}}" th:text="${tag.name}"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
 
     <svg class="banner-shape-1" width="39" height="40" viewBox="0 0 39 40" fill="none"

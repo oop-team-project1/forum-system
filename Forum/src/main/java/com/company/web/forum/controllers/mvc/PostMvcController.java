@@ -2,6 +2,7 @@ package com.company.web.forum.controllers.mvc;
 
 import com.company.web.forum.exceptions.AuthenticationException;
 import com.company.web.forum.exceptions.AuthorizationException;
+import com.company.web.forum.exceptions.EntityDuplicateException;
 import com.company.web.forum.exceptions.EntityNotFoundException;
 import com.company.web.forum.helpers.AuthenticationHelper;
 import com.company.web.forum.helpers.CommentMapper;
@@ -13,6 +14,7 @@ import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import com.company.web.forum.services.TagService;
 import com.company.web.forum.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
@@ -443,7 +445,6 @@ public class PostMvcController {
         List<String> tags = new ArrayList<>();
         tags.add(tag);
         List<Post> filteredPosts = postService.getAll(new FilterOptionsPosts(tags));
-
         model.addAttribute("posts", filteredPosts);
         model.addAttribute("tag", tag);
 
@@ -520,5 +521,51 @@ public class PostMvcController {
         postService.deleteMultiple(selectedPostsIds, userService.getByEmail((String) session.getAttribute("currentUser")));
         return "redirect:/posts";
     }
+
+
+    @GetMapping("/new")
+    public String showNewPostPage(Model model, HttpSession session) {
+        try {
+            User user = authenticationHelper.tryGetUser(session);
+            model.addAttribute("post", new PostDto());
+            model.addAttribute("user",user );
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        return "PostCreateView";
+    }
+    @PostMapping("/new")
+    public String createPost(@Valid @ModelAttribute("post") PostDto postDto,
+                             BindingResult bindingResult,
+                             Model model,
+                             HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "PostCreateView";
+        }
+
+        try {
+            Post post = postMapper.fromDto(postDto);
+            postService.create(post, user);
+            return "redirect:/posts";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request) {
+        return request.getRequestURI();
+    }
+
 }
 

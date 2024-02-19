@@ -172,52 +172,6 @@
         window.location.href = '/posts';             /*]]>*/
     </script>
 </div>
-<section th:if="${isAuthenticated}" class="section-sm">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 mb-5 mb-lg-0">
-                <h2 class="h5 section-title">All Posts</h2>
-                <article th:each="post : ${posts}" class="card mb-4">
-                    <div class="row card-body">
-                        <div class="col-md-4 mb-4 mb-md-0">
-                            <div class="post-slider slider-sm">
-                                <img src="../images/default_post_pic.jpg" class="card-img" alt="post-thumb"
-                                     style="height:200px; object-fit: cover;">
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <h3 th:text="${post.getTitle()}" class="h4 mb-3"><a class="post-title"
-                                                                                href="post-elements.html">Post title</a>
-                            </h3>
-                            <ul class="card-meta list-inline">
-                                <li class="list-inline-item">
-                                    <a th:href="@{/users/__${post.getCreatedBy().getId()}__}" class="card-meta-author">
-                                        <img th:if="${post.getCreatedBy().profilePic != null}"
-                                             th:src="${post.getCreatedBy().profilePic.pic}" alt="Profile Picture">
-                                        <img th:unless="${post.getCreatedBy().profilePic != null}"
-                                             src="../images/default-profile-pic.png" alt="Default Profile Picture">
-                                        <span th:text="${post.getCreatedBy().getUsername()}">Author</span>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="ti-heart"></i>
-                                    <span th:text="${post.getLikes()}"></span>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="ti-calendar"></i>
-                                    <span th:text="${#temporals.format(post.getDate_of_creation(),'dd MMMM yyyy') }"></span>
-                                </li>
-                            </ul>
-                            <p></p>
-                            <p th:text="${post.getDescription()}"></p>
-                            <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </div>
-</section>
 
 
 <div th:replace="~{fragments/PageForm :: footer}"></div>

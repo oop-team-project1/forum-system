@@ -114,7 +114,13 @@
     </svg>
 </div>
 
-
+<div th:if="${!isAuthenticated}">
+    <!-- Redirect to another address -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.location.href = '/auth/login';             /*]]>*/
+    </script>
+</div>
 <section th:if="${isAuthenticated}" class="section-sm">
     <div class="container">
         <form class="search-bar" th:object="${filterOptions}">
@@ -128,7 +134,7 @@
                     <h2 class="h5 section-title">All Posts</h2>
                     <form id="deleteForm" th:action="@{/posts/delete-selection}" method="post">
                         <div class="col-md-auto">
-                            <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" style="display: none;" onclick="return confirmDelete()">Delete
                                 Selected Posts
                             </button>
                         </div>
@@ -169,11 +175,13 @@
                             <p></p>
                             <p th:text="${post.getDescription()}"></p>
                             <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
-                            <form th:action="@{/posts/delete-selection}" method="post">
+                            <form id="delete-posts-form" th:action="@{/posts/delete-selection}" method="post" onsubmit="return confirmDelete()">
                                 <div class="checkbox-container">
-                                    <input type="checkbox" class=checkbox-pea th:id="'post_' + ${post.id}"
+                                    <!--th:if="${post.getCreatedBy().equals(currentUser)||currentUser.isAdmin() }" -->
+                                    <input th:if="${post.getCreatedBy().equals(currentUser)|| currentUser.isAdmin()}" type="checkbox" class=checkbox-pea  th:id="'post_' + ${post.id}"
                                            th:name="'selectedPosts'"
-                                           th:value="${post.id}"/>
+                                           th:value="${post.id}">
+
                                 </div>
                             </form>
 
@@ -199,7 +207,31 @@
 
 <script src="../plugins/instafeed/instafeed.min.js"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('deleteForm').addEventListener('submit', function() {
+            var selectedIds = getSelectedIds();
+            var hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'selectedPosts';
+            hiddenInput.value = selectedIds.join(',');
+            this.appendChild(hiddenInput);
+        });
+    });
 
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete? This action is irreversible and cannot be undone.');
+    }
+
+    function getSelectedIds() {
+        var checkboxes = document.querySelectorAll('.checkbox-pea:checked');
+        var selectedIds = [];
+        checkboxes.forEach(function(checkbox) {
+            selectedIds.push(checkbox.value);
+        });
+        return selectedIds;
+    }
+</script>
 <!-- Main Script -->
 <script src="..static/js/script.js" th:src="@{/js/script.js}"></script>
 <script src="..static/js/pass.js" th:src="@{/js/pass.js}"></script>
