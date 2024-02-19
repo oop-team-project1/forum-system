@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (duplicateEmailExists) {
-            throw new EntityDuplicateException("User", "email", userToCreate.getUsername());
+            throw new EntityDuplicateException("User", "email", userToCreate.getEmail());
         }
         repository.create(userToCreate);
     }
