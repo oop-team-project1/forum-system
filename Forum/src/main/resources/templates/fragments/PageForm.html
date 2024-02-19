@@ -57,7 +57,7 @@
             </li>
         </ul>
     </div>
-    <a th:if="${isAuthenticated && !currentUser.isBlocked()}" class="btn btn-primary ml-auto order-lg-4" th:href="@{/posts/new}" >Create Post</a>
+    <a th:if="${isAuthenticated}" class="btn btn-outline-primary ml-auto order-lg-4" th:href="@{/posts/new}" >Create Post</a>
 
 </nav>
 
