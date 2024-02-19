@@ -178,7 +178,7 @@
                         </a>
                         <a class="btn btn-outline-block"
                            th:if="${isAuthenticated && (currentUser.isAdmin() || currentUser.postsByUser.contains(post))}"
-                           th:href="@{'/posts/' + ${post.id} + '/delete'}" onclick="confirmDelete('${post.id}')">
+                           th:href="@{'/posts/' + ${post.id} + '/delete'}" onclick="return confirmDelete('${post.id}')">
                             Delete post
                         </a>
                         <script>
