@@ -1285,6 +1285,7 @@ mark {
 
 .error {
   padding: 130px 0;
+  color: red;
 }
 .error-shape-1 {
   position: absolute;

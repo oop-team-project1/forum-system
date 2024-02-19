@@ -13,6 +13,7 @@ import com.company.web.forum.services.CommentService;
 import com.company.web.forum.services.PostService;
 import com.company.web.forum.services.TagService;
 import com.company.web.forum.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
@@ -443,7 +444,6 @@ public class PostMvcController {
         List<String> tags = new ArrayList<>();
         tags.add(tag);
         List<Post> filteredPosts = postService.getAll(new FilterOptionsPosts(tags));
-
         model.addAttribute("posts", filteredPosts);
         model.addAttribute("tag", tag);
 
@@ -525,16 +525,17 @@ public class PostMvcController {
     @GetMapping("/new")
     public String showNewPostPage(Model model, HttpSession session) {
         try {
-            authenticationHelper.tryGetUser(session);
+            User user = authenticationHelper.tryGetUser(session);
+            model.addAttribute("post", new PostDto());
+            model.addAttribute("user",user );
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
 
-        model.addAttribute("beer", new PostDto());
         return "PostCreateView";
     }
     @PostMapping("/new")
-    public String createBeer(@Valid @ModelAttribute("beer") PostDto postDto,
+    public String createPost(@Valid @ModelAttribute("post") PostDto postDto,
                              BindingResult bindingResult,
                              Model model,
                              HttpSession session) {
@@ -559,5 +560,11 @@ public class PostMvcController {
             return "ErrorView";
         }
     }
+
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request) {
+        return request.getRequestURI();
+    }
+
 }
 

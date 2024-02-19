@@ -209,7 +209,13 @@
     </svg>
 </div>
 
-
+<div th:if="${!isAuthenticated}">
+    <!-- Redirect to another address -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.location.href = '/auth/login';             /*]]>*/
+    </script>
+</div>
 <section th:if="${isAuthenticated}" class="section-sm">
     <div class="container">
         <form class="search-bar" th:object="${filterOptions}">
@@ -263,12 +269,13 @@
                             <p></p>
                             <p th:text="${post.getDescription()}"></p>
                             <a th:href="@{/posts/__${post.getId()}__}" class="btn btn-outline-primary">Read More</a>
-                            <form th:action="@{/posts/delete-selection}" method="post">
+                            <form id="delete-posts-form" th:action="@{/posts/delete-selection}" method="post" onsubmit="return confirmDelete()">
                                 <div class="checkbox-container">
                                     <!--th:if="${post.getCreatedBy().equals(currentUser)||currentUser.isAdmin() }" -->
-                                    <input type="checkbox" class=checkbox-pea th:id="'post_' + ${post.id}"
+                                    <input th:if="${post.getCreatedBy().equals(currentUser)|| currentUser.isAdmin()}" type="checkbox" class=checkbox-pea  th:id="'post_' + ${post.id}"
                                            th:name="'selectedPosts'"
-                                           th:value="${post.id}"/>
+                                           th:value="${post.id}">
+
                                 </div>
                             </form>
 
@@ -349,7 +356,37 @@
 
 <script src="../plugins/instafeed/instafeed.min.js"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('deleteForm').addEventListener('submit', function() {
+            var selectedIds = getSelectedIds();
+            var hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'selectedPosts';
+            hiddenInput.value = selectedIds.join(',');
+            this.appendChild(hiddenInput);
+        });
+    });
 
+    function confirmDelete() {
+        var checkboxes = document.querySelectorAll('.checkbox-pea:checked');
+        if (checkboxes.length > 0) {
+            return confirm('Are you sure you want to delete? This action is irreversible and cannot be undone.');
+        } else {
+            alert('Please select at least one post.');
+            return false;
+        }
+    }
+
+    function getSelectedIds() {
+        var checkboxes = document.querySelectorAll('.checkbox-pea:checked');
+        var selectedIds = [];
+        checkboxes.forEach(function(checkbox) {
+            selectedIds.push(checkbox.value);
+        });
+        return selectedIds;
+    }
+</script>
 <!-- Main Script -->
 <script src="../js/script.js"></script>
 </body>
