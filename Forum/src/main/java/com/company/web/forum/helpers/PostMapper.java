@@ -38,11 +38,13 @@ public class PostMapper {
         newPost.setId(post.getId());
         newPost.setTitle(postDto.getTitle());
         newPost.setContent(postDto.getContent());
+        newPost.setDescription(postDto.getDescription());
         newPost.setCreatedBy(post.getCreatedBy());
         newPost.setLikes(post.getLikes());
         newPost.setUsersWhoLiked(post.getUsersWhoLiked());
         newPost.setComments(post.getComments());
         newPost.setTags(post.getTags());
+
 
         return newPost;
     }
@@ -51,6 +53,7 @@ public class PostMapper {
         PostDto postDto = new PostDto();
         postDto.setTitle(post.getTitle());
         postDto.setContent(post.getContent());
+        postDto.setDescription(post.getDescription());
         return postDto;
     }
 }
