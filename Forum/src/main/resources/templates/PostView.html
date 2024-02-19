@@ -30,6 +30,13 @@
                             <i th:text="${#temporals.format(post.date_of_creation, 'dd MMMM yyyy')}"
                                class="ti-calendar"></i>
                         </li>
+                        <li class="list-inline-item">
+                            <ul class="card-meta-tag list-inline">
+                                <li class="list-inline-item" th:each="tag : ${post.getTags()}" >
+                                    <a th:href="@{'../posts/filterByTag?tag=' + ${tag.name}}" th:text="${tag.name}"></a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                     <div class="content">
                         <hr>
