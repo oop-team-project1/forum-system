@@ -21,7 +21,7 @@ public class PostDto {
         this.description = description;
     }
 
-    @Size(min=20, max = 200, message = "Description must be between 20 and 200 symbols")
+    @Size(min=20, max = 150, message = "Description must be between 20 and 150 symbols")
     private String description;
 
     public PostDto() {
