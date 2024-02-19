@@ -2,10 +2,10 @@
 <div th:fragment="details(bodyTitle)">
     <h2 th:text="${bodyTitle}">Body Title</h2>
     <form action="#" th:action="@{__${requestURI}__}" th:object="${post}" method="post">
-        <label th:text="#{post.label.title}">Beer</label>
+        <label th:text="#{post.label.title}">Post</label>
         <br/>
-        <input type="text" th:field="*{name}"/>
-        <label class="error" th:errors="*{name}">Name error placeholder</label>
+        <input type="text" th:field="*{title}"/>
+        <label class="error" th:errors="*{title}">Name error placeholder</label>
         <br/><br/>
 
         <label th:text="#{post.label.content}">ABV</label>
