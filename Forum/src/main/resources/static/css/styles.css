@@ -81,6 +81,11 @@ li {
   border-color: #d21f1f !important;
   color: #fff;
 }
+
+.underline-hover:hover {
+  text-decoration: underline;
+  color: black;
+}
 /* Button style */
 .btn {
   font-size: 14px;

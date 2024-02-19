@@ -35,15 +35,14 @@
 	<div class="container">
 		<div th:replace="~{fragments/PageForm :: navbar}"></div>
 
-			<!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
-			<!--                &lt;!&ndash; search &ndash;&gt;-->
+		<!--            <div class="order-2 order-lg-3 d-flex align-items-center">-->
+		<!--                &lt;!&ndash; search &ndash;&gt;-->
 
-			<!--                <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"-->
-			<!--                        data-target="#navigation">-->
-			<!--                    <i class="ti-menu"></i>-->
-			<!--                </button>-->
-			<!--            </div>-->
-
+		<!--                <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"-->
+		<!--                        data-target="#navigation">-->
+		<!--                    <i class="ti-menu"></i>-->
+		<!--                </button>-->
+		<!--            </div>-->
 	</div>
 </header>
 <!-- /navigation -->
@@ -181,12 +180,13 @@
 
   <!-- Footer -->
   <!-- Footer content goes here -->
-
+<div th:replace="~{fragments/PageForm :: footer}"></div>
   <!-- JavaScript -->
-  <script src="plugins/jQuery/jquery.min.js"></script>
-  <script src="plugins/bootstrap/bootstrap.min.js"></script>
-  <script src="plugins/slick/slick.min.js"></script>
-  <script src="plugins/instafeed/instafeed.min.js"></script>
-  <script src="js/script.js"></script>
+  <script src="../plugins/jQuery/jquery.min.js"></script>
+  <script src="../plugins/bootstrap/bootstrap.min.js"></script>
+  <script src="../plugins/slick/slick.min.js"></script>
+  <script src="../plugins/instafeed/instafeed.min.js"></script>
+  <script src="..static/js/script.js" th:src="@{/js/script.js}"></script>
+  <script src="..static/js/pass.js" th:src="@{/js/pass.js}"></script>
 </body>
 </html>

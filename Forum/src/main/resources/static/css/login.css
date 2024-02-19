@@ -473,7 +473,7 @@ mark {
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
-  padding: 50px;
+  padding: 20px;
 }
 @media (max-width: 991px) {
   .navbar-expand-lg .navbar-nav .nav-link {

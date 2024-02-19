@@ -55,7 +55,7 @@ create table posts
     content          varchar(8192) not null,
     created_by       int           null,
     date_of_creation date          null,
-    description      varchar(500)  null,
+    description      varchar(150)  null,
     constraint posts_users_user_id_fk
         foreign key (created_by) references users (user_id)
 );
