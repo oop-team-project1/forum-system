@@ -8,13 +8,13 @@
         <label class="error" th:errors="*{title}">Name error placeholder</label>
         <br/><br/>
 
-        <label th:text="#{post.label.content}">ABV</label>
+        <label th:text="#{post.label.content}"></label>
         <br/>
         <input type="text" th:field="*{content}"/>
-        <label class="error" th:errors="*{content}">ABV error placeholder</label>
+        <label class="error" th:errors="*{content}">Error placeholder</label>
         <br/><br/>
 
-        <label th:text="#{post.label.description}">Style</label>
+        <label th:text="#{post.label.description}"></label>
         <br/>
         <select th:field="*{description}">
         </select>
